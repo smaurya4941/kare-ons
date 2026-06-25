@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,17 +16,20 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $query = Product::with('category')->latest();
-        
+
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('sku', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%");
+            });
         }
-        
+
         if ($request->filled('category')) {
             $query->where('category_id', $request->category);
         }
 
-        $products = $query->paginate(15);
+        $products   = $query->paginate(15);
         $categories = Category::where('status', true)->get();
 
         return view('admin.products.index', compact('products', 'categories'));
@@ -40,56 +44,56 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'sku' => 'required|string|unique:products,sku',
-            'price' => 'required|numeric|min:0',
-            'sale_price' => 'nullable|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
-            'short_description' => 'nullable|string',
-            'description' => 'required|string',
-            
+            'name'                 => 'required|string|max:255|unique:products,name',
+            'category_id'          => 'required|exists:categories,id',
+            'sku'                  => 'required|string|max:100|unique:products,sku',
+            'price'                => 'required|numeric|min:0|max:9999999',
+            'sale_price'           => 'nullable|numeric|min:0|lt:price',
+            'stock_quantity'       => 'required|integer|min:0|max:99999',
+            'short_description'    => 'nullable|string|max:500',
+            'description'          => 'required|string',
+
             // Herbal Fields
-            'benefits' => 'nullable|string',
-            'ingredients' => 'nullable|string',
-            'usage_instructions' => 'nullable|string',
-            'storage_instructions' => 'nullable|string',
-            'precautions' => 'nullable|string',
-            
+            'benefits'             => 'nullable|string|max:5000',
+            'ingredients'          => 'nullable|string|max:5000',
+            'usage_instructions'   => 'nullable|string|max:5000',
+            'storage_instructions' => 'nullable|string|max:2000',
+            'precautions'          => 'nullable|string|max:2000',
+
             // SEO & Status
-            'status' => 'required|boolean',
-            'featured' => 'boolean',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string',
-            
+            'status'               => 'required|boolean',
+            'featured'             => 'boolean',
+            'meta_title'           => 'nullable|string|max:255',
+            'meta_description'     => 'nullable|string|max:500',
+
             // Images
-            'main_image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'main_image'           => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'gallery.*'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['featured'] = $request->has('featured');
+        $validated['slug']     = $this->uniqueSlug($validated['name']);
+        $validated['featured'] = $request->boolean('featured');
+        $validated['main_image'] = $request->file('main_image')->store('products', 'public');
 
-        if ($request->hasFile('main_image')) {
-            $validated['main_image'] = $request->file('main_image')->store('products', 'public');
-        } else {
-            $validated['main_image'] = ''; // Ensure main_image is string
-        }
+        $product = Product::create(Arr::except($validated, ['gallery']));
 
-        $product = Product::create(\Illuminate\Support\Arr::except($validated, ['gallery']));
-
-        // Handle Gallery Images
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $index => $image) {
                 $path = $image->store('products/gallery', 'public');
                 $product->images()->create([
-                    'image_path' => $path,
-                    'sort_order' => $index,
+                    'image_path'  => $path,
+                    'sort_order'  => $index,
                 ]);
             }
         }
 
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
+    }
+
+    public function show(Product $product)
+    {
+        $product->load(['category', 'images', 'reviews.user']);
+        return view('admin.products.show', compact('product'));
     }
 
     public function edit(Product $product)
@@ -102,55 +106,55 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'sku' => 'required|string|unique:products,sku,' . $product->id,
-            'price' => 'required|numeric|min:0',
-            'sale_price' => 'nullable|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
-            'short_description' => 'nullable|string',
-            'description' => 'required|string',
-            
+            'name'                 => 'required|string|max:255|unique:products,name,' . $product->id,
+            'category_id'          => 'required|exists:categories,id',
+            'sku'                  => 'required|string|max:100|unique:products,sku,' . $product->id,
+            'price'                => 'required|numeric|min:0|max:9999999',
+            'sale_price'           => 'nullable|numeric|min:0|lt:price',
+            'stock_quantity'       => 'required|integer|min:0|max:99999',
+            'short_description'    => 'nullable|string|max:500',
+            'description'          => 'required|string',
+
             // Herbal Fields
-            'benefits' => 'nullable|string',
-            'ingredients' => 'nullable|string',
-            'usage_instructions' => 'nullable|string',
-            'storage_instructions' => 'nullable|string',
-            'precautions' => 'nullable|string',
-            
+            'benefits'             => 'nullable|string|max:5000',
+            'ingredients'          => 'nullable|string|max:5000',
+            'usage_instructions'   => 'nullable|string|max:5000',
+            'storage_instructions' => 'nullable|string|max:2000',
+            'precautions'          => 'nullable|string|max:2000',
+
             // SEO & Status
-            'status' => 'required|boolean',
-            'featured' => 'boolean',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string',
-            
+            'status'               => 'required|boolean',
+            'featured'             => 'boolean',
+            'meta_title'           => 'nullable|string|max:255',
+            'meta_description'     => 'nullable|string|max:500',
+
             // Images
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'main_image'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'gallery.*'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
+        $validated['featured'] = $request->boolean('featured');
+
         if ($validated['name'] !== $product->name) {
-            $validated['slug'] = Str::slug($validated['name']);
+            $validated['slug'] = $this->uniqueSlug($validated['name'], $product->id);
         }
-        $validated['featured'] = $request->has('featured');
 
         if ($request->hasFile('main_image')) {
-            // Delete old image
             if ($product->main_image) {
                 Storage::disk('public')->delete($product->main_image);
             }
             $validated['main_image'] = $request->file('main_image')->store('products', 'public');
         }
 
-        $product->update(\Illuminate\Support\Arr::except($validated, ['gallery']));
+        $product->update(Arr::except($validated, ['gallery']));
 
-        // Handle Gallery Images
         if ($request->hasFile('gallery')) {
+            $maxSort = $product->images()->max('sort_order') ?? -1;
             foreach ($request->file('gallery') as $index => $image) {
                 $path = $image->store('products/gallery', 'public');
                 $product->images()->create([
                     'image_path' => $path,
-                    'sort_order' => $product->images()->max('sort_order') + 1 + $index,
+                    'sort_order' => $maxSort + 1 + $index,
                 ]);
             }
         }
@@ -176,5 +180,27 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    private function uniqueSlug(string $name, ?int $excludeId = null): string
+    {
+        $base   = Str::slug($name);
+        $slug   = $base;
+        $suffix = 1;
+
+        while (
+            Product::where('slug', $slug)
+                ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+                ->exists()
+        ) {
+            $slug = "{$base}-{$suffix}";
+            $suffix++;
+        }
+
+        return $slug;
     }
 }

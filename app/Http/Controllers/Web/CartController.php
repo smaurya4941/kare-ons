@@ -11,20 +11,29 @@ use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
+    private const MAX_QUANTITY_PER_ITEM = 10;
+
     public function index()
     {
         $cartItems = $this->getCartItems();
-        
+
         $subtotal = 0;
         foreach ($cartItems as $item) {
-            $price = $item->product->sale_price ?? $item->product->price;
+            // Guard against orphaned cart items (product deleted)
+            if (! $item->product) {
+                $item->delete();
+                continue;
+            }
+            $price     = $item->product->sale_price ?? $item->product->price;
             $subtotal += $price * $item->quantity;
         }
 
-        // For now, no taxes or shipping logic. Can be added later.
-        $shipping = $subtotal > 500 ? 0 : 50; // Free shipping over 500
-        $discount = 0; // Coupon discount logic can go here
-        $total = $subtotal + $shipping - $discount;
+        // Re-fetch after possible deletions
+        $cartItems = $this->getCartItems();
+
+        $shipping = $subtotal > 500 ? 0 : 50;
+        $discount = 0;
+        $total    = $subtotal + $shipping - $discount;
 
         return view('cart.index', compact('cartItems', 'subtotal', 'shipping', 'discount', 'total'));
     }
@@ -33,38 +42,45 @@ class CartController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1'
+            'quantity'   => 'required|integer|min:1|max:' . self::MAX_QUANTITY_PER_ITEM,
         ]);
 
         $product = Product::findOrFail($request->product_id);
-        
-        if ($product->stock_quantity < $request->quantity) {
-            return back()->with('error', 'Not enough stock available.');
+
+        if (! $product->status) {
+            return back()->with('error', 'This product is currently unavailable.');
         }
 
-        $session_id = Session::getId();
-        $user_id = Auth::id();
+        if ($product->stock_quantity < $request->quantity) {
+            return back()->with('error', "Only {$product->stock_quantity} unit(s) available in stock.");
+        }
+
+        $sessionId = Session::getId();
+        $userId    = Auth::id();
 
         // Check if item already in cart
         $cartItem = CartItem::where('product_id', $product->id)
-            ->when($user_id, function($q) use ($user_id) {
-                return $q->where('user_id', $user_id);
-            }, function($q) use ($session_id) {
-                return $q->where('session_id', $session_id);
-            })->first();
+            ->when($userId, fn($q) => $q->where('user_id', $userId),
+                           fn($q) => $q->where('session_id', $sessionId))
+            ->first();
 
         if ($cartItem) {
             $newQuantity = $cartItem->quantity + $request->quantity;
-            if ($product->stock_quantity < $newQuantity) {
-                return back()->with('error', 'Cannot add more. Not enough stock.');
+
+            if ($newQuantity > self::MAX_QUANTITY_PER_ITEM) {
+                return back()->with('error', 'You can add a maximum of ' . self::MAX_QUANTITY_PER_ITEM . ' units per item.');
             }
+            if ($product->stock_quantity < $newQuantity) {
+                return back()->with('error', "Only {$product->stock_quantity} unit(s) available. You already have {$cartItem->quantity} in your cart.");
+            }
+
             $cartItem->update(['quantity' => $newQuantity]);
         } else {
             CartItem::create([
-                'user_id' => $user_id,
-                'session_id' => $user_id ? null : $session_id,
+                'user_id'    => $userId,
+                'session_id' => $userId ? null : $sessionId,
                 'product_id' => $product->id,
-                'quantity' => $request->quantity
+                'quantity'   => $request->quantity,
             ]);
         }
 
@@ -72,22 +88,26 @@ class CartController extends Controller
             return redirect()->route('checkout.index');
         }
 
-        return redirect()->route('cart.index')->with('success', 'Product added to cart.');
+        return redirect()->route('cart.index')->with('success', "'{$product->name}' added to your cart.");
     }
 
     public function update(Request $request, CartItem $cartItem)
     {
-        // Authorization check to ensure user owns this cart item
         if (! $this->ownsCartItem($cartItem)) {
-            abort(403);
+            abort(403, 'Unauthorized action.');
         }
 
         $request->validate([
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1|max:' . self::MAX_QUANTITY_PER_ITEM,
         ]);
 
+        if (! $cartItem->product || ! $cartItem->product->status) {
+            $cartItem->delete();
+            return back()->with('error', 'This product is no longer available and has been removed from your cart.');
+        }
+
         if ($cartItem->product->stock_quantity < $request->quantity) {
-            return back()->with('error', 'Not enough stock available.');
+            return back()->with('error', "Only {$cartItem->product->stock_quantity} unit(s) available.");
         }
 
         $cartItem->update(['quantity' => $request->quantity]);
@@ -98,12 +118,16 @@ class CartController extends Controller
     public function destroy(CartItem $cartItem)
     {
         if (! $this->ownsCartItem($cartItem)) {
-            abort(403);
+            abort(403, 'Unauthorized action.');
         }
 
         $cartItem->delete();
         return back()->with('success', 'Item removed from cart.');
     }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
 
     protected function getCartItems()
     {
@@ -113,11 +137,11 @@ class CartController extends Controller
         return CartItem::with('product')->where('session_id', Session::getId())->get();
     }
 
-    protected function ownsCartItem(CartItem $cartItem)
+    protected function ownsCartItem(CartItem $cartItem): bool
     {
         if (Auth::check()) {
-            return $cartItem->user_id == Auth::id();
+            return (int) $cartItem->user_id === Auth::id();
         }
-        return $cartItem->session_id == Session::getId();
+        return $cartItem->session_id === Session::getId();
     }
 }

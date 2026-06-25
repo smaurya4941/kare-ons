@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\ProductController;
 
+// ============================================================================
+// Public Routes
+// ============================================================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/shop', [\App\Http\Controllers\Web\ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
@@ -21,6 +24,10 @@ Route::post('/checkout', [\App\Http\Controllers\Web\CheckoutController::class, '
 Route::get('/checkout/payment', [\App\Http\Controllers\Web\CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::get('/checkout/success', [\App\Http\Controllers\Web\CheckoutController::class, 'success'])->name('checkout.success');
 
+// Coupon (AJAX) Routes — accessible to guests too, rate-limited
+Route::post('/coupon/apply', [\App\Http\Controllers\Web\CouponController::class, 'apply'])->name('coupon.apply')->middleware('throttle:coupon');
+Route::post('/coupon/remove', [\App\Http\Controllers\Web\CouponController::class, 'remove'])->name('coupon.remove');
+
 // Blog Routes
 Route::get('/blog', [\App\Http\Controllers\Web\BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [\App\Http\Controllers\Web\BlogController::class, 'show'])->name('blog.show');
@@ -28,29 +35,39 @@ Route::get('/blog/{slug}', [\App\Http\Controllers\Web\BlogController::class, 'sh
 // Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\Web\SitemapController::class, 'index'])->name('sitemap.index');
 
+// ============================================================================
+// Authenticated Customer Routes
+// ============================================================================
 Route::middleware('auth')->group(function () {
-    Route::post('/product/{product}/review', [\App\Http\Controllers\Web\ReviewController::class, 'store'])->name('review.store');
-});
+    // Product Review — requires login, rate-limited to 5 per hour
+    Route::post('/product/{product}/review', [\App\Http\Controllers\Web\ReviewController::class, 'store'])->name('review.store')->middleware('throttle:reviews');
 
-// Customer Dashboard / Breeze default
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    // Customer Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->middleware('verified')->name('dashboard');
 
-// Profile Routes
-Route::middleware('auth')->group(function () {
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Admin Routes (Protected)
-Route::prefix('admin')->middleware(['web', 'admin'])->name('admin.')->group(function () {
+// ============================================================================
+// Admin Routes (auth + admin role required)
+// ============================================================================
+Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    // Extra route to delete individual gallery images
+    Route::delete('products/{product}/images/{image}', [\App\Http\Controllers\Admin\ProductController::class, 'destroyImage'])
+         ->name('products.images.destroy');
+
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
-    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class);
-    Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class);
+    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->except(['create', 'store', 'edit']);
+    Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class)->only(['index', 'show']);
+    Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
 });
 
 require __DIR__.'/auth.php';

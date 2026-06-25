@@ -13,23 +13,30 @@ class ReviewController extends Controller
     public function store(Request $request, Product $product)
     {
         $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'title' => 'required|string|max:255',
-            'comment' => 'required|string'
+            'rating'  => 'required|integer|min:1|max:5',
+            'title'   => 'nullable|string|max:255',
+            'comment' => 'required|string|min:10|max:2000',
         ]);
 
-        // Phase 14 mentions "Verified Purchase" is important. 
-        // We will mock this by checking if user exists, and ideally check orders, but for now we just allow logged-in users.
-        
+        // Prevent duplicate reviews — one review per user per product
+        $alreadyReviewed = Review::where('user_id', Auth::id())
+            ->where('product_id', $product->id)
+            ->exists();
+
+        if ($alreadyReviewed) {
+            return back()->with('error', 'You have already submitted a review for this product.');
+        }
+
+        // The DB column is named `review`, not `comment`
         Review::create([
-            'user_id' => Auth::id(),
+            'user_id'    => Auth::id(),
             'product_id' => $product->id,
-            'rating' => $request->rating,
-            'title' => $request->title,
-            'comment' => $request->comment,
-            'status' => 'approved' // Could be 'pending' for moderation
+            'rating'     => $request->rating,
+            'title'      => $request->title,
+            'review'     => $request->comment,   // 'review' is the actual DB column
+            'status'     => true,                 // default approved; set false for moderation
         ]);
 
-        return back()->with('success', 'Your review has been submitted successfully.');
+        return back()->with('success', 'Thank you! Your review has been submitted.');
     }
 }

@@ -34,12 +34,24 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $validated = $request->validate([
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
-            'admin_notes' => 'nullable|string',
+            'order_status' => 'required|in:pending,confirmed,processing,shipped,delivered,cancelled',
+            'notes'        => 'nullable|string|max:1000',
         ]);
 
         $order->update($validated);
 
         return back()->with('success', 'Order status updated successfully.');
+    }
+
+    public function destroy(Order $order)
+    {
+        // Safety: only allow deleting cancelled orders
+        if ($order->order_status !== 'cancelled') {
+            return back()->with('error', 'Only cancelled orders can be deleted.');
+        }
+
+        $order->delete();
+
+        return redirect()->route('admin.orders.index')->with('success', 'Order deleted.');
     }
 }
