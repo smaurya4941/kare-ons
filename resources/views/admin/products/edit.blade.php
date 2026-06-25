@@ -87,11 +87,18 @@
         <div class="space-y-6">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-100 pb-3">Status</h3>
-                <select name="status" id="status" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="active" {{ old('status', $product->status) == 'active' ? 'selected' : '' }}>Active (Published)</option>
-                    <option value="draft" {{ old('status', $product->status) == 'draft' ? 'selected' : '' }}>Draft (Hidden)</option>
-                    <option value="inactive" {{ old('status', $product->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                </select>
+                <div class="space-y-4">
+                    <div>
+                        <select name="status" id="status" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="1" {{ old('status', $product->status) == '1' ? 'selected' : '' }}>Published (Active)</option>
+                            <option value="0" {{ old('status', $product->status) == '0' ? 'selected' : '' }}>Draft (Hidden)</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" name="featured" id="featured" value="1" {{ old('featured', $product->featured) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                        <label for="featured" class="ml-2 block text-sm text-gray-700">Mark as Featured Product</label>
+                    </div>
+                </div>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">

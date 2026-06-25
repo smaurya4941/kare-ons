@@ -64,7 +64,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::delete('products/{product}/images/{image}', [\App\Http\Controllers\Admin\ProductController::class, 'destroyImage'])
          ->name('products.images.destroy');
 
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['show']);
     Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->except(['create', 'store', 'edit']);
     Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class)->only(['index', 'show']);
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);

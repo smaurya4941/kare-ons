@@ -53,12 +53,12 @@ class CheckoutController extends Controller
     {
         $request->validate([
             'full_name'      => 'required|string|max:255',
-            'phone'          => ['required', 'string', 'regex:/^[6-9]\d{9}$/'],
+            'phone'          => 'required|string|max:20',
             'address_line_1' => 'required|string|max:255',
             'address_line_2' => 'nullable|string|max:255',
             'city'           => 'required|string|max:100',
             'state'          => 'required|string|max:100',
-            'postal_code'    => ['required', 'digits:6'],
+            'postal_code'    => 'required|string|max:20',
             'payment_method' => 'required|in:razorpay,cod',
             'coupon_code'    => 'nullable|string|max:50',
         ]);
@@ -94,21 +94,18 @@ class CheckoutController extends Controller
         try {
             $order = DB::transaction(function () use ($request, $cartItems, $subtotal, $shipping, $discountAmount, $grandTotal, $coupon) {
 
-                // Save or get address
-                $address = null;
-                if (Auth::check()) {
-                    $address = Address::create([
-                        'user_id'        => Auth::id(),
-                        'full_name'      => $request->full_name,
-                        'phone'          => $request->phone,
-                        'address_line_1' => $request->address_line_1,
-                        'address_line_2' => $request->address_line_2,
-                        'city'           => $request->city,
-                        'state'          => $request->state,
-                        'country'        => 'India',
-                        'postal_code'    => $request->postal_code,
-                    ]);
-                }
+                // Save address for both authenticated and guest users
+                $address = Address::create([
+                    'user_id'        => Auth::id(), // Will be null for guests
+                    'full_name'      => $request->full_name,
+                    'phone'          => $request->phone,
+                    'address_line_1' => $request->address_line_1,
+                    'address_line_2' => $request->address_line_2,
+                    'city'           => $request->city,
+                    'state'          => $request->state,
+                    'country'        => 'India',
+                    'postal_code'    => $request->postal_code,
+                ]);
 
                 // Create Order
                 $order = Order::create([

@@ -342,7 +342,7 @@
                                     </div>
                                 </div>
                                 <h5 class="font-medium text-on-surface mt-3">{{ $review->title }}</h5>
-                                <p class="text-on-surface-variant mt-1 text-sm">{{ $review->comment }}</p>
+                                <p class="text-on-surface-variant mt-1 text-sm">{{ $review->review }}</p>
                             </div>
                         @empty
                             <div class="text-center py-8">

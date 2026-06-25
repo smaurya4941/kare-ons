@@ -13,6 +13,20 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
+    /**
+     * Cast boolean and decimal fields to their native PHP types.
+     * This is critical for status badge comparisons in Blade views.
+     */
+    protected function casts(): array
+    {
+        return [
+            'status'   => 'boolean',
+            'featured' => 'boolean',
+            'price'    => 'decimal:2',
+            'sale_price' => 'decimal:2',
+        ];
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -25,7 +39,8 @@ class Product extends Model
 
     public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class);
+        // Only show approved reviews
+        return $this->hasMany(Review::class)->where('status', true);
     }
 
     public function cartItems(): HasMany
@@ -36,5 +51,13 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Get the effective selling price (sale price if set, otherwise regular price).
+     */
+    public function getEffectivePriceAttribute(): string
+    {
+        return $this->sale_price ?? $this->price;
     }
 }

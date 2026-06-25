@@ -9,6 +9,33 @@
     <form action="{{ route('checkout.store') }}" method="POST" class="flex flex-col lg:flex-row gap-10">
         @csrf
         
+        @if(session('error'))
+            <div class="lg:col-span-full mb-6 bg-error-container text-on-error-container p-4 rounded-lg flex items-center gap-3">
+                <span class="material-symbols-outlined">error</span>
+                <p>{{ session('error') }}</p>
+            </div>
+        @endif
+        @if(session('success'))
+            <div class="lg:col-span-full mb-6 bg-secondary-container text-on-secondary-container p-4 rounded-lg flex items-center gap-3">
+                <span class="material-symbols-outlined">check_circle</span>
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+        
+        @if($errors->any())
+            <div class="lg:col-span-full mb-6 bg-error-container text-on-error-container p-4 rounded-lg flex items-start gap-3">
+                <span class="material-symbols-outlined mt-0.5">warning</span>
+                <div>
+                    <h4 class="font-bold mb-1">Please fix the following errors:</h4>
+                    <ul class="list-disc pl-5 text-sm space-y-1">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+        
         <div class="lg:w-2/3 space-y-8">
             <!-- Customer Information -->
             <div class="bg-surface rounded-2xl border border-outline-variant p-8 shadow-sm">

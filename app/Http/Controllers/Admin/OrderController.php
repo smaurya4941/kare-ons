@@ -13,11 +13,15 @@ class OrderController extends Controller
         $query = Order::with('user')->latest();
 
         if ($request->filled('search')) {
-            $query->where('order_number', 'like', '%' . $request->search . '%');
+            $term = '%' . $request->search . '%';
+            $query->where(function($q) use ($term) {
+                $q->where('order_number', 'like', $term)
+                  ->orWhereHas('user', fn($u) => $u->where('name', 'like', $term));
+            });
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->where('order_status', $request->status);
         }
 
         $orders = $query->paginate(15);

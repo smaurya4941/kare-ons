@@ -18,7 +18,10 @@ class CustomerController extends Controller
                   ->orWhere('phone', 'like', '%' . $request->search . '%');
         }
 
-        $customers = $query->paginate(15);
+        $customers = $query
+            ->withCount('orders')
+            ->withSum('orders', 'grand_total')
+            ->paginate(15);
 
         return view('admin.customers.index', compact('customers'));
     }
@@ -30,9 +33,7 @@ class CustomerController extends Controller
             return redirect()->route('admin.customers.index')->with('error', 'Invalid customer profile.');
         }
 
-        $customer->load(['orders' => function($q) {
-            $q->latest()->take(10);
-        }, 'addresses']);
+        $customer->load(['orders.items', 'addresses']);
         
         return view('admin.customers.show', compact('customer'));
     }

@@ -73,15 +73,20 @@
                     <td class="px-6 py-4 text-sm text-gray-500">{{ $order->created_at->format('M d, Y h:i A') }}</td>
                     <td class="px-6 py-4 text-sm font-medium text-gray-800">₹{{ number_format($order->grand_total, 2) }}</td>
                     <td class="px-6 py-4 text-sm">
-                        @if($order->status === 'pending')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Pending</span>
-                        @elseif($order->status === 'processing')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Processing</span>
-                        @elseif($order->status === 'completed')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Completed</span>
-                        @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">{{ ucfirst($order->status) }}</span>
-                        @endif
+                        @php
+                            $statusColors = [
+                                'pending'    => 'bg-amber-100 text-amber-800',
+                                'confirmed'  => 'bg-blue-100 text-blue-800',
+                                'processing' => 'bg-indigo-100 text-indigo-800',
+                                'shipped'    => 'bg-purple-100 text-purple-800',
+                                'delivered'  => 'bg-emerald-100 text-emerald-800',
+                                'cancelled'  => 'bg-red-100 text-red-800',
+                            ];
+                            $color = $statusColors[$order->order_status] ?? 'bg-gray-100 text-gray-800';
+                        @endphp
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $color }}">
+                            {{ ucfirst($order->order_status) }}
+                        </span>
                     </td>
                     <td class="px-6 py-4 text-sm text-right">
                         <a href="{{ route('admin.orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">View</a>
