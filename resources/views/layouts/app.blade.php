@@ -1,120 +1,136 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>@yield('title', 'Kare ONS Herbals | Nature\'s Goodness, Refined by Science')</title>
-    <meta content="Premium Ayurvedic manufacturing and herbal healthcare solutions focusing on quality, purity, and effectiveness." name="description"/>
     
-    <!-- IBM Plex Sans -->
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet"/>
-    
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    
-    <!-- Tailwind CDN for Stitch Design System -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "secondary-fixed": "#e0e0e0",
-                        "on-tertiary-container": "#044317",
-                        "inverse-surface": "#393939",
-                        "surface-container-high": "#e0e0e0",
-                        "on-surface": "#161616",
-                        "surface-container": "#f4f4f4",
-                        "tertiary-fixed-dim": "#42be65",
-                        "surface-container-low": "#f4f4f4",
-                        "tertiary": "#198038",
-                        "primary-fixed-dim": "#78a9ff",
-                        "secondary-fixed-dim": "#c6c6c6",
-                        "surface-bright": "#ffffff",
-                        "outline": "#8d8d8d",
-                        "inverse-primary": "#78a9ff",
-                        "on-secondary-fixed-variant": "#525252",
-                        "on-error": "#ffffff",
-                        "surface-dim": "#e0e0e0",
-                        "primary-container": "#d0e2ff",
-                        "outline-variant": "#e0e0e0",
-                        "on-tertiary-fixed": "#022d0d",
-                        "on-secondary-fixed": "#161616",
-                        "error-container": "#fff1f1",
-                        "surface-tint": "#0f62fe",
-                        "on-tertiary": "#ffffff",
-                        "on-background": "#161616",
-                        "surface-variant": "#f4f4f4",
-                        "tertiary-container": "#a7f0ba",
-                        "on-primary-fixed": "#001d6c",
-                        "error": "#da1e28",
-                        "on-secondary": "#ffffff",
-                        "on-primary-container": "#161616",
-                        "tertiary-fixed": "#a7f0ba",
-                        "background": "#ffffff",
-                        "on-tertiary-fixed-variant": "#044317",
-                        "surface": "#ffffff",
-                        "secondary": "#6f6f6f",
-                        "on-surface-variant": "#525252",
-                        "surface-container-lowest": "#ffffff",
-                        "on-error-container": "#750e13",
-                        "primary": "#0f62fe",
-                        "on-secondary-container": "#525252",
-                        "primary-fixed": "#d0e2ff",
-                        "on-primary-fixed-variant": "#0043ce",
-                        "on-primary": "#ffffff",
-                        "inverse-on-surface": "#f4f4f4",
-                        "surface-container-highest": "#c6c6c6",
-                        "secondary-container": "#e0e0e0"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    "fontFamily": {
-                        "headline": ["IBM Plex Sans", "sans-serif"],
-                        "display": ["IBM Plex Sans", "sans-serif"],
-                        "body": ["IBM Plex Sans", "sans-serif"],
-                        "label": ["IBM Plex Sans", "sans-serif"]
-                    },
-                    "spacing": {
-                        "gutter": "24px",
-                        "margin-desktop": "64px",
-                        "container-max": "1280px",
-                        "section-gap": "96px",
-                        "margin-mobile": "20px"
-                    }
-                }
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kare ONS Herbals | Clinical Excellence in Botanical Medicine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#005049",
+                    "surface-container-low": "#f6f3f5",
+                    "surface-container": "#f0edef",
+                    "tertiary-container": "#0b1c30",
+                    "primary": "#000000",
+                    "surface-container-high": "#eae7e9",
+                    "surface-variant": "#e4e2e4",
+                    "on-background": "#1b1b1d",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#dcd9db",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "tertiary": "#000000",
+                    "outline-variant": "#c6c6cd",
+                    "on-error-container": "#93000a",
+                    "surface": "#fcf8fa",
+                    "on-surface-variant": "#45464d",
+                    "inverse-primary": "#bec6e0",
+                    "on-tertiary-container": "#75859d",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#303032",
+                    "secondary": "#006a61",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "on-secondary-container": "#006f66",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#131b2e",
+                    "secondary-fixed": "#89f5e7",
+                    "on-primary-container": "#7c839b",
+                    "primary-container": "#131b2e",
+                    "on-surface": "#1b1b1d",
+                    "secondary-container": "#86f2e4",
+                    "surface-tint": "#565e74",
+                    "tertiary-fixed": "#d3e4fe",
+                    "background": "#fcf8fa",
+                    "outline": "#76777d",
+                    "primary-fixed-dim": "#bec6e0",
+                    "inverse-on-surface": "#f3f0f2",
+                    "surface-container-highest": "#e4e2e4",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "error-container": "#ffdad6",
+                    "surface-bright": "#fcf8fa",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#00201d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "margin-mobile": "20px",
+                    "unit": "4px",
+                    "container-max": "1280px",
+                    "section-gap": "120px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["30px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
             }
-        }
+          },
+        },
+      }
     </script>
-    <style>
-        body { font-family: 'IBM Plex Sans', sans-serif; }
+<style>
         .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
         }
-        .carbon-border { border: 1px solid #e0e0e0; }
-        .text-stroke-primary {
-            -webkit-text-stroke: 1px #0f62fe;
-            color: transparent;
+        .clinical-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .clinical-card:hover {
+            box-shadow: 0 10px 30px -10px rgba(19, 27, 46, 0.08);
+            border-color: #006a61;
+        }
+        .glass-header {
+            backdrop-filter: blur(8px);
+            background: rgba(252, 248, 250, 0.85);
+        }
+        .portfolio-overlay {
+            background: linear-gradient(to top, rgba(11, 28, 48, 0.9) 0%, rgba(11, 28, 48, 0.2) 60%, transparent 100%);
         }
         .nav-link-active {
             border-bottom: 2px solid #0f62fe;
             color: #0f62fe;
         }
     </style>
-    
-    <!-- AlpineJS for interactive components (if needed by other views) -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-background text-on-surface overflow-x-hidden selection:bg-primary selection:text-white">
-
+<body class="bg-background text-on-background font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
     <!-- TopNavBar -->
     <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-outline-variant transition-all duration-300" id="navbar">
         <div class="flex justify-between items-center max-w-container-max mx-auto px-margin-desktop h-16">
@@ -122,104 +138,152 @@
                 Kare ONS Herbals
             </a>
             <div class="hidden md:flex items-center gap-8 h-full">
-                <a class="nav-link-active flex items-center h-full px-1 text-sm font-medium" href="{{ route('home') }}">Home</a>
+                <a class="{{ request()->routeIs('home') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('home') }}">Home</a>
+                <a class="{{ request()->routeIs('shop.index') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('shop.index') }}">Shop</a>
                 <div class="relative group h-full flex items-center">
                     <button class="flex items-center gap-1 text-on-surface font-medium hover:text-primary transition-colors duration-200 text-sm">
-                        Services
+                        Categories
                         <span class="material-symbols-outlined text-sm">expand_more</span>
                     </button>
-                    <div class="absolute top-full left-0 w-64 bg-white shadow-lg border border-outline-variant opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div class="absolute top-full left-0 w-64 bg-white shadow-lg border border-outline-variant opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 rounded-b-lg overflow-hidden">
                         <div class="flex flex-col py-1">
-                            <a class="px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container transition-colors" href="#">Third Party Manufacturing</a>
-                            <a class="px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container transition-colors" href="#">PCD Pharma Franchise</a>
-                            <a class="px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container transition-colors" href="#">Private Labeling</a>
-                            <a class="px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container transition-colors" href="#">Contract Manufacturing</a>
+                            @php
+                                $navCategories = \App\Models\Category::where('status', true)->get();
+                            @endphp
+                            @foreach($navCategories as $navCat)
+                                <a class="px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container hover:text-primary transition-colors" href="{{ route('shop.index', ['category' => $navCat->slug]) }}">{{ $navCat->name }}</a>
+                            @endforeach
                         </div>
                     </div>
                 </div>
-                <a class="text-on-surface font-medium hover:text-primary transition-colors duration-200 text-sm" href="#">About</a>
-                <a class="text-on-surface font-medium hover:text-primary transition-colors duration-200 text-sm" href="#">Reviews</a>
-                <a class="text-on-surface font-medium hover:text-primary transition-colors duration-200 text-sm" href="#">Why Us</a>
+                <a class="text-on-surface font-medium hover:text-primary transition-colors duration-200 text-sm" href="#">Blog</a>
                 <a class="text-on-surface font-medium hover:text-primary transition-colors duration-200 text-sm" href="#">Contact</a>
             </div>
             <div class="flex items-center gap-4">
-                <button class="hidden md:block bg-primary text-white px-6 py-2 text-sm font-medium rounded-lg hover:bg-on-primary-fixed-variant transition-all duration-200">
-                    GET QUOTE
+                <button class="text-on-surface hover:text-primary transition">
+                    <span class="material-symbols-outlined">search</span>
                 </button>
-                <button class="md:hidden text-on-surface">
+                <a href="{{ route('cart.index') }}" class="relative text-on-surface hover:text-primary transition">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    @php
+                        $cartCount = 0;
+                        if(Auth::check()) {
+                            $cartCount = \App\Models\CartItem::where('user_id', Auth::id())->sum('quantity');
+                        } else {
+                            $cartCount = \App\Models\CartItem::where('session_id', Session::getId())->sum('quantity');
+                        }
+                    @endphp
+                    @if($cartCount > 0)
+                        <span class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
+                    @endif
+                </a>
+                @auth
+                    <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" class="text-on-surface hover:text-primary transition ml-2">
+                        <span class="material-symbols-outlined">account_circle</span>
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="text-on-surface hover:text-primary transition ml-2">
+                        <span class="material-symbols-outlined">login</span>
+                    </a>
+                @endauth
+                <button class="md:hidden text-on-surface ml-2">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
             </div>
         </div>
     </nav>
-
+    
     <!-- Main Content -->
+    @isset($header)
+        <header class="bg-surface shadow-sm border-b border-outline-variant mt-16">
+            <div class="max-w-container-max mx-auto py-6 px-margin-desktop">
+                {{ $header }}
+            </div>
+        </header>
+    @endisset
+
     <main class="flex-grow pt-16">
         @yield('content')
+        {{ $slot ?? '' }}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-on-surface text-white pt-20 pb-10 mt-16">
-        <div class="max-w-container-max mx-auto px-margin-desktop">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
-                <div class="col-span-1">
-                    <div class="text-xl font-bold text-white mb-6">Kare ONS Herbals</div>
-                    <p class="text-sm text-secondary-fixed font-light mb-8 leading-relaxed">
-                        Bringing the wisdom of Ayurveda with carefully crafted herbal formulations focused on holistic wellness and natural care. 
-                    </p>
-                    <div class="flex gap-3">
-                        <a class="w-8 h-8 flex items-center justify-center border border-white/10 rounded hover:bg-primary transition-all" href="#">
-                            <span class="material-symbols-outlined text-sm">public</span>
-                        </a>
-                        <a class="w-8 h-8 flex items-center justify-center border border-white/10 rounded hover:bg-primary transition-all" href="#">
-                            <span class="material-symbols-outlined text-sm">mail</span>
-                        </a>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="text-xs font-bold uppercase tracking-widest text-primary-fixed mb-8">Quick Links</h4>
-                    <ul class="space-y-4 text-sm font-light text-secondary-fixed">
-                        <li><a class="hover:text-primary-fixed transition-colors" href="#">Home</a></li>
-                        <li><a class="hover:text-primary-fixed transition-colors" href="#">About Us</a></li>
-                        <li><a class="hover:text-primary-fixed transition-colors" href="#">GMP Certification</a></li>
-                        <li><a class="hover:text-primary-fixed transition-colors" href="#">Dr. Profile</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xs font-bold uppercase tracking-widest text-primary-fixed mb-8">Manufacturing</h4>
-                    <ul class="space-y-4 text-sm font-light text-secondary-fixed">
-                        <li><a class="hover:text-primary-fixed transition-colors" href="#">Third Party Pharma</a></li>
-                        <li><a class="hover:text-primary-fixed transition-colors" href="#">PCD Franchise</a></li>
-                        <li><a class="hover:text-primary-fixed transition-colors" href="#">Ayurvedic Syrups</a></li>
-                        <li><a class="hover:text-primary-fixed transition-colors" href="#">Capsules &amp; Oils</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-xs font-bold uppercase tracking-widest text-primary-fixed mb-8">Contact Unit</h4>
-                    <address class="not-italic text-sm text-secondary-fixed font-light leading-relaxed">
-                        Kare ONS Herbals Manufacturing Unit,<br/>
-                        Industrial Area, Delhi, India<br/><br/>
-                        Phone: +91 9315436116<br/>
-                        Email: kareonsherbal@gmail.com
-                    </address>
-                </div>
-            </div>
-            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-secondary-fixed/50 font-medium">
-                <p>&copy; {{ date('Y') }} Kare ONS Herbals. All rights reserved.</p>
-                <div class="flex gap-8">
-                    <a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
-                    <a class="hover:text-white transition-colors" href="#">Terms of Service</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
+    <footer class="w-full bg-primary dark:bg-tertiary-container">
+<div class="max-w-container-max mx-auto px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="col-span-1 md:col-span-1">
+<a class="text-headline-md font-headline-md text-on-primary dark:text-on-tertiary-container block mb-6" href="{{ route('home') }}">Kare ONS Herbals</a>
+<p class="text-on-primary/80 text-label-md mb-8 leading-relaxed">
+                    Setting the global benchmark for scientific Ayurveda and botanical clinical excellence since 1999.
+                </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">public</span></a>
+<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">share</span></a>
+</div>
+</div>
+<div>
+<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Explore</h5>
+<ul class="space-y-4">
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Contract Manufacturing</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Bulk Extracts</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Formulation Lab</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">White Labeling</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Science</h5>
+<ul class="space-y-4">
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Clinical Studies</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Ingredient Sourcing</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Quality Control</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Regulatory Support</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Company</h5>
+<ul class="space-y-4">
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">About Us</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Privacy Policy</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Terms of Service</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Returns &amp; Shipping</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop py-8 border-t border-on-primary/10">
+<p class="text-on-primary/60 text-label-sm text-center">
+                © 2024 Kare ONS Herbals. Clinical Excellence in Botanical Medicine. Manufactured in GMP-Certified Facilities.
+            </p>
+</div>
+</footer>
+    
     <script>
+        // Micro-interactions and scroll effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.clinical-card');
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-10');
+                    }
+                });
+            }, observerOptions);
+
+            cards.forEach(card => {
+                card.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+                observer.observe(card);
+            });
+        });
+
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
+            if (navbar && window.scrollY > 50) {
                 navbar.classList.add('shadow-md');
-            } else {
+            } else if (navbar) {
                 navbar.classList.remove('shadow-md');
             }
         });

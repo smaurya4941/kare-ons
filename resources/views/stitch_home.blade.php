@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kare ONS Herbals | Clinical Excellence in Botanical Medicine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#005049",
+                    "surface-container-low": "#f6f3f5",
+                    "surface-container": "#f0edef",
+                    "tertiary-container": "#0b1c30",
+                    "primary": "#000000",
+                    "surface-container-high": "#eae7e9",
+                    "surface-variant": "#e4e2e4",
+                    "on-background": "#1b1b1d",
+                    "error": "#ba1a1a",
+                    "surface-dim": "#dcd9db",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#3f465c",
+                    "tertiary": "#000000",
+                    "outline-variant": "#c6c6cd",
+                    "on-error-container": "#93000a",
+                    "surface": "#fcf8fa",
+                    "on-surface-variant": "#45464d",
+                    "inverse-primary": "#bec6e0",
+                    "on-tertiary-container": "#75859d",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-surface": "#303032",
+                    "secondary": "#006a61",
+                    "on-tertiary-fixed-variant": "#38485d",
+                    "on-secondary-container": "#006f66",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#131b2e",
+                    "secondary-fixed": "#89f5e7",
+                    "on-primary-container": "#7c839b",
+                    "primary-container": "#131b2e",
+                    "on-surface": "#1b1b1d",
+                    "secondary-container": "#86f2e4",
+                    "surface-tint": "#565e74",
+                    "tertiary-fixed": "#d3e4fe",
+                    "background": "#fcf8fa",
+                    "outline": "#76777d",
+                    "primary-fixed-dim": "#bec6e0",
+                    "inverse-on-surface": "#f3f0f2",
+                    "surface-container-highest": "#e4e2e4",
+                    "tertiary-fixed-dim": "#b7c8e1",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#0b1c30",
+                    "secondary-fixed-dim": "#6bd8cb",
+                    "error-container": "#ffdad6",
+                    "surface-bright": "#fcf8fa",
+                    "primary-fixed": "#dae2fd",
+                    "on-primary": "#ffffff",
+                    "on-secondary-fixed": "#00201d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "margin-mobile": "20px",
+                    "unit": "4px",
+                    "container-max": "1280px",
+                    "section-gap": "120px",
+                    "margin-desktop": "64px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "display-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-sm": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["30px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .clinical-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .clinical-card:hover {
+            box-shadow: 0 10px 30px -10px rgba(19, 27, 46, 0.08);
+            border-color: #006a61;
+        }
+        .glass-header {
+            backdrop-filter: blur(8px);
+            background: rgba(252, 248, 250, 0.85);
+        }
+        .portfolio-overlay {
+            background: linear-gradient(to top, rgba(11, 28, 48, 0.9) 0%, rgba(11, 28, 48, 0.2) 60%, transparent 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- TopNavBar -->
+<header class="w-full sticky top-0 z-50 border-b border-outline-variant/30 glass-header">
+<nav class="max-w-container-max mx-auto flex items-center justify-between px-margin-desktop py-4">
+<div class="flex items-center gap-8">
+<a class="text-headline-sm font-headline-sm font-bold text-primary tracking-tight" href="#">Kare ONS Herbals</a>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-label-md font-label-md text-secondary border-b-2 border-secondary pb-1 transition-colors duration-200" href="#">Shop</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Remedies</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Services</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Research</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Our Story</a>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center bg-surface-container rounded-full px-4 py-2">
+<span class="material-symbols-outlined text-outline mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-label-sm w-48" placeholder="Search formulations..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-secondary cursor-pointer">shopping_bag</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-secondary cursor-pointer">person</button>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-full text-label-md font-bold hover:opacity-90 transition-all active:opacity-70">Consultation</button>
+</div>
+</div>
+</nav>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative h-[90vh] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center opacity-40" data-alt="A sophisticated, high-end laboratory setting featuring glass beakers, minimal botanical arrangements of fresh herbs like ashwagandha and neem, bathed in clinical bright white light. The aesthetic is extremely clean and corporate modern, utilizing a palette of deep navy and slate with crisp white highlights to convey professional medical authority and premium wellness." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAwFEioZmdWOcM4DVlVqnXarX4GXg6E_3pqPGJ9qld0IO7yJ_CZhfX3Zwp-qnfpt__FyCN0_K5j531wTlQtqctdZg3Gx1pIH1uh9nusroOJkFg-4k2bteEfXQ3FfZQIDnCXtiDUChXHGayo4eI99Ax69rK1C_Q5P-r5_2mvlw808GrBotWHQg3L3Yq3SXQFczGMbSu5GDBz2jZMqe-gC6IKOGxWpGBYz3K0_d73R6J4v4oHQVyVshr45hwO4DUnZ9rqUUIVRqOPdnU");'></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop relative z-10 w-full">
+<div class="max-w-2xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full mb-8">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+<span class="text-label-sm font-bold uppercase tracking-wider">GMP Certified Excellence</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-on-background mb-6">Nature's Wisdom, <br/><span class="text-secondary">Refined by Science.</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 leading-relaxed">
+                        Pioneering clinical-grade Ayurvedic medicine through rigorous scientific validation. Our state-of-the-art manufacturing facilities deliver holistic wellness solutions that honor ancient traditions while meeting modern pharmaceutical standards.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-primary text-on-primary px-10 py-4 rounded-full font-label-md text-label-md hover:scale-105 transition-transform duration-300">Start Your Inquiry</button>
+<button class="border border-secondary text-secondary px-10 py-4 rounded-full font-label-md text-label-md flex items-center gap-2 hover:bg-secondary/5 transition-colors">
+<span class="material-symbols-outlined">play_circle</span>
+                            Our Process
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Trusted Logos -->
+<section class="bg-surface py-12 border-y border-outline-variant/20">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<p class="text-center text-label-sm text-outline uppercase tracking-[0.2em] mb-8 font-bold">Standard of Excellence Certifications</p>
+<div class="flex flex-wrap justify-between items-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+<div class="flex items-center gap-2"><span class="text-headline-sm font-bold">GMP</span><span class="text-label-sm">Certified</span></div>
+<div class="flex items-center gap-2"><span class="text-headline-sm font-bold">ISO 9001:2015</span></div>
+<div class="flex items-center gap-2"><span class="text-headline-sm font-bold">AYUSH</span><span class="text-label-sm">Premium Mark</span></div>
+<div class="flex items-center gap-2"><span class="text-headline-sm font-bold">PAN INDIA</span><span class="text-label-sm">Distribution</span></div>
+<div class="flex items-center gap-2"><span class="text-headline-sm font-bold">FDA</span><span class="text-label-sm">Compliant</span></div>
+</div>
+</div>
+</section>
+<!-- Heritage Section -->
+<section class="py-section-gap">
+<div class="max-w-container-max mx-auto px-margin-desktop grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+<div class="relative">
+<div class="aspect-square w-full clinical-card overflow-hidden rounded-xl transition-all duration-700 opacity-100 translate-y-0">
+<div class="w-full h-full bg-cover bg-center" data-alt="A wide-angle, high-fidelity photograph of a modern, sterile Ayurvedic pharmaceutical manufacturing facility. Stainless steel extraction equipment and clean white laboratory surfaces are visible under bright, cool-toned professional lighting. The environment is impeccably clean, conveying over 25 years of heritage merged with innovative pharmaceutical technology in a professional medical aesthetic." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD4Ep4TFx9gwlJyWONaFoNAf9CFeUp5Mi-FHEKip2ilNBj31zA1Sfro7GbZoiGk04X_H_ymUhCLP7_c_vV1AFXU4BdwXXctI6YCLQ7X2TADqLzJtxQocmu2DWANOrkSSgL_tzV4DVwkkbTpQEdNfQOZZ5k52nKr1CRWAOF5iTloe6RNDDCnSeyOWpS0hIfTE5o_04JuMJQBdaeUFGJ6LwTbw-q4zc1FGLXPH8wwz_WEilf06WxNOe7nmRNLH4YaBH6xH7DJblUZo34");'></div>
+</div>
+<div class="absolute -bottom-10 -right-10 bg-tertiary-container text-on-tertiary p-8 rounded-xl shadow-2xl">
+<p class="text-[64px] font-display-lg leading-none mb-2">25<span class="text-secondary-fixed text-display-lg">+</span></p>
+<p class="font-label-md text-on-tertiary-container uppercase tracking-widest">Years of Clinical<br/>Heritage</p>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md mb-6">Bridging Tradition &amp; Innovation</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed">
+                        At Kare ONS Herbals, we believe that the future of medicine lies at the intersection of ancient Ayurvedic wisdom and modern clinical precision. For over two decades, we have dedicated our expertise to refining botanical extracts into therapeutic solutions that are both safe and effective.
+                    </p>
+<ul class="space-y-4 mb-10">
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary mt-1">check_circle</span>
+<span class="font-body-md">In-house R&amp;D and quality control laboratories</span>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary mt-1">check_circle</span>
+<span class="font-body-md">Sustainably sourced, high-potency raw herbs</span>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-secondary mt-1">check_circle</span>
+<span class="font-body-md">Standardized manufacturing protocols for global compliance</span>
+</li>
+</ul>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-label-md hover:bg-on-surface-variant transition-colors">Our Full Story</button>
+</div>
+</div>
+</section>
+<!-- Curated Ayurvedic Collections (Imported from SCREEN_18) -->
+<section class="py-section-gap bg-surface-container-low">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="mb-12">
+<span class="text-label-sm font-bold text-secondary uppercase tracking-widest mb-3 block">Our Portfolio</span>
+<h2 class="font-headline-md text-headline-md text-on-background">Curated Ayurvedic Collections</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Large Card: Ayurvedic Syrups -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl clinical-card h-[450px]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Herbal syrups packaging" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIyT1Q97U-DHduopfWXpDRUsd0fh1C_liyRyo7D-3lqL72IrrSRayBzJ4hEqQDt0sreTB1hfFl0wyCFi4tjIDOQ4MtV-lwqM3Li2KNvjg1bUzRusBszYIAP0_0NucQz5TFNHF1NC6JH7RVN4KSTpfJhpQMIavKGelMwVZQekANpfe2hrKfpyv5joFjM59Rx7m3u6Np1kMClHZCIX73zY_SwEW4Fubrs2Mo9vKAYAqcYhro_aqkcxW5X0btxNcxM6TEpyIxyfMOdv8"/>
+<div class="absolute inset-0 portfolio-overlay"></div>
+<div class="absolute bottom-0 left-0 p-10 text-white w-full">
+<h3 class="font-headline-sm text-headline-sm mb-2 text-white">Ayurvedic Syrups</h3>
+<p class="font-body-md text-white/80 mb-6 max-w-sm">Potent formulations for immunity, digestion, and daily vitality.</p>
+<button class="bg-secondary text-on-secondary px-6 py-2.5 rounded-full text-label-md font-bold hover:scale-105 transition-all">Explore Range</button>
+</div>
+</div>
+<!-- Small Card: Herbal Capsules -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl clinical-card h-[450px]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Herbal capsules" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDEwalVpvMWKa0AxfcCmIrZqKYj2WWmmDiWzuse-cq908tQH3tFDJtia4rqhyl2MiYrXNIOgjf87QpoZVABuznp1rSOQJSK6Sv-kkW6357DwjTIjsVIY4eN1GgRKCGkq2TvZd5h7KPgpe_YSwdlSvBgtFy3Hq1N8hXdch3IF2xDuPrxLtxIWAo0zHpIDE9NpseLEDJvdx7Uq-L2siV6aqm6tBE8mQEitdHOWONBnFai7R-GgpiAAskQRdPBycEJg0BWXOSFy4lejU"/>
+<div class="absolute inset-0 portfolio-overlay"></div>
+<div class="absolute bottom-0 left-0 p-10 text-white w-full">
+<h3 class="font-headline-sm text-headline-sm mb-4 text-white">Herbal Capsules</h3>
+<button class="text-label-md font-bold text-white border-b-2 border-secondary pb-1 hover:text-secondary-fixed transition-all">View Products</button>
+</div>
+</div>
+<!-- Small Card: Pure Oils -->
+<div class="md:col-span-4 group relative overflow-hidden rounded-xl clinical-card h-[450px]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Pure herbal oils" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQJyePWMpX1aE5s3WKsIZdsEamH3_yhdcQllJWlQheV_Its9j3k5n0a67XSjsy_oPuFwnu-nNGYdcHOA0-MMRgk3ZLldnzTQf5fPkzUaOtP_fU-z11CitXpU-ZdBQLAWGbgQdjFdN7ntI0t1LsvEmmvONaj9cq1_hWxbhNjdJmNYU1lxSyKEcZWR1Wlk8Oj36V4lBeJMwrxMT1N2sXnD0OoUa3tRwIkGpHnZw_JeBtZVLw1ZE2OA2Sy9-v1k8Og8UqT1n72d2pPGo"/>
+<div class="absolute inset-0 portfolio-overlay"></div>
+<div class="absolute bottom-0 left-0 p-10 text-white w-full">
+<h3 class="font-headline-sm text-headline-sm mb-4 text-white">Pure Oils</h3>
+<button class="text-label-md font-bold text-white border-b-2 border-secondary pb-1 hover:text-secondary-fixed transition-all">View Products</button>
+</div>
+</div>
+<!-- Large Card: Wellness Tablets -->
+<div class="md:col-span-8 group relative overflow-hidden rounded-xl clinical-card h-[450px]">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Wellness tablets" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkBZcHtVtxz2xKSGGj8IFFePAgraXUWCU2h0CCsuU1Zo-RbSITlBl2p7UONVw28xww6N4oaScdFmpWOFgHqzKLwBUdzOiH-S1zqTtJdt_dOIh9qB2QmYbBRYWQuBnKnljk8bXuDNI6E-AQRyj92TCfirBJEZS0FOs6OIW1AK7SgBmUAhHnz8a1d-OueHICa8O1D_67K4lSrs-1nciv_XhG8tMua-dbzaPHLn8ed2h_B8DgS1piP2r9vqDuFi4RUZTU7NQFVw4kN-0"/>
+<div class="absolute inset-0 portfolio-overlay"></div>
+<div class="absolute bottom-0 left-0 p-10 text-white w-full">
+<h3 class="font-headline-sm text-headline-sm mb-2 text-white">Wellness Tablets</h3>
+<p class="font-body-md text-white/80 mb-6 max-w-sm">Precision-pressed herbal tablets crafted with authentic botanical extracts.</p>
+<button class="bg-secondary text-on-secondary px-6 py-2.5 rounded-full text-label-md font-bold hover:scale-105 transition-all">View All</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Expert Spotlight -->
+<section class="py-section-gap overflow-hidden">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="bg-white border border-outline-variant/30 rounded-3xl overflow-hidden flex flex-col lg:flex-row items-stretch">
+<div class="lg:w-1/2 h-96 lg:h-auto relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="A professional portrait of Dr. Rajni Dubey, a distinguished Ayurvedic expert, in a high-end clinical setting. She is dressed in professional clinical attire, exuding confidence and approachability. The background consists of a minimalist medical library and a laboratory, lit with soft, warm professional studio lighting in a light-mode aesthetic." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB2dyUmn2OYzoxeJ34xYl2v30ARYuhHNow-zAi4ZwdAx1cWv0H-ZrJSXznQnuwKcLzu9wApe62fZHxZeeN1UNhJZQ2OoqM5StXwR3rVcLXLaZVM6PUwfgGrAB8v35WGMhKk3sEwICtCODP0Z5_Es5jUGeH2Gl1H5SmK_a61zwgHXvt8z1qwYCfRQs3MWk9scA83f3f15WchryT4fX5ifLXoOF-ty0ERSuC0k0cb00gCZ9B3Fh4NLMxHwIshuXyCaPAykPryDmsix7c");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent lg:hidden"></div>
+</div>
+<div class="lg:w-1/2 p-12 lg:p-20 flex flex-col justify-center bg-surface-container-lowest">
+<span class="material-symbols-outlined text-secondary text-[48px] mb-8" style='font-variation-settings: "FILL" 1;'>format_quote</span>
+<h3 class="font-headline-md text-headline-md mb-6 italic leading-snug">"True healing occurs when we harmonize the elemental wisdom of nature with the diagnostic precision of science."</h3>
+<div class="mb-10">
+<p class="font-headline-sm text-headline-sm text-primary">Dr. Rajni Dubey</p>
+<p class="text-secondary font-label-md">Expert Ayurvedic Vaidya (B.A.M.S)</p>
+<p class="text-on-surface-variant text-label-sm mt-2">20+ Years Clinical Practice &amp; Formulation Research</p>
+</div>
+<div class="grid grid-cols-2 gap-8 border-t border-outline-variant/30 pt-8">
+<div>
+<p class="font-bold text-primary mb-1">Clinical Studies</p>
+<p class="text-on-surface-variant text-label-sm">Authored 50+ research papers on botanical efficacy.</p>
+</div>
+<div>
+<p class="font-bold text-primary mb-1">Custom Formulations</p>
+<p class="text-on-surface-variant text-label-sm">Chief Architect of our proprietary wellness blends.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Values Section -->
+<section class="bg-primary-container py-section-gap">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="text-center max-w-3xl mx-auto mb-20">
+<h2 class="font-headline-md text-headline-md text-on-primary mb-4">Our Ethos</h2>
+<p class="text-on-primary-container font-body-md">The core principles that guide our clinical excellence and pharmaceutical integrity.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="bg-white/5 border border-white/10 p-10 rounded-xl hover:bg-white/10 transition-colors">
+<div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-secondary-fixed text-[32px]">shield_person</span>
+</div>
+<h4 class="text-on-primary font-headline-sm mb-4">Integrity</h4>
+<p class="text-on-primary-container text-label-md">Absolute transparency in sourcing and manufacturing for unwavering trust.</p>
+</div>
+<div class="bg-white/5 border border-white/10 p-10 rounded-xl hover:bg-white/10 transition-colors">
+<div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-secondary-fixed text-[32px]">groups</span>
+</div>
+<h4 class="text-on-primary font-headline-sm mb-4">Teamwork</h4>
+<p class="text-on-primary-container text-label-md">Collaborative intelligence of scientists, vaidyas, and process engineers.</p>
+</div>
+<div class="bg-white/5 border border-white/10 p-10 rounded-xl hover:bg-white/10 transition-colors">
+<div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-secondary-fixed text-[32px]">eco</span>
+</div>
+<h4 class="text-on-primary font-headline-sm mb-4">Pure Ayurveda</h4>
+<p class="text-on-primary-container text-label-md">Upholding the sanctity of ancient recipes with pharmaceutical precision.</p>
+</div>
+<div class="bg-white/5 border border-white/10 p-10 rounded-xl hover:bg-white/10 transition-colors">
+<div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-secondary-fixed text-[32px]">psychology_alt</span>
+</div>
+<h4 class="text-on-primary font-headline-sm mb-4">Innovation</h4>
+<p class="text-on-primary-container text-label-md">Continuous R&amp;D to improve bioavailability and therapeutic delivery.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="relative py-section-gap overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-fixed opacity-5" data-alt="A macro photograph of geometric crystal patterns and herbal structures, symbolizing the fusion of nature and science. The lighting is ethereal and high-key, using a clean corporate palette of navy and slate to create a premium, authoritative background texture." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCLvSADlI7_jhTB8Zjknx0h8WrG6-76PhIko-z31YEGd9A3oyQ9SM49CcxxiZ5ktFndwCoxR3sYlavMsVq0BuhSS0IZ1cJp61miZ4V5BrDH6tmyldSyyPX6J7q7bll5iiyNSjXdvL8s892LV6XMbWGs056M_7OY6TNSLs7SwyFfs6Xj6RS0jYowuRZjAA21Tt4r-8p2orsk2Wms9Y0hNgbaV9sZ8-wLMgrh-WZjVBS8hEXE-K2ZAhhn5JKAbKmjeALSPOg7otm2il8");'></div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop text-center relative z-10">
+<div class="max-w-4xl mx-auto">
+<h2 class="font-display-lg text-display-lg mb-8">Ready to Elevate Your Wellness Brand?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-12">
+                        Partner with Kare ONS Herbals for pharmaceutical-grade Ayurvedic contract manufacturing and formulation development. Let's create clinical solutions together.
+                    </p>
+<div class="flex flex-col sm:flex-row justify-center gap-6">
+<button class="bg-primary text-on-primary px-12 py-5 rounded-full font-label-md text-label-md shadow-xl hover:shadow-2xl transition-all">Request Partnership Proposal</button>
+<button class="bg-white border border-outline px-12 py-5 rounded-full font-label-md text-label-md hover:bg-surface-container transition-all">Schedule a Call</button>
+</div>
+<div class="mt-16 flex justify-center items-center gap-10 text-on-surface-variant font-label-sm uppercase tracking-widest">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">mail</span>
+                            info@kareonsherbals.com
+                        </div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">call</span>
+                            +91-XXXX-XXXXXX
+                        </div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-primary">
+<div class="max-w-container-max mx-auto px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="col-span-1 md:col-span-1">
+<a class="text-headline-md font-headline-md text-on-primary block mb-6" href="#">Kare ONS Herbals</a>
+<p class="text-on-primary/80 text-label-md mb-8 leading-relaxed">
+                    Setting the global benchmark for scientific Ayurveda and botanical clinical excellence since 1999.
+                </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">public</span></a>
+<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">share</span></a>
+</div>
+</div>
+<div>
+<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Explore</h5>
+<ul class="space-y-4">
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Contract Manufacturing</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Bulk Extracts</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Formulation Lab</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">White Labeling</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Science</h5>
+<ul class="space-y-4">
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Clinical Studies</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Ingredient Sourcing</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Quality Control</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Regulatory Support</a></li>
+</ul>
+</div>
+<div>
+<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Company</h5>
+<ul class="space-y-4">
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">About Us</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Privacy Policy</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Terms of Service</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Returns &amp; Shipping</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop py-8 border-t border-on-primary/10">
+<p class="text-on-primary/60 text-label-sm text-center">
+                © 2024 Kare ONS Herbals. Clinical Excellence in Botanical Medicine. Manufactured in GMP-Certified Facilities.
+            </p>
+</div>
+</footer>
+<script>
+        // Micro-interactions and scroll effects
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.clinical-card');
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('opacity-100', 'translate-y-0');
+                        entry.target.classList.remove('opacity-0', 'translate-y-10');
+                    }
+                });
+            }, observerOptions);
+
+            cards.forEach(card => {
+                card.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
+                observer.observe(card);
+            });
+        });
+    </script>
+</body></html>

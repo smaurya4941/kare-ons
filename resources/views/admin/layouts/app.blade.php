@@ -46,7 +46,7 @@
             <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.orders.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
                 <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
                 Orders
-                @php $pendingOrdersCount = \App\Models\Order::where('status', 'pending')->count(); @endphp
+                @php $pendingOrdersCount = \App\Models\Order::where('order_status', 'pending')->count(); @endphp
                 @if($pendingOrdersCount > 0)
                     <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $pendingOrdersCount }}</span>
                 @endif

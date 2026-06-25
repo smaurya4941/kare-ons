@@ -1,224 +1,408 @@
 @extends('layouts.app')
 
-@section('title', $product->meta_title ?? $product->name)
+@section('title', $product->meta_title ?? $product->name . ' - Kare Ons Herbal')
 
 @section('content')
-<div class="bg-background">
+<div class="max-w-container-max mx-auto px-margin-desktop py-12">
     <!-- Breadcrumbs -->
-    <div class="max-w-container-max mx-auto px-margin-desktop py-6">
-        <nav class="flex text-sm text-secondary font-medium font-body">
-            <a href="{{ route('home') }}" class="hover:text-primary transition-colors">Home</a>
-            <span class="mx-2 text-outline-variant">/</span>
-            <a href="#" class="hover:text-primary transition-colors">{{ $product->category->name ?? 'Shop' }}</a>
-            <span class="mx-2 text-outline-variant">/</span>
-            <span class="text-on-surface">{{ $product->name }}</span>
-        </nav>
-    </div>
+    <nav class="flex text-sm text-secondary mb-8">
+        <ol class="flex items-center space-x-2">
+            <li><a href="{{ route('home') }}" class="hover:text-primary transition">Home</a></li>
+            <li><span class="material-symbols-outlined text-[16px]">chevron_right</span></li>
+            <li><a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="hover:text-primary transition">{{ $product->category->name }}</a></li>
+            <li><span class="material-symbols-outlined text-[16px]">chevron_right</span></li>
+            <li class="text-on-surface font-medium" aria-current="page">{{ $product->name }}</li>
+        </ol>
+    </nav>
 
-    <div class="max-w-container-max mx-auto px-margin-desktop pb-12">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            
-            <!-- Left: Product Images -->
-            <div x-data="{ mainImage: '{{ asset('storage/' . $product->main_image) }}' }" class="flex flex-col-reverse lg:flex-row gap-6">
-                <!-- Thumbnails (Mobile: Row, Desktop: Col) -->
-                <div class="flex lg:flex-col gap-4 overflow-x-auto lg:overflow-visible no-scrollbar pb-2 lg:pb-0 lg:w-24 flex-shrink-0">
-                    <button @click="mainImage = '{{ asset('storage/' . $product->main_image) }}'" class="w-20 h-20 lg:w-full lg:h-24 rounded-lg overflow-hidden border-2 focus:outline-none transition-colors" :class="mainImage === '{{ asset('storage/' . $product->main_image) }}' ? 'border-primary' : 'border-transparent hover:border-outline-variant'">
-                        <img src="{{ asset('storage/' . $product->main_image) }}" alt="Thumbnail" class="w-full h-full object-cover">
-                    </button>
-                    @foreach($product->images as $image)
-                        <button @click="mainImage = '{{ asset('storage/' . $image->image_path) }}'" class="w-20 h-20 lg:w-full lg:h-24 rounded-lg overflow-hidden border-2 focus:outline-none transition-colors" :class="mainImage === '{{ asset('storage/' . $image->image_path) }}' ? 'border-primary' : 'border-transparent hover:border-outline-variant'">
-                            <img src="{{ asset('storage/' . $image->image_path) }}" alt="Thumbnail" class="w-full h-full object-cover">
-                        </button>
-                    @endforeach
-                </div>
-                
-                <!-- Main Image -->
-                <div class="flex-grow rounded-lg overflow-hidden bg-surface-container border border-outline-variant aspect-square lg:aspect-auto lg:h-[600px] relative">
-                    <img :src="mainImage" alt="{{ $product->name }}" class="w-full h-full object-cover object-center mix-blend-multiply">
-                    @if($product->sale_price)
-                        <div class="absolute top-4 left-4 bg-error text-on-error text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-sm shadow-sm">
-                            SALE
-                        </div>
-                    @endif
-                </div>
+    <!-- Product Top Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        
+        <!-- Left: Image Gallery -->
+        <div x-data="{ 
+            activeImage: '{{ asset('storage/' . $product->main_image) }}',
+            images: [
+                '{{ asset('storage/' . $product->main_image) }}',
+                @foreach($product->images as $image)
+                    '{{ asset('storage/' . $image->image_path) }}',
+                @endforeach
+            ],
+            zoomStyle: '',
+            zoom(e) {
+                const rect = e.target.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xPercent = (x / rect.width) * 100;
+                const yPercent = (y / rect.height) * 100;
+                this.zoomStyle = `transform-origin: ${xPercent}% ${yPercent}%; transform: scale(2);`;
+            },
+            resetZoom() {
+                this.zoomStyle = 'transform-origin: center center; transform: scale(1);';
+            }
+        }">
+            <!-- Main Image with Zoom -->
+            <div class="bg-surface-container rounded-2xl overflow-hidden aspect-square border border-outline-variant mb-4 relative cursor-zoom-in"
+                 @mousemove="zoom($event)" 
+                 @mouseleave="resetZoom()">
+                <img :src="activeImage" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-200" :style="zoomStyle">
+                @if($product->sale_price)
+                    <div class="absolute top-4 left-4 bg-error text-white font-bold px-3 py-1.5 rounded-lg shadow-sm">
+                        SALE
+                    </div>
+                @endif
             </div>
 
-            <!-- Right: Product Info -->
-            <div class="flex flex-col">
-                <div class="mb-6">
-                    <span class="text-xs font-bold text-primary uppercase tracking-widest mb-3 block">{{ $product->category->name ?? 'Premium Ayurveda' }}</span>
-                    <h1 class="font-display text-4xl md:text-5xl font-semibold text-on-surface leading-[1.1] mb-4">{{ $product->name }}</h1>
-                    
-                    <!-- Reviews Summary -->
-                    <div class="flex items-center space-x-2 mb-6">
-                        <div class="flex text-amber-500">
-                            @for($i = 0; $i < 5; $i++)
-                                <span class="material-symbols-outlined text-[20px] {{ $i < 4 ? 'text-amber-500' : 'text-outline-variant' }}">star</span>
-                            @endfor
-                        </div>
-                        <span class="text-sm font-medium text-secondary">({{ $product->reviews->count() }} Reviews)</span>
-                    </div>
+            <!-- Thumbnails -->
+            <div class="grid grid-cols-5 gap-3">
+                <button @click="activeImage = images[0]" 
+                        class="aspect-square rounded-lg border-2 overflow-hidden bg-surface-container"
+                        :class="activeImage === images[0] ? 'border-primary' : 'border-transparent hover:border-outline-variant'">
+                    <img src="{{ asset('storage/' . $product->main_image) }}" alt="Main Image" class="w-full h-full object-cover">
+                </button>
+                @foreach($product->images as $index => $image)
+                    <button @click="activeImage = images[{{ $index + 1 }}]" 
+                            class="aspect-square rounded-lg border-2 overflow-hidden bg-surface-container"
+                            :class="activeImage === images[{{ $index + 1 }}] ? 'border-primary' : 'border-transparent hover:border-outline-variant'">
+                        <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gallery Image {{ $index + 1 }}" class="w-full h-full object-cover">
+                    </button>
+                @endforeach
+            </div>
+        </div>
 
-                    <!-- Price -->
-                    <div class="flex items-end space-x-3 mb-6">
-                        @if($product->sale_price)
-                            <span class="text-3xl font-semibold text-on-surface">₹{{ number_format($product->sale_price, 2) }}</span>
-                            <span class="text-xl font-medium text-secondary line-through mb-1">₹{{ number_format($product->price, 2) }}</span>
-                            <span class="text-xs font-bold bg-tertiary-container text-on-tertiary-container px-2 py-1 rounded-sm mb-2 ml-2 uppercase tracking-wider">Save ₹{{ number_format($product->price - $product->sale_price, 2) }}</span>
-                        @else
-                            <span class="text-3xl font-semibold text-on-surface">₹{{ number_format($product->price, 2) }}</span>
-                        @endif
+        <!-- Right: Product Info -->
+        <div class="flex flex-col">
+            <div class="mb-6">
+                <h1 class="text-3xl sm:text-4xl font-display font-bold text-on-surface mb-2">{{ $product->name }}</h1>
+                <p class="text-sm text-secondary uppercase tracking-wider font-medium mb-4">{{ $product->category->name }} | SKU: {{ $product->sku }}</p>
+                
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="flex text-amber-400">
+                        @php
+                            $avgRating = $product->reviews->avg('rating') ?? 5;
+                            $totalReviews = $product->reviews->count();
+                        @endphp
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= $avgRating)
+                                <span class="material-symbols-outlined text-[20px] fill-current">star</span>
+                            @else
+                                <span class="material-symbols-outlined text-[20px]">star</span>
+                            @endif
+                        @endfor
                     </div>
+                    <span class="text-sm text-secondary">({{ $totalReviews }} Reviews)</span>
                 </div>
 
-                <!-- Short Description -->
-                <div class="font-body text-secondary text-lg leading-relaxed mb-8 border-t border-outline-variant pt-6">
-                    <p>{{ $product->short_description ?? 'A premium ayurvedic blend crafted for natural healing and wellness. Meticulously developed by our specialists in our GMP-certified units.' }}</p>
+                <div class="flex items-end gap-3 mb-6">
+                    @if($product->sale_price)
+                        <span class="text-3xl font-bold text-on-surface">₹{{ number_format($product->sale_price, 2) }}</span>
+                        <span class="text-lg text-secondary line-through mb-1">₹{{ number_format($product->price, 2) }}</span>
+                        @php
+                            $saved = $product->price - $product->sale_price;
+                            $percent = round(($saved / $product->price) * 100);
+                        @endphp
+                        <span class="text-sm font-semibold text-error bg-error-container px-2 py-1 rounded mb-1">Save {{ $percent }}%</span>
+                    @else
+                        <span class="text-3xl font-bold text-on-surface">₹{{ number_format($product->price, 2) }}</span>
+                    @endif
                 </div>
 
-                <!-- Add to Cart Form -->
-                <form action="#" method="POST" class="mb-8">
+                <p class="text-body-md text-on-surface-variant mb-8 leading-relaxed">
+                    {{ $product->short_description ?? Str::limit($product->description, 150) }}
+                </p>
+            </div>
+
+            <!-- Add to Cart Form -->
+            <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant shadow-sm mb-8">
+                <!-- Stock Status -->
+                <div class="mb-4 flex items-center gap-2 font-medium">
+                    @if($product->stock_quantity > 10)
+                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                        <span class="text-emerald-700">In Stock</span>
+                    @elseif($product->stock_quantity > 0)
+                        <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                        <span class="text-amber-700">Limited Stock (Only {{ $product->stock_quantity }} left)</span>
+                    @else
+                        <span class="w-3 h-3 rounded-full bg-error"></span>
+                        <span class="text-error">Out of Stock</span>
+                    @endif
+                </div>
+
+                <form action="{{ route('cart.add') }}" method="POST" class="space-y-6">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                     
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="flex items-center border border-outline-variant rounded-lg w-full sm:w-32 bg-surface" x-data="{ qty: 1 }">
-                            <button type="button" @click="if(qty > 1) qty--" class="w-10 h-12 flex justify-center items-center text-secondary hover:text-primary transition-colors focus:outline-none">
-                                <span class="material-symbols-outlined text-[20px]">remove</span>
+                    <div class="flex items-center gap-4">
+                        <label for="quantity" class="font-medium text-on-surface">Quantity</label>
+                        <div class="flex items-center border border-outline-variant rounded-lg overflow-hidden" x-data="{ qty: 1 }">
+                            <button type="button" @click="if(qty > 1) qty--" class="px-4 py-2 bg-surface hover:bg-surface-container transition text-on-surface">
+                                <span class="material-symbols-outlined text-[18px]">remove</span>
                             </button>
-                            <input type="number" name="quantity" x-model="qty" min="1" max="{{ $product->stock_quantity }}" class="w-full text-center border-none focus:ring-0 text-on-surface font-semibold p-0 bg-transparent" readonly>
-                            <button type="button" @click="if(qty < {{ $product->stock_quantity }}) qty++" class="w-10 h-12 flex justify-center items-center text-secondary hover:text-primary transition-colors focus:outline-none">
-                                <span class="material-symbols-outlined text-[20px]">add</span>
+                            <input type="number" name="quantity" id="quantity" x-model="qty" min="1" max="{{ $product->stock_quantity > 0 ? $product->stock_quantity : 1 }}" class="w-16 text-center border-none focus:ring-0 text-on-surface p-0 py-2 bg-white" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
+                            <button type="button" @click="if(qty < {{ $product->stock_quantity }}) qty++" class="px-4 py-2 bg-surface hover:bg-surface-container transition text-on-surface">
+                                <span class="material-symbols-outlined text-[18px]">add</span>
                             </button>
                         </div>
-                        
-                        <button type="submit" class="flex-1 bg-primary text-white text-sm font-bold uppercase tracking-widest py-3 px-8 rounded-lg hover:bg-on-primary-fixed-variant transition-all shadow-sm flex justify-center items-center gap-2" {{ $product->stock_quantity < 1 ? 'disabled' : '' }}>
-                            <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
-                            <span>{{ $product->stock_quantity > 0 ? 'Add to Cart' : 'Out of Stock' }}</span>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                        <button type="submit" name="action" value="cart" class="flex-1 bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant font-medium py-3 px-6 rounded-xl transition flex justify-center items-center gap-2" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
+                            <span class="material-symbols-outlined text-[20px]">add_shopping_cart</span> Add to Cart
+                        </button>
+                        <button type="submit" name="action" value="buy" class="flex-1 bg-primary hover:bg-on-primary-fixed-variant text-white font-medium py-3 px-6 rounded-xl transition flex justify-center items-center gap-2 shadow-sm" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
+                            <span class="material-symbols-outlined text-[20px]">bolt</span> Buy Now
                         </button>
                     </div>
-                    
-                    @if($product->stock_quantity > 0 && $product->stock_quantity <= 5)
-                        <p class="text-xs font-bold text-error uppercase tracking-widest mt-4">Hurry! Only {{ $product->stock_quantity }} left in stock.</p>
-                    @endif
                 </form>
+            </div>
 
-                <!-- Meta Info -->
-                <div class="space-y-4 pt-6 border-t border-outline-variant text-sm text-secondary font-medium">
-                    <div class="flex items-center">
-                        <span class="w-32 text-on-surface">SKU</span>
-                        <span class="font-mono text-xs">{{ $product->sku }}</span>
+            <!-- Features -->
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="flex items-center gap-3 text-secondary">
+                    <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined">eco</span>
                     </div>
-                    <div class="flex items-center">
-                        <span class="w-32 text-on-surface">Category</span>
-                        <a href="#" class="text-primary hover:underline">{{ $product->category->name ?? 'N/A' }}</a>
+                    <span>100% Ayurvedic</span>
+                </div>
+                <div class="flex items-center gap-3 text-secondary">
+                    <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined">shield</span>
                     </div>
-                    <div class="flex items-center">
-                        <span class="w-32 text-on-surface">Weight</span>
-                        <span>{{ $product->weight ? $product->weight . ' g' : 'N/A' }}</span>
+                    <span>Secure Payments</span>
+                </div>
+                <div class="flex items-center gap-3 text-secondary">
+                    <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined">local_shipping</span>
                     </div>
+                    <span>Fast Delivery</span>
+                </div>
+                <div class="flex items-center gap-3 text-secondary">
+                    <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined">verified</span>
+                    </div>
+                    <span>Quality Assured</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Long Description & Details Tabs -->
-    <div class="bg-surface-container py-16 border-y border-outline-variant" x-data="{ tab: 'description' }">
-        <div class="max-w-container-max mx-auto px-margin-desktop">
-            <!-- Tab Headers -->
-            <div class="flex space-x-12 border-b border-outline-variant overflow-x-auto no-scrollbar">
-                <button @click="tab = 'description'" class="pb-4 text-sm font-bold uppercase tracking-widest transition-colors whitespace-nowrap focus:outline-none" :class="tab === 'description' ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-on-surface'">
-                    Product Description
-                </button>
-                <button @click="tab = 'ingredients'" class="pb-4 text-sm font-bold uppercase tracking-widest transition-colors whitespace-nowrap focus:outline-none" :class="tab === 'ingredients' ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-on-surface'">
-                    Key Ingredients
-                </button>
-                <button @click="tab = 'reviews'" class="pb-4 text-sm font-bold uppercase tracking-widest transition-colors whitespace-nowrap focus:outline-none" :class="tab === 'reviews' ? 'text-primary border-b-2 border-primary' : 'text-secondary hover:text-on-surface'">
-                    Customer Reviews ({{ $product->reviews->count() }})
-                </button>
-            </div>
+    <!-- Information Tabs -->
+    <div class="mb-16" x-data="{ activeTab: 'description' }">
+        <div class="border-b border-outline-variant flex overflow-x-auto no-scrollbar mb-8">
+            <button @click="activeTab = 'description'" class="px-6 py-4 font-medium text-sm whitespace-nowrap transition-colors border-b-2" :class="activeTab === 'description' ? 'border-primary text-primary' : 'border-transparent text-secondary hover:text-on-surface'">Description</button>
             
-            <!-- Tab Contents -->
-            <div class="py-10">
-                <!-- Description Tab -->
-                <div x-show="tab === 'description'" class="max-w-4xl font-body text-secondary leading-relaxed space-y-4" x-transition>
+            @if($product->ingredients)
+            <button @click="activeTab = 'ingredients'" class="px-6 py-4 font-medium text-sm whitespace-nowrap transition-colors border-b-2" :class="activeTab === 'ingredients' ? 'border-primary text-primary' : 'border-transparent text-secondary hover:text-on-surface'">Ingredients</button>
+            @endif
+            
+            @if($product->benefits)
+            <button @click="activeTab = 'benefits'" class="px-6 py-4 font-medium text-sm whitespace-nowrap transition-colors border-b-2" :class="activeTab === 'benefits' ? 'border-primary text-primary' : 'border-transparent text-secondary hover:text-on-surface'">Health Benefits</button>
+            @endif
+            
+            @if($product->usage_instructions || $product->storage_instructions)
+            <button @click="activeTab = 'directions'" class="px-6 py-4 font-medium text-sm whitespace-nowrap transition-colors border-b-2" :class="activeTab === 'directions' ? 'border-primary text-primary' : 'border-transparent text-secondary hover:text-on-surface'">How to Use & Store</button>
+            @endif
+            
+            @if($product->precautions)
+            <button @click="activeTab = 'precautions'" class="px-6 py-4 font-medium text-sm whitespace-nowrap transition-colors border-b-2" :class="activeTab === 'precautions' ? 'border-primary text-primary' : 'border-transparent text-secondary hover:text-on-surface'">Precautions</button>
+            @endif
+            
+            <button @click="activeTab = 'reviews'" class="px-6 py-4 font-medium text-sm whitespace-nowrap transition-colors border-b-2" :class="activeTab === 'reviews' ? 'border-primary text-primary' : 'border-transparent text-secondary hover:text-on-surface'">Reviews ({{ $totalReviews }})</button>
+        </div>
+
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-8 shadow-sm text-body-md text-on-surface leading-relaxed">
+            <!-- Description Tab -->
+            <div x-show="activeTab === 'description'" x-transition.opacity>
+                <h3 class="text-xl font-semibold mb-4">Overview</h3>
+                <div class="prose max-w-none prose-p:text-on-surface-variant prose-headings:text-on-surface">
                     {!! nl2br(e($product->description)) !!}
                 </div>
-                
-                <!-- Ingredients Tab -->
-                <div x-show="tab === 'ingredients'" class="max-w-4xl font-body text-secondary leading-relaxed" style="display: none;" x-transition>
-                    <p>Information about ayurvedic ingredients will be displayed here. Our ingredients are sourced directly from certified organic farms.</p>
+            </div>
+
+            <!-- Ingredients Tab -->
+            @if($product->ingredients)
+            <div x-show="activeTab === 'ingredients'" x-transition.opacity style="display: none;">
+                <h3 class="text-xl font-semibold mb-4">What's Inside</h3>
+                <div class="prose max-w-none prose-p:text-on-surface-variant">
+                    {!! nl2br(e($product->ingredients)) !!}
                 </div>
+            </div>
+            @endif
+
+            <!-- Benefits Tab -->
+            @if($product->benefits)
+            <div x-show="activeTab === 'benefits'" x-transition.opacity style="display: none;">
+                <h3 class="text-xl font-semibold mb-4">Key Benefits</h3>
+                <div class="prose max-w-none prose-p:text-on-surface-variant">
+                    {!! nl2br(e($product->benefits)) !!}
+                </div>
+            </div>
+            @endif
+
+            <!-- Directions Tab -->
+            @if($product->usage_instructions || $product->storage_instructions)
+            <div x-show="activeTab === 'directions'" x-transition.opacity style="display: none;">
+                @if($product->usage_instructions)
+                <h3 class="text-xl font-semibold mb-4">Directions for Use</h3>
+                <div class="prose max-w-none prose-p:text-on-surface-variant mb-8">
+                    {!! nl2br(e($product->usage_instructions)) !!}
+                </div>
+                @endif
                 
-                <!-- Reviews Tab -->
-                <div x-show="tab === 'reviews'" style="display: none;" x-transition>
-                    @if($product->reviews->isEmpty())
-                        <p class="text-secondary italic">No reviews yet. Be the first to review this product!</p>
-                    @else
-                        <div class="space-y-6 max-w-4xl">
-                            @foreach($product->reviews as $review)
-                                <div class="bg-surface p-6 rounded-lg shadow-sm carbon-border">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-lg">
-                                                {{ substr($review->user->name ?? 'G', 0, 1) }}
-                                            </div>
-                                            <div>
-                                                <h4 class="font-semibold text-on-surface">{{ $review->user->name ?? 'Guest' }}</h4>
-                                                <span class="text-xs font-medium text-secondary">{{ $review->created_at->format('M d, Y') }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="flex text-amber-500">
-                                            @for($i = 0; $i < 5; $i++)
-                                                <span class="material-symbols-outlined text-[18px] {{ $i < $review->rating ? 'text-amber-500' : 'text-outline-variant' }}">star</span>
-                                            @endfor
+                @if($product->storage_instructions)
+                <h3 class="text-xl font-semibold mb-4">Storage Instructions</h3>
+                <div class="prose max-w-none prose-p:text-on-surface-variant">
+                    {!! nl2br(e($product->storage_instructions)) !!}
+                </div>
+                @endif
+            </div>
+            @endif
+
+            <!-- Precautions Tab -->
+            @if($product->precautions)
+            <div x-show="activeTab === 'precautions'" x-transition.opacity style="display: none;">
+                <h3 class="text-xl font-semibold mb-4 text-error">Precautions & Warnings</h3>
+                <div class="prose max-w-none prose-p:text-on-surface-variant">
+                    {!! nl2br(e($product->precautions)) !!}
+                </div>
+            </div>
+            @endif
+
+            <!-- Reviews Tab -->
+            <div x-show="activeTab === 'reviews'" x-transition.opacity style="display: none;">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="col-span-1">
+                        <h3 class="text-2xl font-bold mb-2">Customer Reviews</h3>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="flex text-amber-400">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $avgRating)
+                                        <span class="material-symbols-outlined text-[24px] fill-current">star</span>
+                                    @else
+                                        <span class="material-symbols-outlined text-[24px]">star</span>
+                                    @endif
+                                @endfor
+                            </div>
+                            <span class="text-xl font-semibold">{{ number_format($avgRating, 1) }} out of 5</span>
+                        </div>
+                        <p class="text-secondary mb-6">Based on {{ $totalReviews }} reviews</p>
+                        
+                        @auth
+                            <div x-data="{ openReviewForm: false }">
+                                <button @click="openReviewForm = !openReviewForm" class="w-full border-2 border-primary text-primary font-medium py-2 rounded-lg hover:bg-primary hover:text-white transition mb-4">Write a Review</button>
+                                
+                                <form x-show="openReviewForm" action="{{ route('review.store', $product->id) }}" method="POST" class="bg-surface p-4 rounded-xl border border-outline-variant space-y-4" x-transition>
+                                    @csrf
+                                    <div>
+                                        <label class="block text-sm font-medium text-on-surface mb-1">Rating</label>
+                                        <div class="flex gap-2 flex-row-reverse justify-end peer">
+                                            <input type="radio" name="rating" id="star5" value="5" class="peer hidden"><label for="star5" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 text-2xl">star</label>
+                                            <input type="radio" name="rating" id="star4" value="4" class="peer hidden"><label for="star4" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 peer-checked:~label:text-amber-400 text-2xl">star</label>
+                                            <input type="radio" name="rating" id="star3" value="3" class="peer hidden"><label for="star3" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 text-2xl">star</label>
+                                            <input type="radio" name="rating" id="star2" value="2" class="peer hidden"><label for="star2" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 text-2xl">star</label>
+                                            <input type="radio" name="rating" id="star1" value="1" class="peer hidden" checked><label for="star1" class="material-symbols-outlined cursor-pointer text-amber-400 text-2xl">star</label>
                                         </div>
                                     </div>
-                                    @if($review->title)
-                                        <h5 class="font-semibold text-on-surface mb-2">{{ $review->title }}</h5>
-                                    @endif
-                                    <p class="text-secondary text-sm leading-relaxed">{{ $review->review }}</p>
+                                    <div>
+                                        <label class="block text-sm font-medium text-on-surface mb-1">Title</label>
+                                        <input type="text" name="title" required class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-on-surface mb-1">Your Review</label>
+                                        <textarea name="comment" rows="3" required class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary"></textarea>
+                                    </div>
+                                    <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-on-primary-fixed-variant transition">Submit Review</button>
+                                </form>
+                            </div>
+                        @else
+                            <a href="{{ route('login') }}" class="block text-center w-full border-2 border-primary text-primary font-medium py-2 rounded-lg hover:bg-primary hover:text-white transition">Log in to Review</a>
+                        @endauth
+                    </div>
+                    
+                    <div class="col-span-1 md:col-span-2 space-y-6">
+                        @forelse($product->reviews as $review)
+                            <div class="border-b border-outline-variant pb-6 last:border-0 last:pb-0">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center font-bold text-primary">
+                                            {{ substr($review->user->name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <h4 class="font-medium text-on-surface">{{ $review->user->name }}</h4>
+                                            <p class="text-xs text-secondary">{{ $review->created_at->format('M d, Y') }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex text-amber-400 text-sm">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= $review->rating)
+                                                <span class="material-symbols-outlined text-[16px] fill-current">star</span>
+                                            @else
+                                                <span class="material-symbols-outlined text-[16px]">star</span>
+                                            @endif
+                                        @endfor
+                                    </div>
                                 </div>
-                            @endforeach
-                        </div>
-                    @endif
+                                <h5 class="font-medium text-on-surface mt-3">{{ $review->title }}</h5>
+                                <p class="text-on-surface-variant mt-1 text-sm">{{ $review->comment }}</p>
+                            </div>
+                        @empty
+                            <div class="text-center py-8">
+                                <p class="text-secondary">No reviews yet. Be the first to review this product!</p>
+                            </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Related Products -->
-    @if($relatedProducts->isNotEmpty())
-    <div class="max-w-container-max mx-auto px-margin-desktop py-section-gap">
-        <span class="text-xs font-bold text-primary uppercase tracking-widest mb-3 block">Explore More</span>
-        <h2 class="text-3xl font-semibold text-on-surface mb-10">You May Also Like</h2>
+    @if($relatedProducts->count() > 0)
+    <div class="mb-8">
+        <div class="flex justify-between items-end border-b border-outline-variant pb-4 mb-8">
+            <h2 class="text-2xl font-bold text-on-surface font-display">Related Products</h2>
+            <a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="text-primary font-medium hover:underline flex items-center gap-1">
+                View Category <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </a>
+        </div>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($relatedProducts as $related)
-                <div class="group">
-                    <div class="relative aspect-[4/5] overflow-hidden rounded-lg bg-surface-container mb-4 carbon-border">
+                <a href="{{ route('product.show', $related->slug) }}" class="group block border border-outline-variant rounded-xl overflow-hidden hover:border-primary transition-colors bg-surface">
+                    <div class="aspect-[4/3] bg-surface-container relative overflow-hidden">
                         @if($related->main_image)
-                            <img src="{{ asset('storage/' . $related->main_image) }}" alt="{{ $related->name }}" class="w-full h-full object-cover mix-blend-multiply group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ asset('storage/' . $related->main_image) }}" alt="{{ $related->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @else
-                            <div class="w-full h-full flex items-center justify-center text-outline">No Image</div>
+                            <div class="w-full h-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-4xl text-outline">image</span>
+                            </div>
                         @endif
-                    </div>
-                    <h3 class="text-lg font-semibold text-on-surface line-clamp-1 mb-1">
-                        <a href="{{ route('product.show', $related->slug) }}" class="hover:text-primary transition-colors">
-                            <span class="absolute inset-0"></span>
-                            {{ $related->name }}
-                        </a>
-                    </h3>
-                    <div class="flex items-center gap-2">
-                        <span class="text-lg font-semibold text-on-surface">₹{{ number_format($related->sale_price ?? $related->price, 2) }}</span>
+                        
                         @if($related->sale_price)
-                            <span class="text-xs font-medium text-secondary line-through">₹{{ number_format($related->price, 2) }}</span>
+                            <div class="absolute top-3 left-3 bg-error text-white text-xs font-bold px-2 py-1 rounded">
+                                SALE
+                            </div>
                         @endif
                     </div>
-                </div>
+                    <div class="p-5">
+                        <div class="text-xs font-medium text-primary mb-2">{{ $related->category->name }}</div>
+                        <h3 class="text-on-surface font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">{{ $related->name }}</h3>
+                        
+                        <div class="flex items-center justify-between mt-4 pt-4 border-t border-outline-variant">
+                            <div class="flex items-center gap-2">
+                                @if($related->sale_price)
+                                    <span class="font-bold text-on-surface">₹{{ number_format($related->sale_price, 2) }}</span>
+                                    <span class="text-xs text-secondary line-through">₹{{ number_format($related->price, 2) }}</span>
+                                @else
+                                    <span class="font-bold text-on-surface">₹{{ number_format($related->price, 2) }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </a>
             @endforeach
         </div>
     </div>
     @endif
+
 </div>
 @endsection
