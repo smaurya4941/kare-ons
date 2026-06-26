@@ -60,7 +60,9 @@
                     "surface-bright": "#fcf8fa",
                     "primary-fixed": "#dae2fd",
                     "on-primary": "#ffffff",
-                    "on-secondary-fixed": "#00201d"
+                    "on-secondary-fixed": "#00201d",
+                    "soft-border": "#e1e4e8",
+                    "clinical-white": "#ffffff"
             },
             "borderRadius": {
                     "DEFAULT": "0.125rem",
@@ -100,7 +102,13 @@
         },
       }
     </script>
-<style>
+<style type="text/tailwindcss">
+        .input-minimal {
+            @apply w-full bg-transparent border-0 border-b border-soft-border px-0 py-3 text-on-surface focus:ring-0 focus:border-primary focus:border-b transition-colors;
+        }
+        .btn-primary {
+            @apply inline-flex items-center justify-center bg-primary text-clinical-white font-body-md px-8 py-3 rounded transition-transform active:scale-95;
+        }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
             display: inline-block;
@@ -156,8 +164,9 @@
                         </div>
                     </div>
                 </div>
-                <a class="text-on-surface font-medium hover:text-primary transition-colors duration-200 text-sm" href="#">Blog</a>
-                <a class="text-on-surface font-medium hover:text-primary transition-colors duration-200 text-sm" href="#">Contact</a>
+                <a class="{{ request()->routeIs('about') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('about') }}">About</a>
+                <a class="{{ request()->routeIs('blog.index') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('blog.index') }}">Blog</a>
+                <a class="{{ request()->routeIs('contact') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('contact') }}">Contact</a>
             </div>
             <div class="flex items-center gap-4">
                 <button class="text-on-surface hover:text-primary transition">
@@ -240,7 +249,7 @@
 <div>
 <h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Company</h5>
 <ul class="space-y-4">
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">About Us</a></li>
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="{{ route('about') }}">About Us</a></li>
 <li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Privacy Policy</a></li>
 <li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Terms of Service</a></li>
 <li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Returns &amp; Shipping</a></li>

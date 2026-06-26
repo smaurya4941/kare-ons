@@ -9,6 +9,9 @@ use App\Http\Controllers\Web\ProductController;
 // Public Routes
 // ============================================================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [\App\Http\Controllers\PageController::class, 'about'])->name('about');
+Route::get('/contact', [\App\Http\Controllers\PageController::class, 'contact'])->name('contact');
+Route::post('/contact', [\App\Http\Controllers\PageController::class, 'submitContact'])->name('contact.submit');
 Route::get('/shop', [\App\Http\Controllers\Web\ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 

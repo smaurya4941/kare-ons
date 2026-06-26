@@ -1,0 +1,285 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Register - AyuPure</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-container": "#005266",
+                      "clinical-white": "#ffffff",
+                      "soft-border": "#e1e4e8",
+                      "primary-fixed": "#f2daff",
+                      "on-surface": "#191c1d",
+                      "on-primary-fixed-variant": "#6c00ae",
+                      "secondary-fixed-dim": "#4cd6ff",
+                      "on-tertiary-fixed": "#00210c",
+                      "outline-variant": "#d1c1d8",
+                      "on-background": "#191c1d",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#43e181",
+                      "on-secondary-fixed": "#001f28",
+                      "surface-bright": "#f8f9fa",
+                      "on-tertiary-container": "#b2ffc2",
+                      "primary-fixed-dim": "#e1b6ff",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#005228",
+                      "inverse-surface": "#2e3132",
+                      "inverse-primary": "#e1b6ff",
+                      "on-surface-variant": "#4e4256",
+                      "primary": "#7e00c9",
+                      "outline": "#807287",
+                      "surface-variant": "#e1e3e4",
+                      "on-secondary": "#ffffff",
+                      "primary-container": "#a100ff",
+                      "deep-amethyst": "#4b0082",
+                      "on-secondary-fixed-variant": "#004e60",
+                      "inverse-on-surface": "#f0f1f2",
+                      "secondary-fixed": "#b7eaff",
+                      "surface": "#f8f9fa",
+                      "error-container": "#ffdad6",
+                      "on-primary-container": "#f9e8ff",
+                      "surface-container-highest": "#e1e3e4",
+                      "tertiary": "#006030",
+                      "on-error-container": "#93000a",
+                      "tertiary-container": "#007c3f",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "secondary-container": "#00ccf9",
+                      "secondary": "#00677f",
+                      "surface-dim": "#d9dadb",
+                      "surface-tint": "#8e00e2",
+                      "background": "#f8f9fa",
+                      "surface-container-low": "#f3f4f5",
+                      "slate-text": "#1a1c1e",
+                      "surface-container": "#edeeef",
+                      "on-primary-fixed": "#2e004e",
+                      "surface-container-high": "#e7e8e9",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-fixed": "#66fe9b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "section-gap": "120px",
+                      "margin-mobile": "16px",
+                      "container-max": "1280px",
+                      "gutter": "24px",
+                      "margin-desktop": "64px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Manrope", "sans-serif"
+                      ],
+                      "headline-md": [
+                              "Manrope", "sans-serif"
+                      ],
+                      "label-md": [
+                              "JetBrains Mono", "monospace"
+                      ],
+                      "headline-lg": [
+                              "Manrope", "sans-serif"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono", "monospace"
+                      ],
+                      "headline-lg-mobile": [
+                              "Manrope", "sans-serif"
+                      ],
+                      "body-lg": [
+                              "Inter", "sans-serif"
+                      ],
+                      "body-md": [
+                              "Inter", "sans-serif"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+      </script>
+<style>
+        .squish-effect:active {
+            transform: scale(0.98);
+        }
+        
+        .input-clinical {
+            border: none;
+            border-bottom: 1px solid theme('colors.soft-border');
+            border-radius: 0;
+            background-color: transparent;
+            padding-left: 0;
+            padding-right: 0;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .input-clinical:focus {
+            outline: none;
+            box-shadow: none;
+            border: 1px solid theme('colors.primary');
+            border-radius: theme('borderRadius.DEFAULT');
+            padding-left: 12px;
+            padding-right: 12px;
+            background-color: theme('colors.clinical-white');
+        }
+        
+        /* Subtle atmospheric gradient animation */
+        @keyframes subtle-breathe {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .bg-atmospheric {
+            background: linear-gradient(-45deg, #f8f9fa, #ffffff, #f3f4f5, #e1b6ff1a);
+            background-size: 400% 400%;
+            animation: subtle-breathe 15s ease infinite;
+        }
+      </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased min-h-screen flex flex-col items-center justify-center bg-atmospheric px-margin-mobile md:px-0 py-section-gap md:py-0">
+<!-- Note: TopAppBar suppressed due to "Linear/Transactional" intent rule. -->
+<main class="w-full max-w-md">
+<!-- Brand / Identity Context (Simplified for transaction) -->
+<div class="text-center mb-8">
+<a href="{{DATA:SCREEN:SCREEN_22}}" class="inline-block">
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight md:block hidden">AyuPure</h1>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight md:hidden block">AyuPure</h1>
+</a>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">Pure Ayurveda, Elevated.</p>
+</div>
+<!-- Registration Card -->
+<div class="bg-clinical-white border border-soft-border rounded-xl shadow-sm p-8 md:p-10 transition-all duration-300 hover:border-outline-variant hover:shadow-[0_8px_24px_rgba(161,0,255,0.04)] relative overflow-hidden group">
+<!-- Subtle decorative top bar -->
+<div class="absolute top-0 left-0 w-full h-1 bg-surface-container-low group-hover:bg-primary transition-colors duration-500"></div>
+<div class="mb-8">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Create Account</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Join the community for elevated learning and authentic Ayurvedic remedies.</p>
+</div>
+<form action="{{DATA:SCREEN:SCREEN_15}}" class="space-y-6" method="POST">
+<!-- Full Name -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2" for="fullName">Full Name</label>
+<div class="relative">
+<input class="w-full input-clinical font-body-md text-body-md text-on-surface placeholder:text-outline py-2" id="fullName" name="fullName" placeholder="e.g. Charaka Samhita" required="" type="text">
+</div>
+</div>
+<!-- Email -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2" for="email">Email Address</label>
+<div class="relative">
+<input class="w-full input-clinical font-body-md text-body-md text-on-surface placeholder:text-outline py-2" id="email" name="email" placeholder="your@email.com" required="" type="email">
+</div>
+</div>
+<!-- Password -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2" for="password">Password</label>
+<div class="relative">
+<input class="w-full input-clinical font-body-md text-body-md text-on-surface placeholder:text-outline py-2" id="password" name="password" placeholder="••••••••" required="" type="password">
+</div>
+</div>
+<!-- Confirm Password -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2" for="confirmPassword">Confirm Password</label>
+<div class="relative">
+<input class="w-full input-clinical font-body-md text-body-md text-on-surface placeholder:text-outline py-2" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required="" type="password">
+</div>
+</div>
+<!-- Action Area -->
+<div class="pt-4">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 px-6 rounded-DEFAULT squish-effect transition-colors duration-300 hover:bg-deep-amethyst flex justify-center items-center gap-2" type="submit">
+<span class="">Create Account</span>
+<span aria-hidden="true" class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Secondary Actions -->
+<div class="mt-8 text-center">
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Already have an account? 
+                    <a class="text-primary font-semibold hover:text-deep-amethyst transition-colors hover:underline underline-offset-4" href="{{DATA:SCREEN:SCREEN_21}}">Login</a>
+</p>
+</div>
+</div>
+<!-- Subtle Trust / Policy Link -->
+<div class="text-center mt-6">
+<p class="font-label-sm text-label-sm text-outline">
+                By registering, you agree to our <a class="hover:text-primary transition-colors border-b border-soft-border hover:border-primary pb-0.5" href="#">Privacy Policy</a> &amp; <a class="hover:text-primary transition-colors border-b border-soft-border hover:border-primary pb-0.5" href="#">Terms of Service</a>.
+            </p>
+</div>
+</main>
+<!-- Note: Footer suppressed due to "Linear/Transactional" intent rule. -->
+
+
+</body></html>

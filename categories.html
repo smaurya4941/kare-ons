@@ -1,0 +1,231 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AyuPure - Product Categories</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#005266",
+                        "clinical-white": "#ffffff",
+                        "soft-border": "#e1e4e8",
+                        "primary-fixed": "#f2daff",
+                        "on-surface": "#191c1d",
+                        "on-primary-fixed-variant": "#6c00ae",
+                        "secondary-fixed-dim": "#4cd6ff",
+                        "on-tertiary-fixed": "#00210c",
+                        "outline-variant": "#d1c1d8",
+                        "on-background": "#191c1d",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#43e181",
+                        "on-secondary-fixed": "#001f28",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-container": "#b2ffc2",
+                        "primary-fixed-dim": "#e1b6ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#005228",
+                        "inverse-surface": "#2e3132",
+                        "inverse-primary": "#e1b6ff",
+                        "on-surface-variant": "#4e4256",
+                        "primary": "#7e00c9",
+                        "outline": "#807287",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#a100ff",
+                        "deep-amethyst": "#4b0082",
+                        "on-secondary-fixed-variant": "#004e60",
+                        "inverse-on-surface": "#f0f1f2",
+                        "secondary-fixed": "#b7eaff",
+                        "surface": "#f8f9fa",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#f9e8ff",
+                        "surface-container-highest": "#e1e3e4",
+                        "tertiary": "#006030",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#007c3f",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#00ccf9",
+                        "secondary": "#00677f",
+                        "surface-dim": "#d9dadb",
+                        "surface-tint": "#8e00e2",
+                        "background": "#f8f9fa",
+                        "surface-container-low": "#f3f4f5",
+                        "slate-text": "#1a1c1e",
+                        "surface-container": "#edeeef",
+                        "on-primary-fixed": "#2e004e",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#66fe9b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "section-gap": "120px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["manrope"],
+                        "headline-md": ["manrope"],
+                        "label-md": ["jetbrainsMono"],
+                        "headline-lg": ["manrope"],
+                        "label-sm": ["jetbrainsMono"],
+                        "headline-lg-mobile": ["manrope"],
+                        "body-lg": ["inter"],
+                        "body-md": ["inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        .ethereal-card {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        .ethereal-card:hover {
+            border-color: #7e00c9;
+            box-shadow: 0 8px 24px rgba(126, 0, 201, 0.08);
+            transform: translateY(-4px);
+        }
+        
+        .btn-primary {
+            transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        .category-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .category-image-container img {
+            transition: transform 0.5s ease;
+        }
+        .ethereal-card:hover .category-image-container img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-soft-border dark:border-outline-variant shadow-sm hidden md:flex">
+<div class="flex justify-between items-center px-margin-desktop py-4 w-full max-w-container-max mx-auto">
+<a href="{{DATA:SCREEN:SCREEN_22}}" class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">AyuPure</a>
+<nav class="flex gap-8">
+<a class="font-body-md text-body-md text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 transition-colors duration-300" href="{{DATA:SCREEN:SCREEN_19}}">Syrups</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-300" href="{{DATA:SCREEN:SCREEN_19}}">Capsules</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-300" href="{{DATA:SCREEN:SCREEN_19}}">Tablets</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-300" href="{{DATA:SCREEN:SCREEN_19}}">Oils</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors duration-300" href="{{DATA:SCREEN:SCREEN_19}}">Personal Care</a>
+</nav>
+<div class="flex gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-300 focus:outline-none">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-300 focus:outline-none">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors duration-300 focus:outline-none">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Mobile Top Header (Simplified for destination, no nav links) -->
+<header class="bg-surface/80 backdrop-blur-md fixed top-0 w-full z-50 border-b border-soft-border shadow-sm flex md:hidden px-margin-mobile py-4 justify-between items-center">
+<a href="{{DATA:SCREEN:SCREEN_22}}" class="font-headline-md text-headline-md font-bold text-primary">AyuPure</a>
+<div class="flex gap-4">
+<button class="text-on-surface-variant focus:outline-none"><span class="material-symbols-outlined">search</span></button>
+<button class="text-on-surface-variant focus:outline-none"><span class="material-symbols-outlined">shopping_cart</span></button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[80px] md:pt-[100px] px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto w-full pb-section-gap">
+<!-- Page Header -->
+<section class="mb-16 mt-8 md:mt-16 text-center max-w-3xl mx-auto">
+<h1 class="font-display-lg text-display-lg text-on-background mb-6">Pure Ayurveda Elements</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                Discover our meticulously formulated categories. Combining ancient wisdom with modern clinical precision to elevate your daily wellness ritual.
+            </p>
+</section>
+<!-- Bento Grid Categories -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Syrups -->
+<a href="{{DATA:SCREEN:SCREEN_19}}" class="ethereal-card bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col group cursor-pointer border border-soft-border h-[420px]">$0</a>
+<!-- Capsules -->
+<a href="{{DATA:SCREEN:SCREEN_19}}" class="ethereal-card bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col group cursor-pointer border border-soft-border h-[420px]">$0</a>
+<!-- Tablets -->
+<a href="{{DATA:SCREEN:SCREEN_19}}" class="ethereal-card bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col group cursor-pointer border border-soft-border h-[420px]">$0</a>
+<!-- Oils -->
+<a href="{{DATA:SCREEN:SCREEN_19}}" class="ethereal-card bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col group cursor-pointer border border-soft-border h-[420px]">$0</a>
+<!-- Powders -->
+<a href="{{DATA:SCREEN:SCREEN_19}}" class="ethereal-card bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col group cursor-pointer border border-soft-border h-[420px]">$0</a>
+<!-- Personal Care -->
+<a href="{{DATA:SCREEN:SCREEN_19}}" class="ethereal-card bg-surface-container-lowest rounded-xl overflow-hidden flex flex-col group cursor-pointer border border-soft-border h-[420px]">$0</a>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-surface-container-highest w-full py-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop max-w-container-max mx-auto">
+<!-- Brand Column -->
+<div class="flex flex-col gap-4">
+<a href="{{DATA:SCREEN:SCREEN_22}}" class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed-dim">AyuPure</a>
+<p class="font-body-md text-body-md text-on-surface-variant">Elevating traditional wisdom through clinical purity.</p>
+</div>
+<!-- Links Column -->
+<div class="flex flex-col gap-3">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-all" href="#">About Us</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-all" href="#">Ayurvedic Principles</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-all" href="#">Sustainability</a>
+</div>
+<!-- Support Column -->
+<div class="flex flex-col gap-3">
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-all" href="#">Shipping Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-all" href="#">Contact Support</a>
+</div>
+<!-- Copyright -->
+<div class="flex flex-col gap-4 justify-end">
+<p class="font-body-md text-body-md text-secondary dark:text-secondary-fixed-dim">
+                    © 2024 AyuPure Pure Ayurveda. All rights reserved.
+                </p>
+</div>
+</div>
+</footer>
+
+
+</body></html>

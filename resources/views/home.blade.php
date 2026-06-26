@@ -19,11 +19,11 @@
                         Pioneering clinical-grade Ayurvedic medicine through rigorous scientific validation. Our state-of-the-art manufacturing facilities deliver holistic wellness solutions that honor ancient traditions while meeting modern pharmaceutical standards.
                     </p>
 <div class="flex flex-wrap gap-4">
-<button class="bg-primary text-on-primary px-10 py-4 rounded-full font-label-md text-label-md hover:scale-105 transition-transform duration-300">Start Your Inquiry</button>
-<button class="border border-secondary text-secondary px-10 py-4 rounded-full font-label-md text-label-md flex items-center gap-2 hover:bg-secondary/5 transition-colors">
+<a href="{{ route('shop.index') }}" class="bg-primary text-on-primary px-10 py-4 rounded-full font-label-md text-label-md hover:scale-105 transition-transform duration-300">Start Your Inquiry</a>
+<a href="{{ route('shop.index') }}" class="border border-secondary text-secondary px-10 py-4 rounded-full font-label-md text-label-md flex items-center gap-2 hover:bg-secondary/5 transition-colors">
 <span class="material-symbols-outlined">play_circle</span>
                             Our Process
-                        </button>
+                        </a>
 </div>
 </div>
 </div>
@@ -72,7 +72,7 @@
 <span class="font-body-md">Standardized manufacturing protocols for global compliance</span>
 </li>
 </ul>
-<button class="bg-primary text-on-primary px-8 py-3 rounded-full font-label-md hover:bg-on-surface-variant transition-colors">Our Full Story</button>
+<a href="{{ route('shop.index') }}" class="inline-block bg-primary text-on-primary px-8 py-3 rounded-full font-label-md hover:bg-on-surface-variant transition-colors">Our Full Story</a>
 </div>
 </div>
 </section>
@@ -91,7 +91,7 @@
 <div class="absolute bottom-0 left-0 p-10 text-white w-full">
 <h3 class="font-headline-sm text-headline-sm mb-2 text-white">Ayurvedic Syrups</h3>
 <p class="font-body-md text-white/80 mb-6 max-w-sm">Potent formulations for immunity, digestion, and daily vitality.</p>
-<button class="bg-secondary text-on-secondary px-6 py-2.5 rounded-full text-label-md font-bold hover:scale-105 transition-all">Explore Range</button>
+<a href="{{ route('shop.index', ['category' => 'immunity-boosters']) }}" class="inline-block bg-secondary text-on-secondary px-6 py-2.5 rounded-full text-label-md font-bold hover:scale-105 transition-all">Explore Range</a>
 </div>
 </div>
 <!-- Small Card: Herbal Capsules -->
@@ -100,7 +100,7 @@
 <div class="absolute inset-0 portfolio-overlay"></div>
 <div class="absolute bottom-0 left-0 p-10 text-white w-full">
 <h3 class="font-headline-sm text-headline-sm mb-4 text-white">Herbal Capsules</h3>
-<button class="text-label-md font-bold text-white border-b-2 border-secondary pb-1 hover:text-secondary-fixed transition-all">View Products</button>
+<a href="{{ route('shop.index', ['category' => 'digestive-health']) }}" class="inline-block text-label-md font-bold text-white border-b-2 border-secondary pb-1 hover:text-secondary-fixed transition-all">View Products</a>
 </div>
 </div>
 <!-- Small Card: Pure Oils -->
@@ -109,7 +109,7 @@
 <div class="absolute inset-0 portfolio-overlay"></div>
 <div class="absolute bottom-0 left-0 p-10 text-white w-full">
 <h3 class="font-headline-sm text-headline-sm mb-4 text-white">Pure Oils</h3>
-<button class="text-label-md font-bold text-white border-b-2 border-secondary pb-1 hover:text-secondary-fixed transition-all">View Products</button>
+<a href="{{ route('shop.index', ['category' => 'skin-care']) }}" class="inline-block text-label-md font-bold text-white border-b-2 border-secondary pb-1 hover:text-secondary-fixed transition-all">View Products</a>
 </div>
 </div>
 <!-- Large Card: Wellness Tablets -->
@@ -119,7 +119,7 @@
 <div class="absolute bottom-0 left-0 p-10 text-white w-full">
 <h3 class="font-headline-sm text-headline-sm mb-2 text-white">Wellness Tablets</h3>
 <p class="font-body-md text-white/80 mb-6 max-w-sm">Precision-pressed herbal tablets crafted with authentic botanical extracts.</p>
-<button class="bg-secondary text-on-secondary px-6 py-2.5 rounded-full text-label-md font-bold hover:scale-105 transition-all">View All</button>
+<a href="{{ route('shop.index', ['category' => 'hair-care']) }}" class="inline-block bg-secondary text-on-secondary px-6 py-2.5 rounded-full text-label-md font-bold hover:scale-105 transition-all">View All</a>
 </div>
 </div>
 </div>
@@ -206,8 +206,8 @@
                         Partner with Kare ONS Herbals for pharmaceutical-grade Ayurvedic contract manufacturing and formulation development. Let's create clinical solutions together.
                     </p>
 <div class="flex flex-col sm:flex-row justify-center gap-6">
-<button class="bg-primary text-on-primary px-12 py-5 rounded-full font-label-md text-label-md shadow-xl hover:shadow-2xl transition-all">Request Partnership Proposal</button>
-<button class="bg-white border border-outline px-12 py-5 rounded-full font-label-md text-label-md hover:bg-surface-container transition-all">Schedule a Call</button>
+<a href="{{ route('shop.index') }}" class="bg-primary text-on-primary px-12 py-5 rounded-full font-label-md text-label-md shadow-xl hover:shadow-2xl transition-all inline-block text-center">Request Partnership Proposal</a>
+<a href="{{ route('shop.index') }}" class="bg-white border border-outline text-primary px-12 py-5 rounded-full font-label-md text-label-md hover:bg-surface-container transition-all inline-block text-center">Schedule a Call</a>
 </div>
 <div class="mt-16 flex justify-center items-center gap-10 text-on-surface-variant font-label-sm uppercase tracking-widest">
 <div class="flex items-center gap-2">
