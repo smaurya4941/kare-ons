@@ -5,7 +5,7 @@
         <!-- Brand / Identity Context -->
         <div class="text-center mb-8">
             <a href="{{ route('home') }}" class="inline-block">
-                <h1 class="font-headline-lg text-4xl font-bold text-primary tracking-tight">AyuPure</h1>
+                <h1 class="font-headline-lg text-4xl font-bold text-primary tracking-tight">Kare Ons Herbal</h1>
             </a>
             <p class="font-body-md text-base text-on-surface-variant mt-2">Pure Ayurveda, Elevated.</p>
         </div>

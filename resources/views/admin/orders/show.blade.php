@@ -57,10 +57,10 @@
                     <span>-₹{{ number_format($order->discount_amount, 2) }}</span>
                 </div>
                 @endif
-                @if(isset($order->shipping_amount) && $order->shipping_amount > 0)
+                @if(isset($order->shipping_charge) && $order->shipping_charge > 0)
                 <div class="flex justify-between text-sm text-gray-600">
                     <span>Shipping</span>
-                    <span>₹{{ number_format($order->shipping_amount, 2) }}</span>
+                    <span>₹{{ number_format($order->shipping_charge, 2) }}</span>
                 </div>
                 @endif
                 <div class="flex justify-between font-bold text-gray-900 text-base border-t border-gray-200 pt-2">
@@ -78,7 +78,7 @@
                 <strong class="text-gray-800">{{ $order->address->full_name }}</strong><br>
                 {{ $order->address->address_line_1 }}<br>
                 @if($order->address->address_line_2){{ $order->address->address_line_2 }}<br>@endif
-                {{ $order->address->city }}, {{ $order->address->state }} – {{ $order->address->pincode }}<br>
+                {{ $order->address->city }}, {{ $order->address->state }} – {{ $order->address->postal_code }}<br>
                 {{ $order->address->country }}<br>
                 📞 {{ $order->address->phone }}
             </address>

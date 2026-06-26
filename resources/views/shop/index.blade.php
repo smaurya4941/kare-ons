@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Shop - AyuPure')
+@section('title', 'Shop Herbal Products - Kare Ons Herbal')
 
 @section('content')
 <style>
@@ -105,7 +105,7 @@
                         <h3 class="font-label-md text-sm font-semibold uppercase tracking-wider text-on-surface mb-4">Search Products</h3>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-[20px]">search</span>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search AyuPure..." class="w-full border border-soft-border rounded py-2 pl-10 pr-3 text-sm focus:border-primary focus:ring-0">
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Kare Ons..." class="w-full border border-soft-border rounded py-2 pl-10 pr-3 text-sm focus:border-primary focus:ring-0">
                         </div>
                     </div>
                     <hr class="border-soft-border my-6"/>

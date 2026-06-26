@@ -15,8 +15,9 @@ class Coupon extends Model
     protected function casts(): array
     {
         return [
-            'starts_at' => 'datetime',
+            'starts_at'  => 'datetime',
             'expires_at' => 'datetime',
+            'status'     => 'boolean',
         ];
     }
 

@@ -3,7 +3,7 @@
     <main class="w-full max-w-md">
         <!-- Brand Logo -->
         <div class="text-center mb-12">
-            <a href="{{ route('home') }}" class="font-headline-lg text-4xl font-bold text-primary tracking-tight inline-block">AyuPure</a>
+            <a href="{{ route('home') }}" class="font-headline-lg text-4xl font-bold text-primary tracking-tight inline-block">Kare Ons Herbal</a>
             <p class="font-label-md text-sm font-medium text-on-surface-variant uppercase tracking-widest mt-2">Elevated Learning & Pure Ayurveda</p>
         </div>
         

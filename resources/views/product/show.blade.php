@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $product->meta_title ?? $product->name . ' - AyuPure')
+@section('title', ($product->meta_title ?? $product->name) . ' - Kare Ons Herbal')
 
 @section('content')
 <style>
@@ -146,7 +146,7 @@
             <div class="flex items-center gap-6 text-on-surface-variant font-body-md text-sm border-t border-soft-border pt-6">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-[20px]">local_shipping</span>
-                    <span>Free shipping over ₹1000</span>
+                    <span>Free shipping over ₹500</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-[20px]">verified</span>

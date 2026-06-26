@@ -11,9 +11,9 @@
         <!-- Header -->
         <header class="text-center flex flex-col gap-2">
             <a href="{{ route('home') }}" class="inline-block">
-                <h1 class="font-display-lg text-4xl font-bold text-primary">AyuPure</h1>
+                <h1 class="font-display-lg text-4xl font-bold text-primary">Kare Ons Herbal</h1>
             </a>
-            <p class="font-body-lg text-lg text-on-surface-variant mt-2">Elevated Learning & Pure Ayurveda</p>
+            <p class="font-body-lg text-lg text-on-surface-variant mt-2">Pure Ayurvedic &amp; Herbal Products</p>
         </header>
         
         <!-- Session Status -->
@@ -65,7 +65,7 @@
                     <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                 </button>
                 <p class="text-center font-body-md text-base text-on-surface-variant mt-4">
-                    New to AyuPure? 
+                    New to Kare Ons? 
                     <a class="font-headline-md text-base font-semibold text-primary hover:underline underline-offset-4 ml-1" href="{{ route('register') }}">Create an Account</a>
                 </p>
             </div>

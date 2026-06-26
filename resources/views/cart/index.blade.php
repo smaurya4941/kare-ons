@@ -148,7 +148,8 @@
                         <p class="text-xs text-secondary mt-1 text-right">Inclusive of all taxes</p>
                     </div>
 
-                    <a href="#" class="w-full flex items-center justify-center gap-2 bg-primary text-white font-medium text-lg py-4 rounded-xl hover:bg-on-primary-fixed-variant transition shadow-sm">
+                    <a href="{{ route('checkout.index') }}" class="w-full flex items-center justify-center gap-2 bg-primary text-white font-medium text-lg py-4 rounded-xl hover:bg-on-primary-fixed-variant transition shadow-sm">
+                        <span class="material-symbols-outlined text-[20px]">lock</span>
                         Proceed to Checkout <span class="material-symbols-outlined">arrow_forward</span>
                     </a>
 

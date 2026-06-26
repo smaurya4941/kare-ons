@@ -55,18 +55,38 @@
                 <span class="material-symbols-outlined text-[20px]">group</span>
                 Customers
             </a>
+            <a href="{{ route('admin.coupons.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.coupons.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">local_offer</span>
+                Coupons
+            </a>
+
+            <div class="pt-4 pb-1">
+                <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Content</p>
+            </div>
+            <a href="{{ route('admin.blogs.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.blogs.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">article</span>
+                Blog Posts
+            </a>
         </nav>
 
         <!-- User profile -->
         <div class="border-t border-slate-800 p-4">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-700 flex justify-center items-center font-bold text-sm text-white">
-                    {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-slate-700 flex justify-center items-center font-bold text-sm text-white flex-shrink-0">
+                        {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name ?? 'Administrator' }}</p>
+                        <p class="text-xs text-slate-400 truncate">{{ Auth::user()->email ?? 'admin@kareons.com' }}</p>
+                    </div>
                 </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-white truncate">{{ Auth::user()->name ?? 'Administrator' }}</p>
-                    <p class="text-xs text-slate-400 truncate">{{ Auth::user()->email ?? 'admin@kareons.com' }}</p>
-                </div>
+                <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0">
+                    @csrf
+                    <button type="submit" class="w-8 h-8 flex justify-center items-center rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition" title="Log Out">
+                        <span class="material-symbols-outlined text-[20px]">logout</span>
+                    </button>
+                </form>
             </div>
         </div>
     </aside>

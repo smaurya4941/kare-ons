@@ -45,10 +45,13 @@ Route::middleware('auth')->group(function () {
     // Product Review — requires login, rate-limited to 5 per hour
     Route::post('/product/{product}/review', [\App\Http\Controllers\Web\ReviewController::class, 'store'])->name('review.store')->middleware('throttle:reviews');
 
-    // Customer Dashboard
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->middleware('verified')->name('dashboard');
+    // Customer Dashboard — now loads real stats
+    Route::get('/dashboard', [\App\Http\Controllers\Web\DashboardController::class, 'index'])
+        ->middleware('verified')
+        ->name('dashboard');
+
+    // Customer Orders
+    Route::get('/orders', [\App\Http\Controllers\Web\OrderController::class, 'index'])->name('orders.index');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -71,6 +74,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->except(['create', 'store', 'edit']);
     Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class)->only(['index', 'show']);
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
+    Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
 });
 
 require __DIR__.'/auth.php';

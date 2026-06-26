@@ -90,20 +90,23 @@
                 </div>
 
                 <div class="space-y-4">
-                    <label class="flex items-center justify-between p-4 border border-outline-variant rounded-xl cursor-pointer hover:bg-surface-container transition has-[:checked]:border-primary has-[:checked]:bg-primary-fixed">
+                    <label class="flex items-center justify-between p-4 border border-outline-variant rounded-xl cursor-pointer hover:bg-surface-container transition has-[:checked]:border-primary has-[:checked]:bg-primary-fixed opacity-60">
                         <div class="flex items-center gap-3">
-                            <input type="radio" name="payment_method" value="razorpay" class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" checked>
+                            <input type="radio" name="payment_method" value="razorpay" class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" disabled>
                             <div>
-                                <h3 class="font-semibold text-on-surface">Razorpay (Cards, UPI, NetBanking)</h3>
-                                <p class="text-xs text-secondary mt-1">Secure online payment</p>
+                                <h3 class="font-semibold text-on-surface flex items-center gap-2">
+                                    Razorpay (Cards, UPI, NetBanking)
+                                    <span class="inline-block bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Coming Soon</span>
+                                </h3>
+                                <p class="text-xs text-secondary mt-1">Online payment — available soon</p>
                             </div>
                         </div>
-                        <span class="material-symbols-outlined text-primary text-[32px]">account_balance</span>
+                        <span class="material-symbols-outlined text-outline text-[32px]">account_balance</span>
                     </label>
 
-                    <label class="flex items-center justify-between p-4 border border-outline-variant rounded-xl cursor-pointer hover:bg-surface-container transition has-[:checked]:border-primary has-[:checked]:bg-primary-fixed">
+                    <label class="flex items-center justify-between p-4 border border-primary rounded-xl cursor-pointer bg-primary-fixed has-[:checked]:border-primary has-[:checked]:bg-primary-fixed">
                         <div class="flex items-center gap-3">
-                            <input type="radio" name="payment_method" value="cod" class="w-5 h-5 text-primary focus:ring-primary border-outline-variant">
+                            <input type="radio" name="payment_method" value="cod" class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" checked>
                             <div>
                                 <h3 class="font-semibold text-on-surface">Cash on Delivery</h3>
                                 <p class="text-xs text-secondary mt-1">Pay when you receive the order</p>
