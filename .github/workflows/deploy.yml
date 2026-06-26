@@ -42,8 +42,11 @@ jobs:
           local-dir: ./
           exclude: |
             **/.git*
-            **/.github/**
-            **/.env
+            **/.git/**
             **/node_modules/**
             **/tests/**
+            **/.github/**
             **/storage/logs/**
+            **/storage/framework/cache/**
+            **/storage/framework/sessions/**
+            **/storage/framework/views/**
