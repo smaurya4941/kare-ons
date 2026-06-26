@@ -33,7 +33,7 @@
 <div class="max-w-container-max mx-auto px-margin-desktop">
 <p class="text-center text-label-sm text-outline uppercase tracking-[0.2em] mb-8 font-bold">Standard of Excellence Certifications</p>
 <div class="flex flex-wrap justify-between items-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-<div class="flex items-center gap-2"><span class="text-headline-sm font-bold">GMP</span><span class="text-label-sm">Certified</span></div>
+<div class="flex items-center gap-2"><span class="text-headline-sm font-bold">GMP Sachin</span><span class="text-label-sm">Certified</span></div>
 <div class="flex items-center gap-2"><span class="text-headline-sm font-bold">ISO 9001:2015</span></div>
 <div class="flex items-center gap-2"><span class="text-headline-sm font-bold">AYUSH</span><span class="text-label-sm">Premium Mark</span></div>
 <div class="flex items-center gap-2"><span class="text-headline-sm font-bold">PAN INDIA</span><span class="text-label-sm">Distribution</span></div>
