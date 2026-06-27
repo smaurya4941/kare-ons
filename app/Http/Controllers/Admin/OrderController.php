@@ -42,9 +42,13 @@ class OrderController extends Controller
             'notes'        => 'nullable|string|max:1000',
         ]);
 
-        $order->update($validated);
-
-        return back()->with('success', 'Order status updated successfully.');
+        try {
+            $order->update($validated);
+            return back()->with('success', 'Order status updated successfully.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->withInput()->with('error', 'Failed to update order status due to an unexpected error.');
+        }
     }
 
     public function destroy(Order $order)
@@ -54,8 +58,12 @@ class OrderController extends Controller
             return back()->with('error', 'Only cancelled orders can be deleted.');
         }
 
-        $order->delete();
-
-        return redirect()->route('admin.orders.index')->with('success', 'Order deleted.');
+        try {
+            $order->delete();
+            return redirect()->route('admin.orders.index')->with('success', 'Order deleted.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'Failed to delete order due to an unexpected error.');
+        }
     }
 }

@@ -64,24 +64,29 @@ class CartController extends Controller
                            fn($q) => $q->where('session_id', $sessionId))
             ->first();
 
-        if ($cartItem) {
-            $newQuantity = $cartItem->quantity + $request->quantity;
+        try {
+            if ($cartItem) {
+                $newQuantity = $cartItem->quantity + $request->quantity;
 
-            if ($newQuantity > self::MAX_QUANTITY_PER_ITEM) {
-                return back()->with('error', 'You can add a maximum of ' . self::MAX_QUANTITY_PER_ITEM . ' units per item.');
-            }
-            if ($product->stock_quantity < $newQuantity) {
-                return back()->with('error', "Only {$product->stock_quantity} unit(s) available. You already have {$cartItem->quantity} in your cart.");
-            }
+                if ($newQuantity > self::MAX_QUANTITY_PER_ITEM) {
+                    return back()->with('error', 'You can add a maximum of ' . self::MAX_QUANTITY_PER_ITEM . ' units per item.');
+                }
+                if ($product->stock_quantity < $newQuantity) {
+                    return back()->with('error', "Only {$product->stock_quantity} unit(s) available. You already have {$cartItem->quantity} in your cart.");
+                }
 
-            $cartItem->update(['quantity' => $newQuantity]);
-        } else {
-            CartItem::create([
-                'user_id'    => $userId,
-                'session_id' => $userId ? null : $sessionId,
-                'product_id' => $product->id,
-                'quantity'   => $request->quantity,
-            ]);
+                $cartItem->update(['quantity' => $newQuantity]);
+            } else {
+                CartItem::create([
+                    'user_id'    => $userId,
+                    'session_id' => $userId ? null : $sessionId,
+                    'product_id' => $product->id,
+                    'quantity'   => $request->quantity,
+                ]);
+            }
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'Failed to add item to cart due to an unexpected error.');
         }
 
         if ($request->action === 'buy') {
@@ -110,9 +115,13 @@ class CartController extends Controller
             return back()->with('error', "Only {$cartItem->product->stock_quantity} unit(s) available.");
         }
 
-        $cartItem->update(['quantity' => $request->quantity]);
-
-        return back()->with('success', 'Cart updated.');
+        try {
+            $cartItem->update(['quantity' => $request->quantity]);
+            return back()->with('success', 'Cart updated.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'Failed to update cart due to an unexpected error.');
+        }
     }
 
     public function destroy(CartItem $cartItem)
@@ -121,8 +130,13 @@ class CartController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $cartItem->delete();
-        return back()->with('success', 'Item removed from cart.');
+        try {
+            $cartItem->delete();
+            return back()->with('success', 'Item removed from cart.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'Failed to remove item from cart due to an unexpected error.');
+        }
     }
 
     // -------------------------------------------------------------------------

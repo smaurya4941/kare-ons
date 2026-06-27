@@ -43,9 +43,13 @@ class CouponController extends Controller
         $validated['status'] = $request->boolean('status', true);
         $validated['minimum_order_amount'] = $validated['minimum_order_amount'] ?? 0;
 
-        Coupon::create($validated);
-
-        return redirect()->route('admin.coupons.index')->with('success', 'Coupon created successfully.');
+        try {
+            Coupon::create($validated);
+            return redirect()->route('admin.coupons.index')->with('success', 'Coupon created successfully.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->withInput()->with('error', 'Failed to create coupon due to an unexpected error.');
+        }
     }
 
     public function show(Coupon $coupon)
@@ -76,14 +80,23 @@ class CouponController extends Controller
         $validated['status'] = $request->boolean('status');
         $validated['minimum_order_amount'] = $validated['minimum_order_amount'] ?? 0;
 
-        $coupon->update($validated);
-
-        return redirect()->route('admin.coupons.index')->with('success', 'Coupon updated successfully.');
+        try {
+            $coupon->update($validated);
+            return redirect()->route('admin.coupons.index')->with('success', 'Coupon updated successfully.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->withInput()->with('error', 'Failed to update coupon due to an unexpected error.');
+        }
     }
 
     public function destroy(Coupon $coupon)
     {
-        $coupon->delete();
-        return redirect()->route('admin.coupons.index')->with('success', 'Coupon deleted.');
+        try {
+            $coupon->delete();
+            return redirect()->route('admin.coupons.index')->with('success', 'Coupon deleted.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'Failed to delete coupon due to an unexpected error.');
+        }
     }
 }

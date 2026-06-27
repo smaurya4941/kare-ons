@@ -27,16 +27,21 @@ class ReviewController extends Controller
             return back()->with('error', 'You have already submitted a review for this product.');
         }
 
-        // The DB column is named `review`, not `comment`
-        Review::create([
-            'user_id'    => Auth::id(),
-            'product_id' => $product->id,
-            'rating'     => $request->rating,
-            'title'      => $request->title,
-            'review'     => $request->comment,   // 'review' is the actual DB column
-            'status'     => true,                 // default approved; set false for moderation
-        ]);
+        try {
+            // The DB column is named `review`, not `comment`
+            Review::create([
+                'user_id'    => Auth::id(),
+                'product_id' => $product->id,
+                'rating'     => $request->rating,
+                'title'      => $request->title,
+                'review'     => $request->comment,   // 'review' is the actual DB column
+                'status'     => true,                 // default approved; set false for moderation
+            ]);
 
-        return back()->with('success', 'Thank you! Your review has been submitted.');
+            return back()->with('success', 'Thank you! Your review has been submitted.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->withInput()->with('error', 'Failed to submit review due to an unexpected error.');
+        }
     }
 }

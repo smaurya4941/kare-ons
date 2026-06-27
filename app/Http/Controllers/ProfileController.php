@@ -32,9 +32,13 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        try {
+            $request->user()->save();
+            return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        } catch (\Exception $e) {
+            report($e);
+            return Redirect::route('profile.edit')->with('error', 'Failed to update profile due to an unexpected error.');
+        }
     }
 
     /**
@@ -50,11 +54,16 @@ class ProfileController extends Controller
 
         Auth::logout();
 
-        $user->delete();
+        try {
+            $user->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+            return Redirect::to('/');
+        } catch (\Exception $e) {
+            report($e);
+            return Redirect::route('profile.edit')->with('error', 'Failed to delete account due to an unexpected error.');
+        }
     }
 }

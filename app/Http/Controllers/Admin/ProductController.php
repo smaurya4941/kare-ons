@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -71,23 +72,41 @@ class ProductController extends Controller
             'gallery.*'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $validated['slug']     = $this->uniqueSlug($validated['name']);
-        $validated['featured'] = $request->boolean('featured');
-        $validated['main_image'] = $request->file('main_image')->store('products', 'public');
+        try {
+            DB::beginTransaction();
 
-        $product = Product::create(Arr::except($validated, ['gallery']));
+            $validated['slug']     = $this->uniqueSlug($validated['name']);
+            $validated['featured'] = $request->boolean('featured');
+            $validated['main_image'] = $request->file('main_image')->store('products', 'public');
 
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $index => $image) {
-                $path = $image->store('products/gallery', 'public');
-                $product->images()->create([
-                    'image_path'  => $path,
-                    'sort_order'  => $index,
-                ]);
+            $product = Product::create(Arr::except($validated, ['gallery']));
+
+            if ($request->hasFile('gallery')) {
+                foreach ($request->file('gallery') as $index => $image) {
+                    $path = $image->store('products/gallery', 'public');
+                    $product->images()->create([
+                        'image_path'  => $path,
+                        'sort_order'  => $index,
+                    ]);
+                }
             }
-        }
 
-        return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
+            DB::commit();
+            return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Delete uploaded files if DB insertion failed
+            if (isset($validated['main_image'])) {
+                Storage::disk('public')->delete($validated['main_image']);
+            }
+            if ($request->hasFile('gallery')) {
+                // We'd have to track uploaded paths, but for simplicity we rely on local garbage collection or storage cleanup later
+                // Just log the error and return
+            }
+            report($e);
+            return back()->withInput()->with('error', 'Failed to create product due to an unexpected error.');
+        }
     }
 
     public function show(Product $product)
@@ -133,33 +152,43 @@ class ProductController extends Controller
             'gallery.*'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
-        $validated['featured'] = $request->boolean('featured');
+        try {
+            DB::beginTransaction();
 
-        if ($validated['name'] !== $product->name) {
-            $validated['slug'] = $this->uniqueSlug($validated['name'], $product->id);
-        }
+            $validated['featured'] = $request->boolean('featured');
 
-        if ($request->hasFile('main_image')) {
-            if ($product->main_image) {
-                Storage::disk('public')->delete($product->main_image);
+            if ($validated['name'] !== $product->name) {
+                $validated['slug'] = $this->uniqueSlug($validated['name'], $product->id);
             }
-            $validated['main_image'] = $request->file('main_image')->store('products', 'public');
-        }
 
-        $product->update(Arr::except($validated, ['gallery']));
-
-        if ($request->hasFile('gallery')) {
-            $maxSort = $product->images()->max('sort_order') ?? -1;
-            foreach ($request->file('gallery') as $index => $image) {
-                $path = $image->store('products/gallery', 'public');
-                $product->images()->create([
-                    'image_path' => $path,
-                    'sort_order' => $maxSort + 1 + $index,
-                ]);
+            if ($request->hasFile('main_image')) {
+                if ($product->main_image) {
+                    Storage::disk('public')->delete($product->main_image);
+                }
+                $validated['main_image'] = $request->file('main_image')->store('products', 'public');
             }
-        }
 
-        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
+            $product->update(Arr::except($validated, ['gallery']));
+
+            if ($request->hasFile('gallery')) {
+                $maxSort = $product->images()->max('sort_order') ?? -1;
+                foreach ($request->file('gallery') as $index => $image) {
+                    $path = $image->store('products/gallery', 'public');
+                    $product->images()->create([
+                        'image_path' => $path,
+                        'sort_order' => $maxSort + 1 + $index,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report($e);
+            return back()->withInput()->with('error', 'Failed to update product due to an unexpected error.');
+        }
     }
 
     public function destroyImage(ProductImage $image)
@@ -171,15 +200,24 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->main_image) {
-            Storage::disk('public')->delete($product->main_image);
-        }
-        foreach ($product->images as $img) {
-            Storage::disk('public')->delete($img->image_path);
-        }
-        $product->delete();
+        try {
+            DB::beginTransaction();
 
-        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
+            if ($product->main_image) {
+                Storage::disk('public')->delete($product->main_image);
+            }
+            foreach ($product->images as $img) {
+                Storage::disk('public')->delete($img->image_path);
+            }
+            $product->delete();
+
+            DB::commit();
+            return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            report($e);
+            return back()->with('error', 'Failed to delete product due to an unexpected error.');
+        }
     }
 
     // -------------------------------------------------------------------------

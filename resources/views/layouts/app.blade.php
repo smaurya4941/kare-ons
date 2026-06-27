@@ -141,9 +141,9 @@
 <body class="bg-background text-on-background font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
     <!-- TopNavBar -->
     <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-outline-variant transition-all duration-300" id="navbar">
-        <div class="flex justify-between items-center max-w-container-max mx-auto px-margin-desktop h-16">
-            <a href="{{ route('home') }}" class="font-display text-xl font-bold tracking-tight text-on-surface">
-                Kare ONS Herbals
+        <div class="flex justify-between items-center max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-16">
+            <a href="{{ route('home') }}" class="flex items-center">
+                <img src="{{ asset('images/logo.png') }}" alt="Kare ONS Herbals Logo" class="h-12 w-auto object-contain">
             </a>
             <div class="hidden md:flex items-center gap-8 h-full">
                 <a class="{{ request()->routeIs('home') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('home') }}">Home</a>
@@ -195,9 +195,30 @@
                         <span class="material-symbols-outlined">login</span>
                     </a>
                 @endauth
-                <button class="md:hidden text-on-surface ml-2">
-                    <span class="material-symbols-outlined">menu</span>
+                <button id="mobile-menu-btn" class="md:hidden text-on-surface ml-2">
+                    <span id="mobile-menu-icon" class="material-symbols-outlined">menu</span>
                 </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-outline-variant absolute top-16 left-0 w-full shadow-lg h-[calc(100vh-64px)] overflow-y-auto">
+            <div class="flex flex-col py-4 px-margin-mobile">
+                <a class="{{ request()->routeIs('home') ? 'nav-link-active' : 'text-on-surface' }} py-3 text-sm font-medium border-b border-surface-container" href="{{ route('home') }}">Home</a>
+                <a class="{{ request()->routeIs('shop.index') ? 'nav-link-active' : 'text-on-surface' }} py-3 text-sm font-medium border-b border-surface-container" href="{{ route('shop.index') }}">Shop</a>
+                
+                <div class="py-3 border-b border-surface-container">
+                    <p class="text-sm font-medium text-on-surface mb-2">Categories</p>
+                    <div class="flex flex-col pl-4 gap-3">
+                        @foreach($navCategories as $navCat)
+                            <a class="text-sm text-on-surface-variant hover:text-primary" href="{{ route('shop.index', ['category' => $navCat->slug]) }}">{{ $navCat->name }}</a>
+                        @endforeach
+                    </div>
+                </div>
+
+                <a class="{{ request()->routeIs('about') ? 'nav-link-active' : 'text-on-surface' }} py-3 text-sm font-medium border-b border-surface-container" href="{{ route('about') }}">About</a>
+                <a class="{{ request()->routeIs('blog.index') ? 'nav-link-active' : 'text-on-surface' }} py-3 text-sm font-medium border-b border-surface-container" href="{{ route('blog.index') }}">Blog</a>
+                <a class="{{ request()->routeIs('contact') ? 'nav-link-active' : 'text-on-surface' }} py-3 text-sm font-medium" href="{{ route('contact') }}">Contact</a>
             </div>
         </div>
     </nav>
@@ -205,7 +226,7 @@
     <!-- Main Content -->
     @isset($header)
         <header class="bg-surface shadow-sm border-b border-outline-variant mt-16">
-            <div class="max-w-container-max mx-auto py-6 px-margin-desktop">
+            <div class="max-w-container-max mx-auto py-6 px-margin-mobile md:px-margin-desktop">
                 {{ $header }}
             </div>
         </header>
@@ -217,9 +238,11 @@
     </main>
 
     <footer class="w-full bg-primary dark:bg-tertiary-container">
-<div class="max-w-container-max mx-auto px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter">
 <div class="col-span-1 md:col-span-1">
-<a class="text-headline-md font-headline-md text-on-primary dark:text-on-tertiary-container block mb-6" href="{{ route('home') }}">Kare ONS Herbals</a>
+<a class="block mb-6" href="{{ route('home') }}">
+    <img src="{{ asset('images/logo.png') }}" alt="Kare ONS Herbals Logo" class="h-20 w-auto object-contain bg-white rounded-full p-2">
+</a>
 <p class="text-on-primary/80 text-label-md mb-8 leading-relaxed">
                     Setting the global benchmark for scientific Ayurveda and botanical clinical excellence since 1999.
                 </p>
@@ -256,7 +279,7 @@
 </ul>
 </div>
 </div>
-<div class="max-w-container-max mx-auto px-margin-desktop py-8 border-t border-on-primary/10">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 border-t border-on-primary/10">
 <p class="text-on-primary/60 text-label-sm text-center">
                 © 2024 Kare ONS Herbals. Clinical Excellence in Botanical Medicine. Manufactured in GMP-Certified Facilities.
             </p>
@@ -296,6 +319,24 @@
                 navbar.classList.remove('shadow-md');
             }
         });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuIcon = document.getElementById('mobile-menu-icon');
+
+        if (mobileMenuBtn && mobileMenu && mobileMenuIcon) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                if (mobileMenu.classList.contains('hidden')) {
+                    mobileMenuIcon.textContent = 'menu';
+                    document.body.style.overflow = '';
+                } else {
+                    mobileMenuIcon.textContent = 'close';
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+                }
+            });
+        }
     </script>
 </body>
 </html>

@@ -57,9 +57,16 @@ class BlogController extends Controller
             $validated['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
         }
 
-        Blog::create($validated);
-
-        return redirect()->route('admin.blogs.index')->with('success', 'Blog post created successfully.');
+        try {
+            Blog::create($validated);
+            return redirect()->route('admin.blogs.index')->with('success', 'Blog post created successfully.');
+        } catch (\Exception $e) {
+            if (isset($validated['featured_image'])) {
+                Storage::disk('public')->delete($validated['featured_image']);
+            }
+            report($e);
+            return back()->withInput()->with('error', 'Failed to create blog post due to an unexpected error.');
+        }
     }
 
     public function show(Blog $blog)
@@ -104,19 +111,28 @@ class BlogController extends Controller
             $validated['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
         }
 
-        $blog->update($validated);
-
-        return redirect()->route('admin.blogs.index')->with('success', 'Blog post updated successfully.');
+        try {
+            $blog->update($validated);
+            return redirect()->route('admin.blogs.index')->with('success', 'Blog post updated successfully.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->withInput()->with('error', 'Failed to update blog post due to an unexpected error.');
+        }
     }
 
     public function destroy(Blog $blog)
     {
-        if ($blog->featured_image) {
-            Storage::disk('public')->delete($blog->featured_image);
-        }
-        $blog->delete();
+        try {
+            if ($blog->featured_image) {
+                Storage::disk('public')->delete($blog->featured_image);
+            }
+            $blog->delete();
 
-        return redirect()->route('admin.blogs.index')->with('success', 'Blog post deleted.');
+            return redirect()->route('admin.blogs.index')->with('success', 'Blog post deleted.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'Failed to delete blog post due to an unexpected error.');
+        }
     }
 
     // -------------------------------------------------------------------------

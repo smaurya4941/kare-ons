@@ -43,9 +43,16 @@ class CategoryController extends Controller
             $validated['image'] = $request->file('image')->store('categories', 'public');
         }
 
-        Category::create($validated);
-
-        return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
+        try {
+            Category::create($validated);
+            return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
+        } catch (\Exception $e) {
+            if (isset($validated['image'])) {
+                Storage::disk('public')->delete($validated['image']);
+            }
+            report($e);
+            return back()->withInput()->with('error', 'Failed to create category due to an unexpected error.');
+        }
     }
 
     public function edit(Category $category)
@@ -74,9 +81,13 @@ class CategoryController extends Controller
             $validated['image'] = $request->file('image')->store('categories', 'public');
         }
 
-        $category->update($validated);
-
-        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
+        try {
+            $category->update($validated);
+            return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->withInput()->with('error', 'Failed to update category due to an unexpected error.');
+        }
     }
 
     public function destroy(Category $category)
@@ -85,12 +96,17 @@ class CategoryController extends Controller
             return back()->with('error', 'Cannot delete a category that has products. Reassign or delete the products first.');
         }
 
-        if ($category->image) {
-            Storage::disk('public')->delete($category->image);
-        }
-        $category->delete();
+        try {
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
+            $category->delete();
 
-        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
+            return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'Failed to delete category due to an unexpected error.');
+        }
     }
 
     // -------------------------------------------------------------------------

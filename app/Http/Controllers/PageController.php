@@ -27,8 +27,12 @@ class PageController extends Controller
             'message' => 'required|string',
         ]);
 
-        ContactInquiry::create($validated);
-
-        return redirect()->back()->with('success', 'Thank you! Your inquiry has been sent.');
+        try {
+            ContactInquiry::create($validated);
+            return redirect()->back()->with('success', 'Thank you! Your inquiry has been sent.');
+        } catch (\Exception $e) {
+            report($e);
+            return redirect()->back()->withInput()->with('error', 'Failed to send inquiry due to an unexpected error.');
+        }
     }
 }
