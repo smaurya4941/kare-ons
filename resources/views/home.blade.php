@@ -5,7 +5,7 @@
 <!-- Hero Section -->
 <section class="relative h-[90vh] flex items-center overflow-hidden">
 <div class="absolute inset-0 z-0">
-<div class="w-full h-full bg-cover bg-center opacity-40" data-alt="A sophisticated, high-end laboratory setting featuring glass beakers, minimal botanical arrangements of fresh herbs like ashwagandha and neem, bathed in clinical bright white light. The aesthetic is extremely clean and corporate modern, utilizing a palette of deep navy and slate with crisp white highlights to convey professional medical authority and premium wellness." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAwFEioZmdWOcM4DVlVqnXarX4GXg6E_3pqPGJ9qld0IO7yJ_CZhfX3Zwp-qnfpt__FyCN0_K5j531wTlQtqctdZg3Gx1pIH1uh9nusroOJkFg-4k2bteEfXQ3FfZQIDnCXtiDUChXHGayo4eI99Ax69rK1C_Q5P-r5_2mvlw808GrBotWHQg3L3Yq3SXQFczGMbSu5GDBz2jZMqe-gC6IKOGxWpGBYz3K0_d73R6J4v4oHQVyVshr45hwO4DUnZ9rqUUIVRqOPdnU");'></div>
+<div class="w-full h-full bg-cover bg-center opacity-40" data-alt="Hero Background" style='background-image: url("{{ setting('home_hero_bg') ? asset('storage/' . setting('home_hero_bg')) : 'https://lh3.googleusercontent.com/aida-public/AB6AXuAwFEioZmdWOcM4DVlVqnXarX4GXg6E_3pqPGJ9qld0IO7yJ_CZhfX3Zwp-qnfpt__FyCN0_K5j531wTlQtqctdZg3Gx1pIH1uh9nusroOJkFg-4k2bteEfXQ3FfZQIDnCXtiDUChXHGayo4eI99Ax69rK1C_Q5P-r5_2mvlw808GrBotWHQg3L3Yq3SXQFczGMbSu5GDBz2jZMqe-gC6IKOGxWpGBYz3K0_d73R6J4v4oHQVyVshr45hwO4DUnZ9rqUUIVRqOPdnU' }}");'></div>
 <div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
 </div>
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10 w-full">
@@ -14,13 +14,13 @@
 <span class="material-symbols-outlined text-[18px]">verified</span>
 <span class="text-label-sm font-bold uppercase tracking-wider">GMP Certified Excellence</span>
 </div>
-<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background mb-6">Nature's Wisdom, <br/><span class="text-secondary">Refined by Science.</span></h1>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background mb-6">{!! setting('home_hero_title', 'Nature\'s Wisdom, <br/><span class="text-secondary">Refined by Science.</span>') !!}</h1>
 <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 leading-relaxed">
-                        Pioneering clinical-grade Ayurvedic medicine through rigorous scientific validation. Our state-of-the-art manufacturing facilities deliver holistic wellness solutions that honor ancient traditions while meeting modern pharmaceutical standards.
+                        {!! setting('home_hero_subtitle', 'Pioneering clinical-grade Ayurvedic medicine through rigorous scientific validation. Our state-of-the-art manufacturing facilities deliver holistic wellness solutions that honor ancient traditions while meeting modern pharmaceutical standards.') !!}
                     </p>
 <div class="flex flex-wrap gap-4">
-<a href="{{ route('shop.index') }}" class="bg-primary text-on-primary px-10 py-4 rounded-full font-label-md text-label-md hover:scale-105 transition-transform duration-300">Start Your Inquiry</a>
-<a href="{{ route('shop.index') }}" class="border border-secondary text-secondary px-10 py-4 rounded-full font-label-md text-label-md flex items-center gap-2 hover:bg-secondary/5 transition-colors">
+<a href="{{ setting('home_cta_link', route('shop.index')) }}" class="bg-primary text-on-primary px-10 py-4 rounded-full font-label-md text-label-md hover:scale-105 transition-transform duration-300">{{ setting('home_cta_text', 'Start Your Inquiry') }}</a>
+<a href="{{ setting('home_cta_link', route('shop.index')) }}" class="border border-secondary text-secondary px-10 py-4 rounded-full font-label-md text-label-md flex items-center gap-2 hover:bg-secondary/5 transition-colors">
 <span class="material-symbols-outlined">play_circle</span>
                             Our Process
                         </a>

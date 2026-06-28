@@ -67,6 +67,14 @@
                 <span class="material-symbols-outlined text-[20px]">article</span>
                 Blog Posts
             </a>
+
+            <div class="pt-4 pb-1">
+                <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">System</p>
+            </div>
+            <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">settings</span>
+                Settings
+            </a>
         </nav>
 
         <!-- User profile -->

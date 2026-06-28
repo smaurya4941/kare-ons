@@ -75,6 +75,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class)->only(['index', 'show']);
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
     Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
+    
+    Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+    Route::put('settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';

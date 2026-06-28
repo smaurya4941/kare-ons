@@ -143,7 +143,7 @@
     <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-outline-variant transition-all duration-300" id="navbar">
         <div class="flex justify-between items-center max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-16">
             <a href="{{ route('home') }}" class="flex items-center">
-                <img src="{{ asset('images/logo.png') }}" alt="Kare ONS Herbals Logo" class="h-12 w-auto object-contain">
+                <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-12 w-auto object-contain">
             </a>
             <div class="hidden md:flex items-center gap-8 h-full">
                 <a class="{{ request()->routeIs('home') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('home') }}">Home</a>
@@ -241,14 +241,18 @@
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter">
 <div class="col-span-1 md:col-span-1">
 <a class="block mb-6" href="{{ route('home') }}">
-    <img src="{{ asset('images/logo.png') }}" alt="Kare ONS Herbals Logo" class="h-20 w-auto object-contain bg-white rounded-full p-2">
+    <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-20 w-auto object-contain bg-white rounded-full p-2">
 </a>
 <p class="text-on-primary/80 text-label-md mb-8 leading-relaxed">
-                    Setting the global benchmark for scientific Ayurveda and botanical clinical excellence since 1999.
+                    {!! setting('about_text', 'Setting the global benchmark for scientific Ayurveda and botanical clinical excellence since 1999.') !!}
                 </p>
 <div class="flex gap-4">
-<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">public</span></a>
-<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="#"><span class="material-symbols-outlined text-[20px]">share</span></a>
+@if(setting('facebook_url'))
+<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('facebook_url') }}" target="_blank"><span class="material-symbols-outlined text-[20px]">public</span></a>
+@endif
+@if(setting('instagram_url'))
+<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('instagram_url') }}" target="_blank"><span class="material-symbols-outlined text-[20px]">photo_camera</span></a>
+@endif
 </div>
 </div>
 <div>
@@ -281,7 +285,7 @@
 </div>
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 border-t border-on-primary/10">
 <p class="text-on-primary/60 text-label-sm text-center">
-                © 2024 Kare ONS Herbals. Clinical Excellence in Botanical Medicine. Manufactured in GMP-Certified Facilities.
+                {{ setting('copyright_text', '© ' . date('Y') . ' Kare ONS Herbals. All rights reserved.') }}
             </p>
 </div>
 </footer>
