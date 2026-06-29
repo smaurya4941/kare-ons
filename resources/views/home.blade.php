@@ -212,11 +212,11 @@
 <div class="mt-16 flex justify-center items-center gap-10 text-on-surface-variant font-label-sm uppercase tracking-widest">
 <div class="flex items-center gap-2">
 <span class="material-symbols-outlined text-secondary">mail</span>
-                            info@kareonsherbals.com
+                            {{ setting('site_email', 'info@kareonsherbals.com') }}
                         </div>
 <div class="flex items-center gap-2">
 <span class="material-symbols-outlined text-secondary">call</span>
-                            +91-70841104992
+                            {{ setting('site_phone', '+91-70841104992') }}
                         </div>
 </div>
 </div>

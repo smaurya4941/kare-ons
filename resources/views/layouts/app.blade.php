@@ -243,7 +243,7 @@
     </main>
 
     <footer class="w-full bg-primary dark:bg-tertiary-container">
-<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-gutter">
 <div class="col-span-1 md:col-span-1">
 <a class="block mb-6" href="{{ route('home') }}">
     <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-20 w-auto object-contain bg-white rounded-full p-2">
@@ -251,14 +251,6 @@
 <p class="text-on-primary/80 text-label-md mb-8 leading-relaxed">
                     {!! setting('about_text', 'Setting the global benchmark for scientific Ayurveda and botanical clinical excellence since 1999.') !!}
                 </p>
-<div class="flex gap-4">
-@if(setting('facebook_url'))
-<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('facebook_url') }}" target="_blank"><span class="material-symbols-outlined text-[20px]">public</span></a>
-@endif
-@if(setting('instagram_url'))
-<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('instagram_url') }}" target="_blank"><span class="material-symbols-outlined text-[20px]">photo_camera</span></a>
-@endif
-</div>
 </div>
 <div>
 <h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Explore</h5>
@@ -286,6 +278,46 @@
 <li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Terms of Service</a></li>
 <li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Returns &amp; Shipping</a></li>
 </ul>
+</div>
+<div>
+<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Contact Us</h5>
+<ul class="space-y-4">
+@if(setting('site_email'))
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]">mail</span>
+<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="mailto:{{ setting('site_email') }}">{{ setting('site_email') }}</a>
+</li>
+@endif
+@if(setting('site_phone'))
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]">call</span>
+<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="tel:{{ setting('site_phone') }}">{{ setting('site_phone') }}</a>
+</li>
+@endif
+@if(setting('address'))
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]">location_on</span>
+<span class="text-on-primary/80 font-body-md">{{ setting('address') }}</span>
+</li>
+@endif
+</ul>
+<div class="flex gap-4 mt-6">
+@if(setting('linkedin_url'))
+<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('linkedin_url') }}" target="_blank" title="LinkedIn">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+</a>
+@endif
+@if(setting('instagram_url'))
+<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('instagram_url') }}" target="_blank" title="Instagram">
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+</a>
+@endif
+@if(setting('twitter_url'))
+<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('twitter_url') }}" target="_blank" title="Twitter">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+</a>
+@endif
+</div>
 </div>
 </div>
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 border-t border-on-primary/10">

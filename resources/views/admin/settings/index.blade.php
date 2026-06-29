@@ -72,6 +72,11 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Contact Phone</label>
                     <input type="text" name="site_phone" value="{{ old('site_phone', $settings->site_phone) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Physical Address</label>
+                    <textarea name="address" rows="3" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">{{ old('address', $settings->address) }}</textarea>
+                </div>
             </div>
 
             <!-- Social Links -->
@@ -86,6 +91,16 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Instagram URL</label>
                     <input type="url" name="instagram_url" value="{{ old('instagram_url', $settings->instagram_url) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">LinkedIn URL</label>
+                    <input type="url" name="linkedin_url" value="{{ old('linkedin_url', $settings->linkedin_url) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Twitter URL</label>
+                    <input type="url" name="twitter_url" value="{{ old('twitter_url', $settings->twitter_url) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 </div>
             </div>
 

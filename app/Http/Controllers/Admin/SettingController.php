@@ -30,6 +30,8 @@ class SettingController extends Controller
             'address' => 'nullable|string',
             'facebook_url' => 'nullable|url',
             'instagram_url' => 'nullable|url',
+            'linkedin_url' => 'nullable|url',
+            'twitter_url' => 'nullable|url',
             'youtube_url' => 'nullable|url',
             'copyright_text' => 'nullable|string|max:255',
             'about_text' => 'nullable|string',
