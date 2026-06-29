@@ -41,6 +41,7 @@
 </div>
 </div>
 </section>
+{{-- 
 <!-- Heritage Section -->
 <section class="py-section-gap">
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
@@ -76,6 +77,7 @@
 </div>
 </div>
 </section>
+--}}
 <!-- Curated Ayurvedic Collections (Imported from SCREEN_18) -->
 <section class="py-section-gap bg-surface-container-low">
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
