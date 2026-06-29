@@ -31,6 +31,17 @@
                     @endif
                     <input type="file" name="logo" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
                 </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Browser Favicon</label>
+                    @if($settings->favicon)
+                        <div class="mb-2">
+                            <img src="{{ asset('storage/' . $settings->favicon) }}" alt="Current Favicon" class="h-8 w-8 bg-gray-100 p-1 rounded border">
+                        </div>
+                    @endif
+                    <input type="file" name="favicon" accept="image/x-icon,image/png,image/jpeg,image/webp,image/svg+xml" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    <p class="text-xs text-gray-500 mt-1">Recommended size: 32x32px or 16x16px (.png, .ico)</p>
+                </div>
             </div>
 
             <!-- Content Snippets -->

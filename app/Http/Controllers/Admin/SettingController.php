@@ -38,7 +38,8 @@ class SettingController extends Controller
             'home_cta_text' => 'nullable|string|max:100',
             'home_cta_link' => 'nullable|string|max:255',
             'home_hero_bg' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
+            'favicon' => 'nullable|image|mimes:jpeg,png,jpg,webp,ico,svg|max:1024',
         ]);
 
         // Handle File Upload for Logo
@@ -47,6 +48,14 @@ class SettingController extends Controller
                 Storage::disk('public')->delete($settings->logo);
             }
             $validated['logo'] = $request->file('logo')->store('settings', 'public');
+        }
+
+        // Handle File Upload for Favicon
+        if ($request->hasFile('favicon')) {
+            if ($settings->favicon && Storage::disk('public')->exists($settings->favicon)) {
+                Storage::disk('public')->delete($settings->favicon);
+            }
+            $validated['favicon'] = $request->file('favicon')->store('settings', 'public');
         }
 
         // Handle File Upload for Home Hero BG

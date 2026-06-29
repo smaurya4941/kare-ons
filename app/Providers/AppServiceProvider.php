@@ -15,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Require custom helper file manually so we don't depend on composer dump-autoload on live servers
+        if (file_exists(app_path('Helpers/SettingsHelper.php'))) {
+            require_once app_path('Helpers/SettingsHelper.php');
+        }
     }
 
     /**

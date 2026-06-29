@@ -4,7 +4,12 @@
     
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Kare ONS Herbals | Clinical Excellence in Botanical Medicine</title>
+<title>@yield('title', setting('site_name', 'Kare ONS Herbals') . ' | Clinical Excellence in Botanical Medicine')</title>
+@if(setting('favicon'))
+    <link rel="icon" type="image/png" href="{{ asset('storage/' . setting('favicon')) }}">
+@else
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+@endif
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
