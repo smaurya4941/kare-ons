@@ -61,21 +61,21 @@
 <span class="material-symbols-outlined text-primary mt-1 mr-4">location_on</span>
 <div>
 <p class="font-label-md text-label-md text-on-surface-variant mb-1">Office Address</p>
-<p class="font-body-md text-body-md text-on-surface">Kare Ons Herbal Wellness Center<br/>Mumbai, India</p>
+<p class="font-body-md text-body-md text-on-surface">{!! nl2br(e(setting('address', "Kare Ons Herbal Wellness Center\nMumbai, India"))) !!}</p>
 </div>
 </div>
 <div class="flex items-start">
 <span class="material-symbols-outlined text-primary mt-1 mr-4">phone</span>
 <div>
 <p class="font-label-md text-label-md text-on-surface-variant mb-1">Phone</p>
-<p class="font-body-md text-body-md text-on-surface">+91 9315436116</p>
+<p class="font-body-md text-body-md text-on-surface">{{ setting('site_phone', '+91 9315436116') }}</p>
 </div>
 </div>
 <div class="flex items-start">
 <span class="material-symbols-outlined text-primary mt-1 mr-4">mail</span>
 <div>
 <p class="font-label-md text-label-md text-on-surface-variant mb-1">Email</p>
-<p class="font-body-md text-body-md text-on-surface">support@ayupure.com</p>
+<p class="font-body-md text-body-md text-on-surface">{{ setting('site_email', 'info@kareons.com') }}</p>
 </div>
 </div>
 </div>
