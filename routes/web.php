@@ -45,10 +45,13 @@ Route::middleware('auth')->group(function () {
     // Product Review — requires login, rate-limited to 5 per hour
     Route::post('/product/{product}/review', [\App\Http\Controllers\Web\ReviewController::class, 'store'])->name('review.store')->middleware('throttle:reviews');
 
-    // Customer Dashboard — now loads real stats
-    Route::get('/dashboard', [\App\Http\Controllers\Web\DashboardController::class, 'index'])
-        ->middleware('verified')
-        ->name('dashboard');
+    // Dashboard Redirect — keep only admin dashboard, redirect normal users to orders
+    Route::get('/dashboard', function () {
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('orders.index');
+    })->middleware('verified')->name('dashboard');
 
     // Customer Orders
     Route::get('/orders', [\App\Http\Controllers\Web\OrderController::class, 'index'])->name('orders.index');
