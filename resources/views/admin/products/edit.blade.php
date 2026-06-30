@@ -201,6 +201,9 @@
                     @foreach($product->images as $image)
                     <div class="relative group aspect-square rounded-lg border border-gray-200 overflow-hidden bg-gray-50">
                         <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover">
+                        <button type="submit" form="delete-image-{{ $image->id }}" onclick="return confirm('Are you sure you want to delete this image?')" class="absolute top-1 right-1 bg-red-500 text-white rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-600 shadow-sm" title="Delete Image">
+                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                        </button>
                     </div>
                     @endforeach
                 </div>
@@ -239,4 +242,12 @@
         }
     }
 </script>
+
+@foreach($product->images as $image)
+<form id="delete-image-{{ $image->id }}" action="{{ route('admin.products.images.destroy', [$product->id, $image->id]) }}" method="POST" class="hidden">
+    @csrf
+    @method('DELETE')
+</form>
+@endforeach
+
 @endsection
