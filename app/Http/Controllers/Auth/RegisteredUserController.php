@@ -47,8 +47,24 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        $oldSessionId = session()->getId();
+        
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // Migrate Cart Items
+        $userId = Auth::id();
+        $guestItems = \App\Models\CartItem::where('session_id', $oldSessionId)->get();
+        foreach ($guestItems as $item) {
+            $existing = \App\Models\CartItem::where('user_id', $userId)->where('product_id', $item->product_id)->first();
+            if ($existing) {
+                $existing->quantity += $item->quantity;
+                $existing->save();
+                $item->delete();
+            } else {
+                $item->update(['user_id' => $userId, 'session_id' => null]);
+            }
+        }
+
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 }

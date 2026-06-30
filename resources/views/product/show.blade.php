@@ -6,31 +6,34 @@
 <style>
     .btn-squish:active { transform: scale(0.95); transition: transform 0.1s; }
     .hover-border-primary:hover { border-color: theme('colors.primary'); transition: border-color 0.3s; }
-    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-    .accordion-item.active .accordion-content { max-height: 800px; }
-    .accordion-item.active .material-symbols-outlined.expand-icon { transform: rotate(180deg); }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .product-content { font-size: 0.95rem; line-height: 1.5; }
+    .product-content ul { list-style-type: disc; padding-left: 1.25rem; margin-top: 0.25rem; margin-bottom: 0.75rem; }
+    .product-content li { margin-bottom: 0; }
+    .product-content strong { font-weight: 700; font-size: 1rem; display: block; margin-top: 1rem; margin-bottom: 0.25rem; color: #1f2937; }
+    /* Hide <br> tags injected by nl2br inside block elements */
+    .product-content ul br, .product-content ol br, .product-content table br, .product-content tbody br, .product-content tr br { display: none; }
 </style>
 
-<div class="pt-20"></div>
-
-<main class="py-12 md:py-16 px-4 md:px-16 max-w-7xl mx-auto">
+<main class="py-6 md:py-8 px-4 md:px-16 max-w-7xl mx-auto">
     
     <!-- Breadcrumbs -->
-    <nav class="flex text-sm text-on-surface-variant mb-8 font-body-md">
+    <nav class="flex text-xs text-on-surface-variant mb-6 font-body-md">
         <ol class="flex items-center space-x-2">
             <li><a href="{{ route('home') }}" class="hover:text-primary transition-colors">Home</a></li>
-            <li><span class="material-symbols-outlined text-[16px]">chevron_right</span></li>
+            <li><span class="material-symbols-outlined text-[14px]">chevron_right</span></li>
             <li><a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="hover:text-primary transition-colors">{{ $product->category->name }}</a></li>
-            <li><span class="material-symbols-outlined text-[16px]">chevron_right</span></li>
+            <li><span class="material-symbols-outlined text-[14px]">chevron_right</span></li>
             <li class="text-on-surface font-medium line-clamp-1" aria-current="page">{{ $product->name }}</li>
         </ol>
     </nav>
 
     <!-- Hero Product Section -->
-    <section class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-20">
+    <section class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
         
         <!-- Left: Image Gallery -->
-        <div class="md:col-span-6 flex flex-col gap-4" x-data="{ 
+        <div class="md:col-span-5 flex flex-col gap-3" x-data="{ 
             activeImage: '{{ asset('storage/' . $product->main_image) }}',
             images: [
                 '{{ asset('storage/' . $product->main_image) }}',
@@ -40,18 +43,18 @@
             ]
         }">
             <!-- Main Image -->
-            <div class="bg-white rounded-xl border border-soft-border p-8 flex items-center justify-center relative hover-border-primary overflow-hidden aspect-square">
+            <div class="bg-white rounded-xl border border-soft-border p-4 flex items-center justify-center relative hover-border-primary overflow-hidden aspect-square shadow-sm">
                 <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at center, #a100ff 1px, transparent 1px); background-size: 20px 20px;"></div>
-                <img :src="activeImage" alt="{{ $product->name }}" class="w-full h-full object-contain z-10 relative transition-transform duration-500 hover:scale-110">
+                <img :src="activeImage" alt="{{ $product->name }}" class="w-full h-full object-contain z-10 relative transition-transform duration-500 hover:scale-105">
                 @if($product->sale_price)
-                    <div class="absolute top-4 left-4 z-20 bg-error/10 text-error font-label-sm text-xs font-bold px-3 py-1.5 rounded-full shadow-sm backdrop-blur-sm bg-white/90">
+                    <div class="absolute top-3 left-3 z-20 bg-error/10 text-error font-label-sm text-[10px] font-bold px-2 py-1 rounded shadow-sm backdrop-blur-sm bg-white/90">
                         SALE
                     </div>
                 @endif
             </div>
 
             <!-- Thumbnails -->
-            <div class="grid grid-cols-5 gap-3">
+            <div class="grid grid-cols-5 gap-2">
                 <button @click="activeImage = images[0]" class="aspect-square rounded-lg border-2 overflow-hidden bg-white hover:border-primary transition-colors" :class="activeImage === images[0] ? 'border-primary' : 'border-soft-border'">
                     <img src="{{ asset('storage/' . $product->main_image) }}" alt="Main Image" class="w-full h-full object-cover">
                 </button>
@@ -64,188 +67,232 @@
         </div>
 
         <!-- Right: Product Info -->
-        <div class="md:col-span-6 flex flex-col justify-center py-4">
-            <div class="flex gap-2 mb-4">
-                <span class="bg-green-50 text-green-700 font-label-sm text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-green-100">Ayurvedic</span>
-                <span class="bg-blue-50 text-blue-700 font-label-sm text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-blue-100">GMP Certified</span>
+        <div class="md:col-span-7 flex flex-col justify-start py-2">
+            <div class="flex gap-2 mb-3">
+                <span class="bg-green-50 text-green-700 font-label-sm text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest border border-green-100">Ayurvedic</span>
+                <span class="bg-blue-50 text-blue-700 font-label-sm text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest border border-blue-100">GMP Certified</span>
             </div>
             
-            <h1 class="font-display-lg text-4xl lg:text-5xl font-bold text-on-surface mb-4 leading-tight">{{ $product->name }}</h1>
+            <h1 class="font-display-lg text-2xl lg:text-3xl font-bold text-on-surface mb-2 leading-tight">{{ $product->name }}</h1>
             
-            <div class="flex items-center gap-2 mb-6">
-                <div class="flex text-amber-400">
-                    @php
-                        $avgRating = collect($product->reviews)->avg('rating') ?? 5;
-                        $totalReviews = collect($product->reviews)->count();
-                    @endphp
-                    @for($i = 1; $i <= 5; $i++)
-                        @if($i <= $avgRating)
-                            <span class="material-symbols-outlined text-[20px] fill-current" style="font-variation-settings: 'FILL' 1;">star</span>
-                        @else
-                            <span class="material-symbols-outlined text-[20px]">star</span>
-                        @endif
-                    @endfor
+            <div class="flex flex-col gap-1 mb-4">
+                <div class="flex items-center gap-2">
+                    <div class="flex text-amber-400">
+                        @php
+                            $avgRating = collect($product->reviews)->avg('rating') ?? 5;
+                            $totalReviews = collect($product->reviews)->count();
+                        @endphp
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= $avgRating)
+                                <span class="material-symbols-outlined text-[16px] fill-current" style="font-variation-settings: 'FILL' 1;">star</span>
+                            @else
+                                <span class="material-symbols-outlined text-[16px]">star</span>
+                            @endif
+                        @endfor
+                    </div>
+                    <span class="text-xs font-medium text-on-surface-variant">({{ $totalReviews }} Reviews)</span>
                 </div>
-                <span class="text-sm font-medium text-on-surface-variant">({{ $totalReviews }} Reviews) | SKU: {{ $product->sku }}</span>
+                <div class="text-xs font-medium text-on-surface-variant space-x-2 mt-1">
+                    <span>SKU: {{ $product->sku }}</span>
+                    @if($product->brand)<span>| Brand: <span class="text-on-surface font-bold">{{ $product->brand }}</span></span>@endif
+                    @if($product->pack_size)<span>| Pack Size: <span class="text-on-surface font-bold">{{ $product->pack_size }}</span></span>@endif
+                </div>
             </div>
 
-            <p class="font-body-lg text-lg text-on-surface-variant mb-6 leading-relaxed">
+            <p class="font-body-md text-sm text-on-surface-variant mb-5 leading-relaxed line-clamp-3">
                 {{ strip_tags($product->short_description ?? Str::limit($product->description, 150)) }}
             </p>
 
-            <div class="flex items-end gap-4 mb-8">
+            <div class="flex items-end gap-3 mb-6">
                 @if($product->sale_price)
-                    <span class="font-headline-lg text-4xl font-bold text-on-surface">₹{{ number_format($product->sale_price, 2) }}</span>
-                    <span class="text-xl text-on-surface-variant line-through mb-1 font-medium">₹{{ number_format($product->price, 2) }}</span>
+                    <span class="font-headline-lg text-3xl font-bold text-on-surface">₹{{ number_format($product->sale_price, 2) }}</span>
+                    <span class="text-lg text-on-surface-variant line-through mb-0.5 font-medium">₹{{ number_format($product->price, 2) }}</span>
                     @php
                         $saved = $product->price - $product->sale_price;
                         $percent = round(($saved / $product->price) * 100);
                     @endphp
-                    <span class="bg-error/10 text-error font-label-sm text-sm font-bold px-2 py-1 rounded-md mb-1.5">{{ $percent }}% OFF</span>
+                    <span class="bg-error/10 text-error font-label-sm text-[10px] font-bold px-1.5 py-0.5 rounded mb-1">{{ $percent }}% OFF</span>
                 @else
-                    <span class="font-headline-lg text-4xl font-bold text-on-surface">₹{{ number_format($product->price, 2) }}</span>
+                    <span class="font-headline-lg text-3xl font-bold text-on-surface">₹{{ number_format($product->price, 2) }}</span>
                 @endif
             </div>
 
             <!-- Add to Cart Form -->
-            <form action="{{ route('cart.add') }}" method="POST" class="bg-white p-6 rounded-xl border border-soft-border shadow-sm mb-6">
+            <form action="{{ route('cart.add') }}" method="POST" class="bg-white p-5 rounded-xl border border-soft-border shadow-sm mb-5">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 
-                <div class="mb-4 flex items-center gap-2 font-medium text-sm">
+                <div class="mb-4 flex items-center gap-2 font-medium text-xs">
                     @if($product->stock_quantity > 10)
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                         <span class="text-emerald-700">In Stock & Ready to Ship</span>
                     @elseif($product->stock_quantity > 0)
-                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                         <span class="text-amber-700">Limited Stock (Only {{ $product->stock_quantity }} left)</span>
                     @else
-                        <span class="w-2.5 h-2.5 rounded-full bg-error"></span>
+                        <span class="w-2 h-2 rounded-full bg-error"></span>
                         <span class="text-error">Out of Stock</span>
                     @endif
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <div class="flex items-center border border-soft-border rounded-lg overflow-hidden bg-surface" x-data="{ qty: 1 }">
-                        <button type="button" @click="if(qty > 1) qty--" class="px-4 py-3 hover:bg-surface-container transition-colors text-on-surface">
+                        <button type="button" @click="if(qty > 1) qty--" class="px-3 py-2 hover:bg-surface-container transition-colors text-on-surface">
                             <span class="material-symbols-outlined text-[18px]">remove</span>
                         </button>
-                        <input type="number" name="quantity" id="quantity" x-model="qty" min="1" max="{{ $product->stock_quantity > 0 ? $product->stock_quantity : 1 }}" class="w-16 text-center border-none focus:ring-0 text-on-surface font-medium bg-transparent" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
-                        <button type="button" @click="if(qty < {{ $product->stock_quantity }}) qty++" class="px-4 py-3 hover:bg-surface-container transition-colors text-on-surface">
+                        <input type="number" name="quantity" id="quantity" x-model="qty" min="1" max="{{ $product->stock_quantity > 0 ? $product->stock_quantity : 1 }}" class="w-12 text-center text-sm border-none focus:ring-0 text-on-surface font-medium bg-transparent" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
+                        <button type="button" @click="if(qty < {{ $product->stock_quantity }}) qty++" class="px-3 py-2 hover:bg-surface-container transition-colors text-on-surface">
                             <span class="material-symbols-outlined text-[18px]">add</span>
                         </button>
                     </div>
 
-                    <button type="submit" name="action" value="cart" class="btn-squish flex-1 bg-primary text-white font-body-md text-base font-medium py-3 px-6 rounded-lg shadow-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-2" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
-                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+                    <button type="submit" name="action" value="cart" class="btn-squish flex-1 bg-primary text-white font-body-md text-sm font-medium py-2.5 px-5 rounded-lg shadow-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-2" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
+                        <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
                         Add to Cart
                     </button>
                 </div>
             </form>
 
-            <div class="flex items-center gap-6 text-on-surface-variant font-body-md text-sm border-t border-soft-border pt-6">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[20px]">local_shipping</span>
+            <div class="flex items-center gap-5 text-on-surface-variant font-body-md text-xs border-t border-soft-border pt-5">
+                <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-primary text-[18px]">local_shipping</span>
                     <span>Free shipping over ₹500</span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[20px]">verified</span>
+                <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
                     <span>100% Authentic</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Elevated Learning Accordions -->
-    <section class="max-w-4xl mx-auto mb-20">
-        <h2 class="font-display-lg text-3xl font-bold text-on-surface mb-8 text-center">Elevated Learning</h2>
-        <div class="border border-soft-border rounded-xl bg-white overflow-hidden divide-y divide-soft-border shadow-sm">
+    <!-- Product Details Section -->
+    <section class="mb-20 max-w-6xl mx-auto">
+        <h2 class="font-display-lg text-3xl font-bold text-on-surface mb-8">Product Specifications & Details</h2>
+        
+        <div class="border border-soft-border rounded-xl bg-white shadow-sm flex flex-col md:flex-row overflow-hidden" x-data="{ activeTab: 'description' }">
             
-            <!-- Description -->
-            <div class="accordion-item active">
-                <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none hover:bg-surface transition-colors" onclick="this.parentElement.classList.toggle('active')">
-                    <span class="font-headline-md text-xl font-bold text-on-surface">Clinical Overview</span>
-                    <span class="material-symbols-outlined text-primary expand-icon transition-transform duration-300">expand_more</span>
+            <!-- Sidebar Navigation (Desktop) / Top Scrollable (Mobile) -->
+            <div class="md:w-1/4 bg-surface border-b md:border-b-0 md:border-r border-soft-border flex md:flex-col overflow-x-auto hide-scrollbar">
+                <button @click="activeTab = 'description'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'description' ? 'bg-white text-primary border-b-2 md:border-b-0 md:border-l-4 border-primary' : 'text-on-surface-variant hover:bg-white/50'">
+                    Product Description
                 </button>
-                <div class="accordion-content px-6 pb-6 text-on-surface-variant font-body-md text-base leading-relaxed">
-                    <div class="prose max-w-none prose-p:text-on-surface-variant">
-                        {!! nl2br(e($product->description)) !!}
-                    </div>
-                </div>
+                @if($product->benefits)
+                <button @click="activeTab = 'benefits'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'benefits' ? 'bg-white text-primary border-b-2 md:border-b-0 md:border-l-4 border-primary' : 'text-on-surface-variant hover:bg-white/50'">
+                    Health Benefits
+                </button>
+                @endif
+                @if($product->ingredients)
+                <button @click="activeTab = 'ingredients'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'ingredients' ? 'bg-white text-primary border-b-2 md:border-b-0 md:border-l-4 border-primary' : 'text-on-surface-variant hover:bg-white/50'">
+                    Ingredients
+                </button>
+                @endif
+                @if($product->usage_instructions || $product->storage_instructions || $product->ayurvedic_reference || $product->suitable_for || $product->precautions)
+                <button @click="activeTab = 'usage'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'usage' ? 'bg-white text-primary border-b-2 md:border-b-0 md:border-l-4 border-primary' : 'text-on-surface-variant hover:bg-white/50'">
+                    Usage & Context
+                </button>
+                @endif
             </div>
 
-            <!-- Benefits -->
-            @if($product->benefits)
-            <div class="accordion-item">
-                <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none hover:bg-surface transition-colors" onclick="this.parentElement.classList.toggle('active')">
-                    <span class="font-headline-md text-xl font-bold text-on-surface">Health Benefits</span>
-                    <span class="material-symbols-outlined text-primary expand-icon transition-transform duration-300">expand_more</span>
-                </button>
-                <div class="accordion-content px-6 pb-6 text-on-surface-variant font-body-md text-base leading-relaxed">
-                    <div class="prose max-w-none prose-p:text-on-surface-variant">
-                        {!! nl2br(e($product->benefits)) !!}
+            <!-- Content Area -->
+            <div class="md:w-3/4 p-6 md:p-8 min-h-[400px]">
+                
+                <!-- Description Tab -->
+                <div x-show="activeTab === 'description'" class="product-content text-on-surface-variant" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                    {!! nl2br($product->description) !!}
+                </div>
+                
+                <!-- Benefits Tab -->
+                @if($product->benefits)
+                <div x-show="activeTab === 'benefits'" class="product-content text-on-surface-variant" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                    {!! nl2br($product->benefits) !!}
+                </div>
+                @endif
+
+                <!-- Ingredients Tab -->
+                @if($product->ingredients)
+                <div x-show="activeTab === 'ingredients'" class="w-full overflow-x-auto" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                    <div class="prose max-w-none w-full">
+                        {!! $product->ingredients !!}
                     </div>
                 </div>
-            </div>
-            @endif
+                @endif
 
-            <!-- Ingredients -->
-            @if($product->ingredients)
-            <div class="accordion-item">
-                <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none hover:bg-surface transition-colors" onclick="this.parentElement.classList.toggle('active')">
-                    <span class="font-headline-md text-xl font-bold text-on-surface">Authentic Ingredients</span>
-                    <span class="material-symbols-outlined text-primary expand-icon transition-transform duration-300">expand_more</span>
-                </button>
-                <div class="accordion-content px-6 pb-6 text-on-surface-variant font-body-md text-base leading-relaxed">
-                    <div class="bg-surface p-6 rounded-lg border border-soft-border">
-                        {!! nl2br(e($product->ingredients)) !!}
-                    </div>
-                </div>
-            </div>
-            @endif
+                <!-- Usage & Context Tab -->
+                @if($product->usage_instructions || $product->storage_instructions || $product->ayurvedic_reference || $product->suitable_for || $product->precautions)
+                <div x-show="activeTab === 'usage'" class="space-y-8" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        @if($product->usage_instructions || $product->storage_instructions)
+                        <div class="bg-surface/50 p-6 rounded-lg border border-soft-border">
+                            <h3 class="text-lg font-bold text-on-surface mb-4 border-b border-soft-border pb-2 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">menu_book</span> Directions
+                            </h3>
+                            @if($product->usage_instructions)
+                            <div class="mb-4">
+                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-primary">How to Use</strong>
+                                <div class="text-on-surface-variant prose max-w-none">{!! $product->usage_instructions !!}</div>
+                            </div>
+                            @endif
+                            @if($product->storage_instructions)
+                            <div>
+                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-primary">Storage</strong>
+                                <div class="text-on-surface-variant prose max-w-none">{!! $product->storage_instructions !!}</div>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
 
-            <!-- How to Use -->
-            @if($product->usage_instructions || $product->storage_instructions)
-            <div class="accordion-item">
-                <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none hover:bg-surface transition-colors" onclick="this.parentElement.classList.toggle('active')">
-                    <span class="font-headline-md text-xl font-bold text-on-surface">Usage Protocol</span>
-                    <span class="material-symbols-outlined text-primary expand-icon transition-transform duration-300">expand_more</span>
-                </button>
-                <div class="accordion-content px-6 pb-6 text-on-surface-variant font-body-md text-base leading-relaxed">
-                    @if($product->usage_instructions)
-                    <div class="mb-4">
-                        <strong class="text-on-surface block mb-2">Directions for Use:</strong>
-                        <p>{!! nl2br(e($product->usage_instructions)) !!}</p>
+                        @if($product->ayurvedic_reference || $product->suitable_for)
+                        <div class="bg-surface/50 p-6 rounded-lg border border-soft-border">
+                            <h3 class="text-lg font-bold text-on-surface mb-4 border-b border-soft-border pb-2 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[20px]">spa</span> Ayurvedic Info
+                            </h3>
+                            @if($product->ayurvedic_reference)
+                            <div class="mb-4">
+                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-primary">Ayurvedic Reference</strong>
+                                <div class="text-on-surface-variant prose prose-sm max-w-none">{!! $product->ayurvedic_reference !!}</div>
+                            </div>
+                            @endif
+                            @if($product->suitable_for)
+                            <div>
+                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-primary">Suitable For</strong>
+                                <div class="text-on-surface-variant prose prose-sm max-w-none prose-li:text-on-surface-variant prose-ul:list-disc prose-ul:pl-5">{!! $product->suitable_for !!}</div>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
                     </div>
-                    @endif
-                    @if($product->storage_instructions)
+
+                    @if($product->precautions)
                     <div>
-                        <strong class="text-on-surface block mb-2">Storage:</strong>
-                        <p>{!! nl2br(e($product->storage_instructions)) !!}</p>
+                        <h3 class="text-lg font-bold text-on-surface mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-error text-[20px]">warning</span> Precautions
+                        </h3>
+                        <div class="p-4 bg-error/5 border border-error/20 rounded-lg text-error prose prose-sm max-w-none prose-p:text-error">
+                            {!! $product->precautions !!}
+                        </div>
                     </div>
                     @endif
-                </div>
-            </div>
-            @endif
-            
-            <!-- Precautions -->
-            @if($product->precautions)
-            <div class="accordion-item">
-                <button class="w-full flex justify-between items-center p-6 text-left focus:outline-none hover:bg-surface transition-colors" onclick="this.parentElement.classList.toggle('active')">
-                    <span class="font-headline-md text-xl font-bold text-on-surface">Precautions & Warnings</span>
-                    <span class="material-symbols-outlined text-error expand-icon transition-transform duration-300">expand_more</span>
-                </button>
-                <div class="accordion-content px-6 pb-6 text-on-surface-variant font-body-md text-base leading-relaxed">
-                    <div class="p-4 bg-error/5 border border-error/20 rounded-lg text-error">
-                        {!! nl2br(e($product->precautions)) !!}
+                    
+                    @if($product->disclaimer)
+                    <div class="pt-4 border-t border-soft-border">
+                        <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider">Disclaimer</strong>
+                        <div class="text-sm italic text-on-surface-variant prose prose-sm max-w-none">
+                            {!! $product->disclaimer !!}
+                        </div>
                     </div>
+                    @endif
+
                 </div>
+                @endif
+                
             </div>
-            @endif
         </div>
     </section>
 
     <!-- Expert Notes Bento Grid -->
+    {{-- 
     <section class="mb-20">
         <h2 class="font-display-lg text-3xl font-bold text-on-surface mb-8 text-center">Expert Validation</h2>
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
@@ -272,6 +319,7 @@
             </div>
         </div>
     </section>
+    --}}
     
     <!-- Reviews Section -->
     <section class="mb-20 max-w-4xl mx-auto border-t border-soft-border pt-16">

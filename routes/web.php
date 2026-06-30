@@ -21,11 +21,7 @@ Route::post('/cart', [\App\Http\Controllers\Web\CartController::class, 'store'])
 Route::put('/cart/{cartItem}', [\App\Http\Controllers\Web\CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{cartItem}', [\App\Http\Controllers\Web\CartController::class, 'destroy'])->name('cart.remove');
 
-// Checkout Routes
-Route::get('/checkout', [\App\Http\Controllers\Web\CheckoutController::class, 'index'])->name('checkout.index');
-Route::post('/checkout', [\App\Http\Controllers\Web\CheckoutController::class, 'store'])->name('checkout.store');
-Route::get('/checkout/payment', [\App\Http\Controllers\Web\CheckoutController::class, 'payment'])->name('checkout.payment');
-Route::get('/checkout/success', [\App\Http\Controllers\Web\CheckoutController::class, 'success'])->name('checkout.success');
+
 
 // Coupon (AJAX) Routes — accessible to guests too, rate-limited
 Route::post('/coupon/apply', [\App\Http\Controllers\Web\CouponController::class, 'apply'])->name('coupon.apply')->middleware('throttle:coupon');
@@ -56,6 +52,12 @@ Route::middleware('auth')->group(function () {
     // Customer Orders
     Route::get('/orders', [\App\Http\Controllers\Web\OrderController::class, 'index'])->name('orders.index');
 
+    // Checkout Routes
+    Route::get('/checkout', [\App\Http\Controllers\Web\CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [\App\Http\Controllers\Web\CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout/payment', [\App\Http\Controllers\Web\CheckoutController::class, 'payment'])->name('checkout.payment');
+    Route::get('/checkout/success', [\App\Http\Controllers\Web\CheckoutController::class, 'success'])->name('checkout.success');
+
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -79,8 +81,14 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
     Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
     
-    Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
-    Route::put('settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
+    Route::get('inventory', [\App\Http\Controllers\Admin\InventoryController::class, 'index'])->name('inventory.index');
+    Route::get('inventory/{product}/history', [\App\Http\Controllers\Admin\InventoryController::class, 'history'])->name('inventory.history');
+    Route::post('inventory/{product}/adjustment', [\App\Http\Controllers\Admin\InventoryController::class, 'storeAdjustment'])->name('inventory.adjustment');
+
+    Route::get('reports/{tab?}', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
+
+    Route::get('settings/{tab?}', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
+    Route::put('settings/{tab}', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';

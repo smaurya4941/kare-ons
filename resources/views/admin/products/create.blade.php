@@ -43,6 +43,19 @@
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                            <input type="text" name="brand" id="brand" value="{{ old('brand') }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 @error('brand') border-red-500 @enderror">
+                            @error('brand') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="pack_size" class="block text-sm font-medium text-gray-700 mb-1">Pack Size</label>
+                            <input type="text" name="pack_size" id="pack_size" value="{{ old('pack_size') }}" placeholder="e.g. 60 Tablets" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 @error('pack_size') border-red-500 @enderror">
+                            @error('pack_size') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
                     <div>
                         <label for="short_description" class="block text-sm font-medium text-gray-700 mb-1">Short Description</label>
                         <textarea name="short_description" id="short_description" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('short_description') }}</textarea>
@@ -78,9 +91,23 @@
                             <textarea name="storage_instructions" id="storage_instructions" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('storage_instructions') }}</textarea>
                         </div>
                     </div>
-                    <div>
-                        <label for="precautions" class="block text-sm font-medium text-gray-700 mb-1">Precautions / Warnings</label>
-                        <textarea name="precautions" id="precautions" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('precautions') }}</textarea>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="ayurvedic_reference" class="block text-sm font-medium text-gray-700 mb-1">Ayurvedic Reference</label>
+                            <textarea name="ayurvedic_reference" id="ayurvedic_reference" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('ayurvedic_reference') }}</textarea>
+                        </div>
+                        <div>
+                            <label for="suitable_for" class="block text-sm font-medium text-gray-700 mb-1">Suitable For</label>
+                            <textarea name="suitable_for" id="suitable_for" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('suitable_for') }}</textarea>
+                        </div>
+                        <div>
+                            <label for="precautions" class="block text-sm font-medium text-gray-700 mb-1">Precautions / Warnings</label>
+                            <textarea name="precautions" id="precautions" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('precautions') }}</textarea>
+                        </div>
+                        <div>
+                            <label for="disclaimer" class="block text-sm font-medium text-gray-700 mb-1">Disclaimer</label>
+                            <textarea name="disclaimer" id="disclaimer" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('disclaimer') }}</textarea>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,46 +3,63 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<!-- Stats Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
-            <span class="material-symbols-outlined">inventory_2</span>
-        </div>
-        <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Total Products</p>
-            <h3 class="text-2xl font-bold text-gray-800">{{ number_format($stats['total_products']) }}</h3>
-        </div>
+<!-- Stats Grid: Sales & Orders -->
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <p class="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">Today's Sales</p>
+        <h3 class="text-xl font-bold text-gray-800">₹{{ number_format($stats['today_sales'], 2) }}</h3>
     </div>
-    
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 flex-shrink-0">
-            <span class="material-symbols-outlined">shopping_cart</span>
-        </div>
-        <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Total Orders</p>
-            <h3 class="text-2xl font-bold text-gray-800">{{ number_format($stats['total_orders']) }}</h3>
-        </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <p class="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">Total Revenue</p>
+        <h3 class="text-xl font-bold text-gray-800">₹{{ number_format($stats['total_revenue'], 2) }}</h3>
     </div>
-    
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 flex-shrink-0">
-            <span class="material-symbols-outlined">payments</span>
-        </div>
-        <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
-            <h3 class="text-2xl font-bold text-gray-800">₹{{ number_format($stats['total_revenue'], 2) }}</h3>
-        </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <p class="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">Orders Today</p>
+        <h3 class="text-xl font-bold text-gray-800">{{ number_format($stats['orders_today']) }}</h3>
     </div>
-    
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
-            <span class="material-symbols-outlined">group</span>
-        </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <p class="text-xs font-medium text-amber-500 mb-1 uppercase tracking-wide">Pending</p>
+        <h3 class="text-xl font-bold text-amber-600">{{ number_format($stats['pending_orders']) }}</h3>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <p class="text-xs font-medium text-emerald-500 mb-1 uppercase tracking-wide">Completed</p>
+        <h3 class="text-xl font-bold text-emerald-600">{{ number_format($stats['completed_orders']) }}</h3>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+        <p class="text-xs font-medium text-red-500 mb-1 uppercase tracking-wide">Cancelled</p>
+        <h3 class="text-xl font-bold text-red-600">{{ number_format($stats['cancelled_orders']) }}</h3>
+    </div>
+</div>
+
+<!-- Stats Grid: Inventory & Users -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center justify-between">
         <div>
-            <p class="text-sm font-medium text-gray-500 mb-1">Total Customers</p>
-            <h3 class="text-2xl font-bold text-gray-800">{{ number_format($stats['total_customers']) }}</h3>
+            <p class="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">Total Products</p>
+            <h3 class="text-xl font-bold text-gray-800">{{ number_format($stats['total_products']) }}</h3>
         </div>
+        <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600"><span class="material-symbols-outlined text-[20px]">inventory_2</span></div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-medium text-orange-500 mb-1 uppercase tracking-wide">Low Stock</p>
+            <h3 class="text-xl font-bold text-orange-600">{{ number_format($stats['low_stock']) }}</h3>
+        </div>
+        <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600"><span class="material-symbols-outlined text-[20px]">warning</span></div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-medium text-red-500 mb-1 uppercase tracking-wide">Out of Stock</p>
+            <h3 class="text-xl font-bold text-red-600">{{ number_format($stats['out_of_stock']) }}</h3>
+        </div>
+        <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600"><span class="material-symbols-outlined text-[20px]">error</span></div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex items-center justify-between">
+        <div>
+            <p class="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">Total Customers</p>
+            <h3 class="text-xl font-bold text-gray-800">{{ number_format($stats['total_customers']) }}</h3>
+        </div>
+        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600"><span class="material-symbols-outlined text-[20px]">group</span></div>
     </div>
 </div>
 
@@ -67,62 +84,102 @@
     <div id="topProductsChart" class="w-full h-80"></div>
 </div>
 
-<!-- Recent Orders Table -->
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-        <h2 class="font-semibold text-gray-800 text-lg">Recent Orders</h2>
-        <a href="{{ route('admin.orders.index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-700">View All</a>
-    </div>
+<!-- Data Tables -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
     
-    <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-            <thead>
-                <tr class="bg-white border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wider">
-                    <th class="px-6 py-4 font-medium">Order ID</th>
-                    <th class="px-6 py-4 font-medium">Customer</th>
-                    <th class="px-6 py-4 font-medium">Date</th>
-                    <th class="px-6 py-4 font-medium">Total</th>
-                    <th class="px-6 py-4 font-medium">Status</th>
-                    <th class="px-6 py-4 font-medium text-right">Action</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                @forelse($recentOrders as $order)
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4 text-sm font-semibold text-gray-800">#{{ $order->order_number }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">{{ $order->user->name ?? 'Guest' }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-500">{{ $order->created_at->format('M d, Y h:i A') }}</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-800">₹{{ number_format($order->grand_total, 2) }}</td>
-                    <td class="px-6 py-4 text-sm">
-                        @php
-                            $statusColors = [
-                                'pending'    => 'bg-amber-100 text-amber-800',
-                                'confirmed'  => 'bg-blue-100 text-blue-800',
-                                'processing' => 'bg-indigo-100 text-indigo-800',
-                                'shipped'    => 'bg-purple-100 text-purple-800',
-                                'delivered'  => 'bg-emerald-100 text-emerald-800',
-                                'cancelled'  => 'bg-red-100 text-red-800',
-                            ];
-                            $color = $statusColors[$order->order_status] ?? 'bg-gray-100 text-gray-800';
-                        @endphp
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $color }}">
-                            {{ ucfirst($order->order_status) }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-right">
-                        <a href="{{ route('admin.orders.show', $order->id) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">View</a>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="px-6 py-8 text-center text-gray-500 text-sm">
-                        No orders found.
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <!-- Recent Orders Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h2 class="font-semibold text-gray-800 text-sm">Recent Orders</h2>
+            <a href="{{ route('admin.orders.index') }}" class="text-xs font-medium text-indigo-600 hover:text-indigo-700">View All</a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-white border-b border-gray-100 text-[11px] text-gray-500 uppercase tracking-wider">
+                        <th class="px-5 py-3 font-medium">Order</th>
+                        <th class="px-5 py-3 font-medium">Customer</th>
+                        <th class="px-5 py-3 font-medium">Total</th>
+                        <th class="px-5 py-3 font-medium">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 text-sm">
+                    @forelse($recentOrders as $order)
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-5 py-3">
+                            <a href="{{ route('admin.orders.show', $order->id) }}" class="font-semibold text-indigo-600 hover:underline">#{{ $order->order_number }}</a>
+                            <div class="text-[11px] text-gray-400 mt-0.5">{{ $order->created_at->format('M d, Y') }}</div>
+                        </td>
+                        <td class="px-5 py-3 text-gray-600">{{ $order->user->name ?? 'Guest' }}</td>
+                        <td class="px-5 py-3 font-medium text-gray-800">₹{{ number_format($order->grand_total, 2) }}</td>
+                        <td class="px-5 py-3">
+                            @php
+                                $statusColors = [
+                                    'pending'    => 'bg-amber-100 text-amber-800',
+                                    'confirmed'  => 'bg-blue-100 text-blue-800',
+                                    'processing' => 'bg-indigo-100 text-indigo-800',
+                                    'shipped'    => 'bg-purple-100 text-purple-800',
+                                    'delivered'  => 'bg-emerald-100 text-emerald-800',
+                                    'cancelled'  => 'bg-red-100 text-red-800',
+                                ];
+                                $color = $statusColors[$order->order_status] ?? 'bg-gray-100 text-gray-800';
+                            @endphp
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium {{ $color }}">
+                                {{ ucfirst($order->order_status) }}
+                            </span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="px-5 py-6 text-center text-gray-500 text-sm">No orders found.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
+
+    <!-- Recent Customers Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <h2 class="font-semibold text-gray-800 text-sm">Recent Customers</h2>
+            <a href="{{ route('admin.customers.index') }}" class="text-xs font-medium text-indigo-600 hover:text-indigo-700">View All</a>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-white border-b border-gray-100 text-[11px] text-gray-500 uppercase tracking-wider">
+                        <th class="px-5 py-3 font-medium">Customer</th>
+                        <th class="px-5 py-3 font-medium">Email</th>
+                        <th class="px-5 py-3 font-medium">Joined</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 text-sm">
+                    @forelse($recentCustomers as $customer)
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-5 py-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">
+                                    {{ substr($customer->name, 0, 1) }}
+                                </div>
+                                <span class="font-medium text-gray-800">{{ $customer->name }}</span>
+                            </div>
+                        </td>
+                        <td class="px-5 py-3 text-gray-500 text-[13px]">{{ $customer->email }}</td>
+                        <td class="px-5 py-3 text-gray-500 text-[13px]">{{ $customer->created_at->format('M d, Y') }}</td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="3" class="px-5 py-6 text-center text-gray-500 text-sm">No customers found.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 
 <!-- ApexCharts -->

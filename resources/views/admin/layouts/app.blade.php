@@ -44,6 +44,10 @@
                 <span class="material-symbols-outlined text-[20px]">category</span>
                 Categories
             </a>
+            <a href="{{ route('admin.inventory.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.inventory.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">warehouse</span>
+                Inventory
+            </a>
 
             <div class="pt-4 pb-1">
                 <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Sales</p>
@@ -63,6 +67,14 @@
             <a href="{{ route('admin.coupons.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.coupons.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
                 <span class="material-symbols-outlined text-[20px]">local_offer</span>
                 Coupons
+            </a>
+            
+            <div class="pt-4 pb-1">
+                <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Analytics</p>
+            </div>
+            <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.reports.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">bar_chart</span>
+                Reports
             </a>
 
             <div class="pt-4 pb-1">

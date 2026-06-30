@@ -192,13 +192,21 @@
                     @endif
                 </a>
                 @auth
-                    <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" class="text-on-surface hover:text-primary transition ml-2">
+                    <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" class="text-on-surface hover:text-primary transition ml-2 flex items-center gap-1">
                         <span class="material-symbols-outlined">account_circle</span>
+                        <span class="text-sm font-medium hidden md:inline">Account</span>
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="text-on-surface hover:text-primary transition ml-2">
-                        <span class="material-symbols-outlined">login</span>
-                    </a>
+                    <div class="flex items-center gap-4 ml-2">
+                        <a href="{{ route('login') }}" class="text-on-surface hover:text-primary transition flex items-center gap-1">
+                            <span class="material-symbols-outlined">login</span>
+                            <span class="text-sm font-medium hidden md:inline">Login</span>
+                        </a>
+                        <a href="{{ route('register') }}" class="bg-primary text-white hover:bg-on-surface-variant transition px-4 py-2 rounded-md text-sm font-medium flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[18px]">person_add</span>
+                            <span class="hidden md:inline">Register</span>
+                        </a>
+                    </div>
                 @endauth
                 <button id="mobile-menu-btn" class="md:hidden text-on-surface ml-2">
                     <span id="mobile-menu-icon" class="material-symbols-outlined">menu</span>

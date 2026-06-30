@@ -54,8 +54,12 @@ class ProductController extends Controller
             'short_description'    => 'nullable|string|max:500',
             'description'          => 'required|string',
 
-            // Herbal Fields
+            'brand'                => 'nullable|string|max:255',
+            'pack_size'            => 'nullable|string|max:255',
             'benefits'             => 'nullable|string|max:5000',
+            'ayurvedic_reference'  => 'nullable|string|max:5000',
+            'suitable_for'         => 'nullable|string|max:5000',
+            'disclaimer'           => 'nullable|string|max:5000',
             'ingredients'          => 'nullable|string|max:5000',
             'usage_instructions'   => 'nullable|string|max:5000',
             'storage_instructions' => 'nullable|string|max:2000',
@@ -134,8 +138,12 @@ class ProductController extends Controller
             'short_description'    => 'nullable|string|max:500',
             'description'          => 'required|string',
 
-            // Herbal Fields
+            'brand'                => 'nullable|string|max:255',
+            'pack_size'            => 'nullable|string|max:255',
             'benefits'             => 'nullable|string|max:5000',
+            'ayurvedic_reference'  => 'nullable|string|max:5000',
+            'suitable_for'         => 'nullable|string|max:5000',
+            'disclaimer'           => 'nullable|string|max:5000',
             'ingredients'          => 'nullable|string|max:5000',
             'usage_instructions'   => 'nullable|string|max:5000',
             'storage_instructions' => 'nullable|string|max:2000',

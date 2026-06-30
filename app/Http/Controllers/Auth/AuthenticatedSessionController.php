@@ -24,9 +24,25 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $oldSessionId = $request->session()->getId(); // Get session ID before regeneration
+        
         $request->authenticate();
 
         $request->session()->regenerate();
+
+        // Migrate Cart Items
+        $userId = Auth::id();
+        $guestItems = \App\Models\CartItem::where('session_id', $oldSessionId)->get();
+        foreach ($guestItems as $item) {
+            $existing = \App\Models\CartItem::where('user_id', $userId)->where('product_id', $item->product_id)->first();
+            if ($existing) {
+                $existing->quantity += $item->quantity;
+                $existing->save();
+                $item->delete();
+            } else {
+                $item->update(['user_id' => $userId, 'session_id' => null]);
+            }
+        }
 
         if ($request->user()->role === 'admin') {
             return redirect()->intended(route('admin.dashboard', absolute: false));

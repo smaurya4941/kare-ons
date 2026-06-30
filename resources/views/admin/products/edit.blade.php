@@ -47,6 +47,19 @@
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                            <input type="text" name="brand" id="brand" value="{{ old('brand', $product->brand) }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 @error('brand') border-red-500 @enderror">
+                            @error('brand') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label for="pack_size" class="block text-sm font-medium text-gray-700 mb-1">Pack Size</label>
+                            <input type="text" name="pack_size" id="pack_size" value="{{ old('pack_size', $product->pack_size) }}" placeholder="e.g. 60 Tablets" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 @error('pack_size') border-red-500 @enderror">
+                            @error('pack_size') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
                     <div>
                         <label for="short_description" class="block text-sm font-medium text-gray-700 mb-1">Short Description</label>
                         <textarea name="short_description" id="short_description" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('short_description', $product->short_description) }}</textarea>
@@ -56,6 +69,49 @@
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Full Description <span class="text-red-500">*</span></label>
                         <textarea name="description" id="description" rows="5" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 @error('description') border-red-500 @enderror">{{ old('description', $product->description) }}</textarea>
                         @error('description') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+            </div>
+
+            <!-- Herbal Information -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-100 pb-3">Herbal Information (Optional)</h3>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="ingredients" class="block text-sm font-medium text-gray-700 mb-1">Ingredients</label>
+                            <textarea name="ingredients" id="ingredients" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('ingredients', $product->ingredients) }}</textarea>
+                        </div>
+                        <div>
+                            <label for="benefits" class="block text-sm font-medium text-gray-700 mb-1">Health Benefits</label>
+                            <textarea name="benefits" id="benefits" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('benefits', $product->benefits) }}</textarea>
+                        </div>
+                        <div>
+                            <label for="usage_instructions" class="block text-sm font-medium text-gray-700 mb-1">Directions for Use</label>
+                            <textarea name="usage_instructions" id="usage_instructions" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('usage_instructions', $product->usage_instructions) }}</textarea>
+                        </div>
+                        <div>
+                            <label for="storage_instructions" class="block text-sm font-medium text-gray-700 mb-1">Storage Instructions</label>
+                            <textarea name="storage_instructions" id="storage_instructions" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('storage_instructions', $product->storage_instructions) }}</textarea>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="ayurvedic_reference" class="block text-sm font-medium text-gray-700 mb-1">Ayurvedic Reference</label>
+                            <textarea name="ayurvedic_reference" id="ayurvedic_reference" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('ayurvedic_reference', $product->ayurvedic_reference) }}</textarea>
+                        </div>
+                        <div>
+                            <label for="suitable_for" class="block text-sm font-medium text-gray-700 mb-1">Suitable For</label>
+                            <textarea name="suitable_for" id="suitable_for" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('suitable_for', $product->suitable_for) }}</textarea>
+                        </div>
+                        <div>
+                            <label for="precautions" class="block text-sm font-medium text-gray-700 mb-1">Precautions / Warnings</label>
+                            <textarea name="precautions" id="precautions" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('precautions', $product->precautions) }}</textarea>
+                        </div>
+                        <div>
+                            <label for="disclaimer" class="block text-sm font-medium text-gray-700 mb-1">Disclaimer</label>
+                            <textarea name="disclaimer" id="disclaimer" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('disclaimer', $product->disclaimer) }}</textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -81,6 +137,23 @@
                     </div>
                 </div>
             </div>
+        </div>
+            
+            <!-- SEO Information -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-100 pb-3">Search Engine Optimization</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="meta_title" class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+                        <input type="text" name="meta_title" id="meta_title" value="{{ old('meta_title', $product->meta_title) }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="meta_description" class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                        <textarea name="meta_description" id="meta_description" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('meta_description', $product->meta_description) }}</textarea>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Sidebar Options -->
@@ -117,6 +190,26 @@
                         </label>
                     </div>
                     @error('main_image') <p class="text-xs text-red-500 mt-2">{{ $message }}</p> @enderror
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b border-gray-100 pb-3">Product Gallery</h3>
+                
+                @if($product->images->count() > 0)
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                    @foreach($product->images as $image)
+                    <div class="relative group aspect-square rounded-lg border border-gray-200 overflow-hidden bg-gray-50">
+                        <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover">
+                    </div>
+                    @endforeach
+                </div>
+                @endif
+                
+                <div class="mt-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Upload more images</label>
+                    <input type="file" name="gallery[]" multiple accept="image/*" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                    <p class="text-xs text-gray-500 mt-2">You can select multiple files. Max 2MB per image.</p>
                 </div>
             </div>
             

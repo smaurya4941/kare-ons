@@ -9,6 +9,7 @@ use App\Models\Coupon;
 use App\Models\CouponUsage;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\InventoryTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -138,6 +139,16 @@ class CheckoutController extends Controller
 
                     // Decrement stock
                     $item->product->decrement('stock_quantity', $item->quantity);
+
+                    // Log inventory transaction
+                    InventoryTransaction::create([
+                        'product_id' => $item->product_id,
+                        'user_id' => Auth::id(),
+                        'type' => 'order_fulfillment',
+                        'quantity' => -$item->quantity, // Negative for OUT
+                        'reference_id' => $order->order_number,
+                        'notes' => 'Stock deducted for order placement.',
+                    ]);
                 }
 
                 // Record coupon usage
@@ -151,11 +162,7 @@ class CheckoutController extends Controller
                 }
 
                 // Clear cart
-                if (Auth::check()) {
-                    CartItem::where('user_id', Auth::id())->delete();
-                } else {
-                    CartItem::where('session_id', Session::getId())->delete();
-                }
+                CartItem::where('user_id', Auth::id())->delete();
 
                 return $order;
             });
@@ -194,10 +201,7 @@ class CheckoutController extends Controller
 
     protected function getCartItems()
     {
-        if (Auth::check()) {
-            return CartItem::with('product')->where('user_id', Auth::id())->get();
-        }
-        return CartItem::with('product')->where('session_id', Session::getId())->get();
+        return CartItem::with('product')->where('user_id', Auth::id())->get();
     }
 
     protected function calculateSubtotal($cartItems): float

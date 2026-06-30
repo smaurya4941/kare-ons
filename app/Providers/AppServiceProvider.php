@@ -27,6 +27,32 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // -----------------------------------------------------------------------
+        // Dynamic Mail Configuration from Database
+        // -----------------------------------------------------------------------
+        try {
+            if ($host = setting('smtp_host')) {
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.host', $host);
+            }
+            if ($port = setting('smtp_port')) {
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.port', $port);
+            }
+            if ($user = setting('smtp_user')) {
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.username', $user);
+            }
+            if ($password = setting('smtp_password')) {
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.password', $password);
+            }
+            if ($encryption = setting('smtp_encryption')) {
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.encryption', $encryption);
+            }
+            if ($fromAddress = setting('smtp_from_address')) {
+                \Illuminate\Support\Facades\Config::set('mail.from.address', $fromAddress);
+                \Illuminate\Support\Facades\Config::set('mail.from.name', setting('site_name', config('app.name')));
+            }
+        } catch (\Exception $e) {
+            // Ignore if DB/table doesn't exist yet (e.g. during migrations)
+        }
+        // -----------------------------------------------------------------------
         // Password strength rules for production
         // -----------------------------------------------------------------------
         Password::defaults(function () {

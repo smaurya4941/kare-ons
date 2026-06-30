@@ -12,12 +12,20 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $today = now()->startOfDay();
+
         $stats = [
             'total_products' => Product::count(),
             'total_orders' => Order::count(),
             'pending_orders' => Order::where('order_status', 'pending')->count(),
+            'completed_orders' => Order::where('order_status', 'delivered')->count(),
+            'cancelled_orders' => Order::where('order_status', 'cancelled')->count(),
+            'orders_today' => Order::where('created_at', '>=', $today)->count(),
             'total_revenue' => Order::where('order_status', 'delivered')->sum('grand_total'),
+            'today_sales' => Order::where('order_status', 'delivered')->where('created_at', '>=', $today)->sum('grand_total'),
             'total_customers' => User::where('role', 'customer')->count(),
+            'low_stock' => Product::where('stock_quantity', '<=', 10)->where('stock_quantity', '>', 0)->count(),
+            'out_of_stock' => Product::where('stock_quantity', '<=', 0)->count(),
         ];
 
         $thirtyDaysAgo = now()->subDays(30)->startOfDay();
@@ -61,7 +69,8 @@ class DashboardController extends Controller
         ];
 
         $recentOrders = Order::with('user')->orderBy('created_at', 'desc')->take(5)->get();
+        $recentCustomers = User::where('role', 'customer')->orderBy('created_at', 'desc')->take(5)->get();
 
-        return view('admin.dashboard', compact('stats', 'recentOrders', 'charts'));
+        return view('admin.dashboard', compact('stats', 'recentOrders', 'recentCustomers', 'charts'));
     }
 }
