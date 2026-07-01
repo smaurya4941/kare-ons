@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', $blog->meta_title ?? $blog->title . ' - Kare Ons Herbal')
+@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($blog->meta_description ?: $blog->excerpt), 160))
+@section('og_type', 'article')
+@section('og_image', $blog->featured_image ? asset('storage/' . $blog->featured_image) : '')
 
 @section('content')
 <article class="max-w-4xl mx-auto px-margin-desktop py-12">

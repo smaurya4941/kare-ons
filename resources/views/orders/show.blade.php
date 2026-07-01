@@ -208,7 +208,102 @@
                     </div>
                 </div>
 
+                {{-- Return / Replacement --}}
+                @if($activeReturn || $order->order_status === 'delivered')
+                <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-6">
+                    <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-secondary text-[22px]">assignment_return</span>
+                        Returns &amp; Replacements
+                    </h2>
+
+                    @if($activeReturn)
+                        @php
+                            $rStatusColor = match($activeReturn->status) {
+                                'pending' => 'bg-amber-100 text-amber-800',
+                                'approved' => 'bg-indigo-100 text-indigo-800',
+                                'rejected' => 'bg-red-100 text-red-800',
+                                'completed' => 'bg-emerald-100 text-emerald-800',
+                                default => 'bg-gray-100 text-gray-800',
+                            };
+                        @endphp
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-secondary">Request Type</span>
+                                <span class="text-sm font-semibold text-on-surface capitalize">{{ $activeReturn->type }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-secondary">Status</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase {{ $rStatusColor }}">{{ $activeReturn->status }}</span>
+                            </div>
+                            <div>
+                                <p class="text-sm text-secondary">Reason</p>
+                                <p class="text-sm text-on-surface mt-1">{{ $activeReturn->reason }}</p>
+                            </div>
+                            @if($activeReturn->admin_note && in_array($activeReturn->status, ['approved','rejected','completed']))
+                                <div class="bg-surface-container rounded-lg p-3">
+                                    <p class="text-xs font-semibold text-on-surface mb-1">Response from our team</p>
+                                    <p class="text-sm text-secondary">{{ $activeReturn->admin_note }}</p>
+                                </div>
+                            @endif
+                            <p class="text-xs text-secondary">Requested on {{ $activeReturn->created_at->format('M d, Y') }}</p>
+                        </div>
+                    @elseif($canRequestReturn)
+                        <div x-data="{ open: false }">
+                            <p class="text-sm text-secondary mb-4">Not happy with your order? You can request a return or replacement within {{ $windowDays }} days of delivery.</p>
+                            <button type="button" x-show="!open" @click="open = true"
+                                    class="w-full border-2 border-primary text-primary font-semibold py-2.5 rounded-lg hover:bg-primary hover:text-white transition-colors">
+                                Request Return / Replacement
+                            </button>
+
+                            <form x-show="open" x-cloak method="POST" action="{{ route('orders.return.store', $order->id) }}" class="space-y-4">
+                                @csrf
+                                <div>
+                                    <label class="block text-sm font-medium text-on-surface mb-2">What would you like?</label>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <label class="flex items-center gap-2 border border-outline-variant rounded-lg px-3 py-2 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                                            <input type="radio" name="type" value="refund" checked class="text-primary focus:ring-primary">
+                                            <span class="text-sm text-on-surface">Refund</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 border border-outline-variant rounded-lg px-3 py-2 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                                            <input type="radio" name="type" value="replacement" class="text-primary focus:ring-primary">
+                                            <span class="text-sm text-on-surface">Replacement</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="reason" class="block text-sm font-medium text-on-surface mb-1">Reason <span class="text-error">*</span></label>
+                                    <select name="reason" id="reason" required class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm">
+                                        <option value="Damaged or defective item">Damaged or defective item</option>
+                                        <option value="Wrong item delivered">Wrong item delivered</option>
+                                        <option value="Item not as described">Item not as described</option>
+                                        <option value="Quality not satisfactory">Quality not satisfactory</option>
+                                        <option value="Missing parts or accessories">Missing parts or accessories</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="customer_note" class="block text-sm font-medium text-on-surface mb-1">Additional details</label>
+                                    <textarea name="customer_note" id="customer_note" rows="3" maxlength="1000" placeholder="Tell us more (optional)"
+                                              class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary text-sm"></textarea>
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <button type="submit" class="flex-1 bg-primary text-white font-semibold py-2.5 rounded-lg hover:bg-on-primary-fixed-variant transition">Submit Request</button>
+                                    <button type="button" @click="open = false" class="px-4 py-2.5 border border-outline-variant rounded-lg text-on-surface hover:bg-surface-container transition">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    @else
+                        <p class="text-sm text-secondary">The {{ $windowDays }}-day return window for this order has passed. Please contact support if you need assistance.</p>
+                    @endif
+                </div>
+                @endif
+
             </div>
         </div>
     </div>
+
+    <style>[x-cloak]{display:none !important;}</style>
 </x-customer-layout>

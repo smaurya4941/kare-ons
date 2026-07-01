@@ -171,32 +171,100 @@
                     @endforeach
                 </div>
 
-                <!-- Totals -->
-                <div class="space-y-3 mb-6 text-sm border-t border-outline-variant pt-4">
-                    <div class="flex justify-between items-center text-secondary">
-                        <span>Subtotal</span>
-                        <span class="font-medium text-on-surface">₹{{ number_format($subtotal, 2) }}</span>
-                    </div>
-                    @if($taxAmount > 0)
-                    <div class="flex justify-between items-center text-secondary">
-                        <span>Tax (GST)</span>
-                        <span class="font-medium text-on-surface">₹{{ number_format($taxAmount, 2) }}</span>
-                    </div>
-                    @endif
-                    <div class="flex justify-between items-center text-secondary">
-                        <span>Shipping</span>
-                        @if($shipping == 0)
-                            <span class="font-medium text-emerald-600">Free</span>
-                        @else
-                            <span class="font-medium text-on-surface">₹{{ number_format($shipping, 2) }}</span>
-                        @endif
-                    </div>
-                </div>
+                <div x-data="{
+                        code: '',
+                        applied: '',
+                        discount: 0,
+                        loading: false,
+                        error: '',
+                        message: '',
+                        subtotal: {{ (float) $subtotal }},
+                        tax: {{ (float) $taxAmount }},
+                        shipping: {{ (float) $shipping }},
+                        get grandTotal() { return Math.max(0, this.subtotal + this.tax + this.shipping - this.discount); },
+                        fmt(n) { return Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); },
+                        async apply() {
+                            if (!this.code.trim()) { this.error = 'Please enter a coupon code.'; return; }
+                            this.loading = true; this.error = ''; this.message = '';
+                            try {
+                                const res = await fetch('{{ route('coupon.apply') }}', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                    body: JSON.stringify({ code: this.code, subtotal: this.subtotal })
+                                });
+                                const data = await res.json();
+                                if (res.ok && data.success) {
+                                    this.discount = parseFloat(data.discount) || 0;
+                                    this.applied = data.code;
+                                    this.message = data.message;
+                                } else {
+                                    this.discount = 0; this.applied = '';
+                                    this.error = data.message || 'Invalid coupon code.';
+                                }
+                            } catch (e) {
+                                this.discount = 0; this.applied = '';
+                                this.error = 'Something went wrong. Please try again.';
+                            }
+                            this.loading = false;
+                        },
+                        remove() { this.discount = 0; this.applied = ''; this.code = ''; this.error = ''; this.message = ''; }
+                     }">
 
-                <div class="border-t border-outline-variant pt-4 mb-8">
-                    <div class="flex justify-between items-center">
-                        <span class="text-lg font-bold text-on-surface">Total</span>
-                        <span class="text-2xl font-bold text-on-surface">₹{{ number_format($total, 2) }}</span>
+                    {{-- Hidden field submitted with the checkout form; server re-validates the coupon --}}
+                    <input type="hidden" name="coupon_code" :value="applied">
+
+                    <!-- Coupon -->
+                    <div class="mb-6 border-t border-outline-variant pt-4">
+                        <label class="block text-sm font-medium text-secondary mb-2">Have a coupon code?</label>
+                        <div x-show="!applied" class="flex gap-2">
+                            <input type="text" x-model="code" @keydown.enter.prevent="apply()" placeholder="Enter code"
+                                   class="flex-1 border-outline-variant rounded-lg focus:ring-primary focus:border-primary px-4 py-2 uppercase text-sm">
+                            <button type="button" @click="apply()" :disabled="loading"
+                                    class="bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface px-4 py-2 rounded-lg font-medium transition disabled:opacity-50">
+                                <span x-show="!loading">Apply</span>
+                                <span x-show="loading">...</span>
+                            </button>
+                        </div>
+                        <div x-show="applied" x-cloak class="flex items-center justify-between bg-secondary-container/40 border border-secondary rounded-lg px-4 py-2">
+                            <span class="text-sm font-medium text-on-surface">Applied: <span class="font-bold font-mono" x-text="applied"></span></span>
+                            <button type="button" @click="remove()" class="text-error text-sm font-medium hover:underline">Remove</button>
+                        </div>
+                        <p x-show="error" x-cloak class="text-error text-xs mt-2" x-text="error"></p>
+                        <p x-show="message && applied" x-cloak class="text-secondary text-xs mt-2" x-text="message"></p>
+                    </div>
+
+                    <!-- Totals -->
+                    <div class="space-y-3 mb-6 text-sm">
+                        <div class="flex justify-between items-center text-secondary">
+                            <span>Subtotal</span>
+                            <span class="font-medium text-on-surface">₹{{ number_format($subtotal, 2) }}</span>
+                        </div>
+                        @if($taxAmount > 0)
+                        <div class="flex justify-between items-center text-secondary">
+                            <span>Tax (GST)</span>
+                            <span class="font-medium text-on-surface">₹{{ number_format($taxAmount, 2) }}</span>
+                        </div>
+                        @endif
+                        <div class="flex justify-between items-center text-secondary">
+                            <span>Shipping</span>
+                            @if($shipping == 0)
+                                <span class="font-medium text-emerald-600">Free</span>
+                            @else
+                                <span class="font-medium text-on-surface">₹{{ number_format($shipping, 2) }}</span>
+                            @endif
+                        </div>
+                        <div x-show="discount > 0" x-cloak class="flex justify-between items-center text-error">
+                            <span>Discount</span>
+                            <span class="font-medium">-₹<span x-text="fmt(discount)"></span></span>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-outline-variant pt-4 mb-8">
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-on-surface">Total</span>
+                            <span class="text-2xl font-bold text-on-surface">₹<span x-text="fmt(grandTotal)"></span></span>
+                        </div>
+                        <p class="text-xs text-secondary mt-1 text-right">Shipping is finalised from your PIN code on order placement.</p>
                     </div>
                 </div>
 
@@ -209,6 +277,7 @@
 </div>
 
 <style>
+[x-cloak] { display: none !important; }
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }

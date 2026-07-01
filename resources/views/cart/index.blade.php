@@ -109,13 +109,12 @@
                 <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-sm p-6 sticky top-24">
                     <h2 class="text-xl font-bold text-on-surface mb-6 font-display">Order Summary</h2>
 
-                    <!-- Coupon Code -->
+                    <!-- Coupon hint (coupons are applied at checkout) -->
                     <div class="mb-6 border-b border-outline-variant pb-6">
-                        <label for="coupon" class="block text-sm font-medium text-secondary mb-2">Have a coupon code?</label>
-                        <form class="flex gap-2">
-                            <input type="text" id="coupon" name="coupon" placeholder="Enter code" class="flex-1 border-outline-variant rounded-lg focus:ring-primary focus:border-primary px-4 py-2">
-                            <button type="button" class="bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface px-4 py-2 rounded-lg font-medium transition">Apply</button>
-                        </form>
+                        <div class="flex items-center gap-2 text-sm text-secondary">
+                            <span class="material-symbols-outlined text-[18px]">local_offer</span>
+                            <span>Have a coupon? Apply it at checkout.</span>
+                        </div>
                     </div>
 
                     <!-- Totals -->

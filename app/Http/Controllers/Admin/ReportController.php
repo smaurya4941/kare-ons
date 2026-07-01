@@ -81,7 +81,7 @@ class ReportController extends Controller
             case 'inventory':
                 return Product::withSum(['orderItems as reserved_stock' => function($q) {
                         $q->whereHas('order', function($query) {
-                            $query->whereIn('order_status', ['pending', 'processing', 'confirmed']);
+                            $query->whereIn('order_status', ['pending', 'confirmed', 'packed']);
                         });
                     }], 'quantity')
                     ->get();

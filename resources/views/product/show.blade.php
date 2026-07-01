@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', ($product->meta_title ?? $product->name) . ' - Kare Ons Herbal')
+@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($product->meta_description ?: ($product->short_description ?: $product->description)), 160))
+@section('og_type', 'product')
+@section('og_image', $product->main_image ? asset('storage/' . $product->main_image) : '')
 
 @section('content')
 <style>

@@ -18,12 +18,15 @@ class InventoryController extends Controller
         $query = Product::query()
             ->withSum(['orderItems as reserved_stock' => function($query) {
                 $query->whereHas('order', function($q) {
-                    $q->whereIn('order_status', ['pending', 'processing', 'confirmed']);
+                    $q->whereIn('order_status', ['pending', 'confirmed', 'packed']);
                 });
             }], 'quantity');
 
         if ($search) {
-            $query->where('name', 'like', "%{$search}%")->orWhere('sku', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%");
+            });
         }
 
         if ($filter === 'low_stock') {

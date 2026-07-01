@@ -27,7 +27,7 @@ class HomeController extends Controller
                 'trendingProducts' => \App\Models\Product::with('images')->where('status', true)->where('is_trending', true)->take(8)->get(),
                 'newArrivals' => \App\Models\Product::with('images')->where('status', true)->orderBy('created_at', 'desc')->take(8)->get(),
                 'testimonials' => \App\Models\Testimonial::where('status', true)->orderBy('sort_order')->take(6)->get(),
-                'blogs' => \App\Models\Blog::where('status', 'published')->orderBy('published_at', 'desc')->take(3)->get(),
+                'blogs' => \App\Models\Blog::published()->orderBy('published_at', 'desc')->take(3)->get(),
             ];
         });
 

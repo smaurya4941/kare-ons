@@ -35,6 +35,24 @@ Route::get('/blog/{slug}', [\App\Http\Controllers\Web\BlogController::class, 'sh
 // Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\Web\SitemapController::class, 'index'])->name('sitemap.index');
 
+// robots.txt — served dynamically so the Sitemap URL matches the current domain
+Route::get('/robots.txt', function () {
+    $lines = [
+        'User-agent: *',
+        'Disallow: /admin/',
+        'Disallow: /dashboard',
+        'Disallow: /checkout',
+        'Disallow: /cart',
+        'Disallow: /orders',
+        'Disallow: /profile',
+        'Disallow: /wishlist',
+        '',
+        'Sitemap: ' . url('/sitemap.xml'),
+    ];
+
+    return response(implode("\n", $lines) . "\n", 200, ['Content-Type' => 'text/plain']);
+})->name('robots');
+
 // ============================================================================
 // Authenticated Customer Routes
 // ============================================================================
@@ -53,6 +71,9 @@ Route::middleware('auth')->group(function () {
     // Customer Orders
     Route::get('/orders', [\App\Http\Controllers\Web\OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [\App\Http\Controllers\Web\OrderController::class, 'show'])->name('orders.show');
+
+    // Customer Return / Replacement Requests
+    Route::post('/orders/{order}/return', [\App\Http\Controllers\Web\ReturnRequestController::class, 'store'])->name('orders.return.store');
 
     // Checkout Routes
     Route::get('/checkout', [\App\Http\Controllers\Web\CheckoutController::class, 'index'])->name('checkout.index');
@@ -100,6 +121,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::resource('payment_methods', \App\Http\Controllers\Admin\PaymentMethodController::class)->only(['index', 'edit', 'update']);
     Route::resource('returns', \App\Http\Controllers\Admin\ReturnRequestController::class)->only(['index', 'show', 'update']);
     Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class)->only(['index', 'show', 'update']);
+    Route::resource('inquiries', \App\Http\Controllers\Admin\ContactInquiryController::class)->only(['index', 'show', 'destroy'])->parameters(['inquiries' => 'inquiry']);
     Route::resource('reviews', \App\Http\Controllers\Admin\ReviewController::class)->except(['create', 'store', 'edit']);
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
     Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);

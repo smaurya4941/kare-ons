@@ -76,6 +76,14 @@
                 <span class="material-symbols-outlined text-[20px]">group</span>
                 Customers
             </a>
+            <a href="{{ route('admin.inquiries.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.inquiries.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">contact_support</span>
+                Inquiries
+                @php $unreadInquiries = \App\Models\ContactInquiry::where('is_read', false)->count(); @endphp
+                @if($unreadInquiries > 0)
+                    <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $unreadInquiries }}</span>
+                @endif
+            </a>
             <a href="{{ route('admin.coupons.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.coupons.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
                 <span class="material-symbols-outlined text-[20px]">local_offer</span>
                 Coupons

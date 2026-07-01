@@ -24,7 +24,7 @@
             @if(request('search'))
                 Search results for "{{ request('search') }}"
             @elseif(request('category'))
-                {{ $categories->where('slug', request('category'))->first()->name ?? 'Products' }}
+                {{ $categories->firstWhere('slug', request('category'))?->name ?? 'Products' }}
             @else
                 Shop All Products
             @endif
@@ -33,7 +33,7 @@
             @if(request('search'))
                 Explore our Ayurvedic formulations matching your search query.
             @elseif(request('category'))
-                Discover pure, potent Ayurvedic remedies crafted for {{ strtolower($categories->where('slug', request('category'))->first()->name ?? 'holistic wellness') }}.
+                Discover pure, potent Ayurvedic remedies crafted for {{ strtolower($categories->firstWhere('slug', request('category'))?->name ?? 'holistic wellness') }}.
             @else
                 Natural Ayurvedic formulations for complete healthcare support. Crafted with traditional wisdom and modern precision.
             @endif
@@ -180,6 +180,7 @@
                             <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
                             <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
                             <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Name: A to Z</option>
+                            <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Name: Z to A</option>
                         </select>
                     </form>
                 </div>

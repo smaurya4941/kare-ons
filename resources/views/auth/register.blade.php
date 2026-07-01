@@ -43,6 +43,16 @@
                     <x-input-error :messages="$errors->get('email')" class="mt-1" />
                 </div>
                 
+                <!-- Phone -->
+                <div>
+                    <label class="block font-label-sm text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-2" for="phone">Phone Number</label>
+                    <div class="relative">
+                        <input class="w-full border-0 border-b border-soft-border bg-transparent focus:ring-0 focus:border-primary transition-colors text-on-surface placeholder:text-outline py-2 @error('phone') border-error @enderror"
+                               id="phone" name="phone" type="tel" value="{{ old('phone') }}" placeholder="e.g. +91 98765 43210" required autocomplete="tel">
+                    </div>
+                    <x-input-error :messages="$errors->get('phone')" class="mt-1" />
+                </div>
+
                 <!-- Password -->
                 <div>
                     <label class="block font-label-sm text-xs font-medium text-on-surface-variant uppercase tracking-wider mb-2" for="password">Password</label>

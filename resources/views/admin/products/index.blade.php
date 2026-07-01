@@ -87,6 +87,9 @@
                     </td>
                     <td class="px-4 py-2 text-right">
                         <div class="flex justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ route('admin.products.show', $product->id) }}" class="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded transition" title="View">
+                                <span class="material-symbols-outlined text-[16px]">visibility</span>
+                            </a>
                             <a href="{{ route('admin.products.edit', $product->id) }}" class="p-1 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition" title="Edit">
                                 <span class="material-symbols-outlined text-[16px]">edit</span>
                             </a>

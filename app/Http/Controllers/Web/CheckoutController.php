@@ -249,6 +249,7 @@ class CheckoutController extends Controller
         // COD — redirect to success page with order number
         return redirect()->route('checkout.success')
             ->with('order_number', $order->order_number)
+            ->with('payment_method', $order->payment_method)
             ->with('success', "Your order #{$order->order_number} has been placed successfully!");
     }
 
@@ -292,7 +293,7 @@ class CheckoutController extends Controller
             $order = $payment->order;
             $order->update([
                 'payment_status' => 'paid',
-                'order_status'   => 'processing',
+                'order_status'   => 'confirmed',
             ]);
 
             // Send Email Notification
@@ -302,6 +303,7 @@ class CheckoutController extends Controller
 
             return redirect()->route('checkout.success')
                 ->with('order_number', $order->order_number)
+                ->with('payment_method', 'razorpay')
                 ->with('success', "Payment successful! Your order #{$order->order_number} has been placed.");
 
         } catch (\Exception $e) {

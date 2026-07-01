@@ -27,7 +27,7 @@
         </div>
         <div class="flex justify-between mb-3 text-sm">
             <span class="text-secondary font-medium">Payment Method</span>
-            <span class="font-medium text-on-surface">Cash on Delivery</span>
+            <span class="font-medium text-on-surface">{{ session('payment_method') === 'cod' ? 'Cash on Delivery' : 'Paid Online' }}</span>
         </div>
         <div class="flex justify-between text-sm">
             <span class="text-secondary font-medium">Estimated Delivery</span>
@@ -35,6 +35,7 @@
         </div>
     </div>
 
+    @if(session('payment_method') === 'cod')
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 max-w-md w-full mb-8 text-left">
         <div class="flex items-start gap-3">
             <span class="material-symbols-outlined text-amber-600 text-[20px] mt-0.5">info</span>
@@ -44,6 +45,7 @@
             </div>
         </div>
     </div>
+    @endif
     @endif
     
     <div class="flex flex-col sm:flex-row gap-4 justify-center">

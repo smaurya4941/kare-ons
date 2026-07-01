@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'Contact Us - ' . setting('site_name', 'Kare ONS Herbals'))
+@section('meta_description', 'Get in touch with ' . setting('site_name', 'Kare ONS Herbals') . ' for product inquiries, wellness guidance, or support.')
+
 @section('content')
 <main class="pt-32 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto min-h-screen flex flex-col">
 <!-- Hero Section -->

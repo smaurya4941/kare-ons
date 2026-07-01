@@ -65,7 +65,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
             @foreach($homepageCategories as $category)
             <div class="group relative overflow-hidden rounded-xl clinical-card h-[400px]">
-                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="{{ $category->name }}" src="{{ $category->banner ? asset('storage/'.$category->banner) : 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=800&auto=format&fit=crop' }}"/>
+                @php $categoryImage = $category->banner_image ?? $category->image; @endphp
+                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="{{ $category->name }}" src="{{ $categoryImage ? asset('storage/'.$categoryImage) : 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=800&auto=format&fit=crop' }}"/>
                 <div class="absolute inset-0 portfolio-overlay"></div>
                 <div class="absolute bottom-0 left-0 p-8 text-white w-full">
                     <h3 class="font-headline-sm text-headline-sm mb-4 text-white">{{ $category->name }}</h3>

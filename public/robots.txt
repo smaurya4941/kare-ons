@@ -1,7 +1,0 @@
-User-agent: *
-Disallow: /admin/
-Disallow: /dashboard/
-Disallow: /checkout/
-Disallow: /cart/
-
-Sitemap: {{ env('APP_URL') }}/sitemap.xml

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Controller;
 use App\Models\Review;
 use Illuminate\Http\Request;
 
@@ -15,11 +14,13 @@ class ReviewController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->whereHas('product', function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
-            })->orWhereHas('user', function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%");
-            })->orWhere('title', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('product', function($sub) use ($search) {
+                    $sub->where('name', 'like', "%{$search}%");
+                })->orWhereHas('user', function($sub) use ($search) {
+                    $sub->where('name', 'like', "%{$search}%");
+                })->orWhere('title', 'like', "%{$search}%");
+            });
         }
 
         if ($request->filled('status')) {

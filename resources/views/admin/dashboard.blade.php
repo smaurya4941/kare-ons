@@ -271,7 +271,7 @@
                     fontFamily: fontFamily,
                 },
                 labels: chartsData.status.labels,
-                colors: ['#f59e0b', '#3b82f6', '#8b5cf6', '#10b981', '#ef4444'],
+                colors: ['#f59e0b', '#3b82f6', '#6366f1', '#8b5cf6', '#10b981', '#64748b', '#ef4444'],
                 plotOptions: {
                     pie: {
                         donut: { 

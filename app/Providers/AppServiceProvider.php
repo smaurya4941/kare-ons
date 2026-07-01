@@ -32,6 +32,9 @@ class AppServiceProvider extends ServiceProvider
         try {
             if ($host = setting('smtp_host')) {
                 \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.host', $host);
+                // An admin-configured SMTP host means they intend to send via SMTP,
+                // so switch the active mailer away from the default (e.g. "log").
+                \Illuminate\Support\Facades\Config::set('mail.default', 'smtp');
             }
             if ($port = setting('smtp_port')) {
                 \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.port', $port);

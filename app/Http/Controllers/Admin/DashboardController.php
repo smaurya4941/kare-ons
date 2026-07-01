@@ -44,12 +44,14 @@ class DashboardController extends Controller
                 'data' => $salesTrend->pluck('total'),
             ],
             'status' => [
-                'labels' => ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
+                'labels' => ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered', 'Returned', 'Cancelled'],
                 'data' => [
                     Order::where('order_status', 'pending')->count(),
-                    Order::where('order_status', 'processing')->count(),
+                    Order::where('order_status', 'confirmed')->count(),
+                    Order::where('order_status', 'packed')->count(),
                     Order::where('order_status', 'shipped')->count(),
                     Order::where('order_status', 'delivered')->count(),
+                    Order::where('order_status', 'returned')->count(),
                     Order::where('order_status', 'cancelled')->count(),
                 ]
             ],

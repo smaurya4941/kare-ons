@@ -28,7 +28,7 @@
             "currency": "INR",
             "name": "{{ setting('site_name', 'Kare Ons Herbal') }}",
             "description": "Payment for Order #{{ $order->order_number }}",
-            "image": "{{ setting('site_logo') ? asset('storage/' . setting('site_logo')) : '' }}",
+            "image": "{{ setting('logo') ? asset('storage/' . setting('logo')) : '' }}",
             "order_id": "{{ $order->payment->razorpay_order_id }}",
             "handler": function (response){
                 document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;

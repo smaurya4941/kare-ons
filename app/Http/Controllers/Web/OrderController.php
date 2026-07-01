@@ -34,8 +34,18 @@ class OrderController extends Controller
 
         $order->load(['items.product', 'address', 'timelines' => function($q) {
             $q->latest();
+        }, 'returnRequests' => function($q) {
+            $q->latest();
         }]);
 
-        return view('orders.show', compact('order'));
+        // Return / replacement eligibility
+        $windowDays = \App\Http\Controllers\Web\ReturnRequestController::RETURN_WINDOW_DAYS;
+        $deliveredAt = optional($order->timelines->firstWhere('status', 'delivered'))->created_at ?? $order->updated_at;
+        $activeReturn = $order->returnRequests->first();
+        $canRequestReturn = $order->order_status === 'delivered'
+            && $deliveredAt->gte(now()->subDays($windowDays))
+            && $order->returnRequests->whereIn('status', ['pending', 'approved', 'completed'])->isEmpty();
+
+        return view('orders.show', compact('order', 'activeReturn', 'canRequestReturn', 'windowDays'));
     }
 }
