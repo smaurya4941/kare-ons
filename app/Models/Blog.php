@@ -24,6 +24,17 @@ class Blog extends Model
         'published_at',
     ];
 
+    protected static function booted()
+    {
+        static::saved(function ($model) {
+            \Illuminate\Support\Facades\Cache::forget('homepage_data');
+        });
+
+        static::deleted(function ($model) {
+            \Illuminate\Support\Facades\Cache::forget('homepage_data');
+        });
+    }
+
     protected function casts(): array
     {
         return [

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductImage;
+use App\Models\Brand;
+use App\Models\Tax;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -39,7 +41,9 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::where('status', true)->get();
-        return view('admin.products.create', compact('categories'));
+        $brands = Brand::where('status', true)->get();
+        $taxes = Tax::where('status', true)->get();
+        return view('admin.products.create', compact('categories', 'brands', 'taxes'));
     }
 
     public function store(Request $request)
@@ -54,7 +58,8 @@ class ProductController extends Controller
             'short_description'    => 'nullable|string|max:500',
             'description'          => 'required|string',
 
-            'brand'                => 'nullable|string|max:255',
+            'brand_id'             => 'nullable|exists:brands,id',
+            'tax_id'               => 'nullable|exists:taxes,id',
             'pack_size'            => 'nullable|string|max:255',
             'benefits'             => 'nullable|string|max:5000',
             'ayurvedic_reference'  => 'nullable|string|max:5000',
@@ -68,6 +73,9 @@ class ProductController extends Controller
             // SEO & Status
             'status'               => 'required|boolean',
             'featured'             => 'boolean',
+            'is_featured'          => 'boolean',
+            'is_best_seller'       => 'boolean',
+            'is_trending'          => 'boolean',
             'meta_title'           => 'nullable|string|max:255',
             'meta_description'     => 'nullable|string|max:500',
 
@@ -81,6 +89,9 @@ class ProductController extends Controller
 
             $validated['slug']     = $this->uniqueSlug($validated['name']);
             $validated['featured'] = $request->boolean('featured');
+            $validated['is_featured'] = $request->boolean('is_featured');
+            $validated['is_best_seller'] = $request->boolean('is_best_seller');
+            $validated['is_trending'] = $request->boolean('is_trending');
             $validated['main_image'] = $request->file('main_image')->store('products', 'public');
 
             $product = Product::create(Arr::except($validated, ['gallery']));
@@ -122,8 +133,10 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = Category::where('status', true)->get();
+        $brands = Brand::where('status', true)->get();
+        $taxes = Tax::where('status', true)->get();
         $product->load('images');
-        return view('admin.products.edit', compact('product', 'categories'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands', 'taxes'));
     }
 
     public function update(Request $request, Product $product)
@@ -138,7 +151,7 @@ class ProductController extends Controller
             'short_description'    => 'nullable|string|max:500',
             'description'          => 'required|string',
 
-            'brand'                => 'nullable|string|max:255',
+            'brand_id'             => 'nullable|exists:brands,id',
             'pack_size'            => 'nullable|string|max:255',
             'benefits'             => 'nullable|string|max:5000',
             'ayurvedic_reference'  => 'nullable|string|max:5000',
@@ -152,6 +165,9 @@ class ProductController extends Controller
             // SEO & Status
             'status'               => 'required|boolean',
             'featured'             => 'boolean',
+            'is_featured'          => 'boolean',
+            'is_best_seller'       => 'boolean',
+            'is_trending'          => 'boolean',
             'meta_title'           => 'nullable|string|max:255',
             'meta_description'     => 'nullable|string|max:500',
 
@@ -164,6 +180,9 @@ class ProductController extends Controller
             DB::beginTransaction();
 
             $validated['featured'] = $request->boolean('featured');
+            $validated['is_featured'] = $request->boolean('is_featured');
+            $validated['is_best_seller'] = $request->boolean('is_best_seller');
+            $validated['is_trending'] = $request->boolean('is_trending');
 
             if ($validated['name'] !== $product->name) {
                 $validated['slug'] = $this->uniqueSlug($validated['name'], $product->id);

@@ -204,6 +204,21 @@
                             @endif
                         </div>
                         
+                        <div class="absolute top-3 right-3 z-20">
+                            @auth
+                                @php
+                                    $inWishlist = auth()->user()->wishlists()->where('product_id', $product->id)->exists();
+                                @endphp
+                                <button type="button" onclick="toggleWishlist({{ $product->id }})" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white transition-colors" title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+                                    <span class="wishlist-icon-{{ $product->id }} material-symbols-outlined text-[20px] {{ $inWishlist ? 'text-primary' : 'text-on-surface-variant hover:text-primary' }}" style="font-variation-settings: 'FILL' {{ $inWishlist ? '1' : '0' }};">favorite</span>
+                                </button>
+                            @else
+                                <a href="{{ route('login') }}" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white transition-colors text-on-surface-variant hover:text-primary" title="Log in to save">
+                                    <span class="material-symbols-outlined text-[20px]">favorite</span>
+                                </a>
+                            @endauth
+                        </div>
+                        
                         <a href="{{ route('product.show', $product->slug) }}" class="block aspect-square bg-surface-container overflow-hidden relative">
                             @if($product->main_image)
                                 <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">

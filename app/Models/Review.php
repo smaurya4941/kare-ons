@@ -12,6 +12,15 @@ class Review extends Model
 
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return [
+            'images' => 'array',
+            'is_verified_purchase' => 'boolean',
+            'status' => 'boolean',
+        ];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

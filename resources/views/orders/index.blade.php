@@ -1,50 +1,7 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-on-surface leading-tight">
-            My Orders
-        </h2>
-    </x-slot>
+<x-customer-layout>
+    <x-slot name="title">My Orders</x-slot>
 
-    <div class="py-12 bg-surface-container-lowest min-h-screen">
-        <div class="max-w-container-max mx-auto px-margin-desktop">
-            <div class="flex flex-col lg:flex-row gap-8">
-
-                {{-- Sidebar --}}
-                <div class="w-full lg:w-64 flex-shrink-0">
-                    <div class="bg-surface rounded-xl border border-outline-variant p-4 sticky top-24 shadow-sm">
-                        <div class="flex items-center gap-4 p-4 mb-4 border-b border-outline-variant">
-                            <div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-lg">
-                                {{ substr(Auth::user()->name, 0, 1) }}
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-on-surface line-clamp-1">{{ Auth::user()->name }}</h3>
-                                <p class="text-xs text-secondary line-clamp-1">{{ Auth::user()->email }}</p>
-                            </div>
-                        </div>
-
-                        <nav class="space-y-1">
-                            <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-secondary hover:bg-surface-container hover:text-on-surface transition">
-                                <span class="material-symbols-outlined text-[20px]">dashboard</span> Dashboard
-                            </a>
-                            <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-secondary hover:bg-surface-container hover:text-on-surface transition">
-                                <span class="material-symbols-outlined text-[20px]">person</span> Profile
-                            </a>
-                            <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium bg-secondary-container text-on-secondary-container">
-                                <span class="material-symbols-outlined text-[20px]">shopping_bag</span> Orders
-                            </a>
-                            <hr class="my-4 border-outline-variant">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-error hover:bg-error-container hover:text-on-error-container transition">
-                                    <span class="material-symbols-outlined text-[20px]">logout</span> Log Out
-                                </button>
-                            </form>
-                        </nav>
-                    </div>
-                </div>
-
-                {{-- Order List --}}
-                <div class="flex-1">
+    <div class="flex-1">
                     @if(session('success'))
                         <div class="mb-6 bg-secondary-container text-on-secondary-container p-4 rounded-lg flex items-center gap-3">
                             <span class="material-symbols-outlined">check_circle</span>
@@ -95,6 +52,9 @@
                                                 <p class="text-xs text-secondary">Total</p>
                                                 <p class="font-bold text-on-surface text-lg">₹{{ number_format($order->grand_total, 2) }}</p>
                                             </div>
+                                            <a href="{{ route('orders.show', $order->id) }}" class="inline-flex items-center justify-center border border-outline-variant hover:bg-surface-container transition-colors rounded-lg px-4 py-2 text-sm font-medium text-on-surface">
+                                                View Details
+                                            </a>
                                         </div>
                                     </div>
 
@@ -163,7 +123,5 @@
                         @endif
                     @endif
                 </div>
-            </div>
-        </div>
     </div>
-</x-app-layout>
+</x-customer-layout>

@@ -44,9 +44,17 @@
                 <span class="material-symbols-outlined text-[20px]">category</span>
                 Categories
             </a>
+            <a href="{{ route('admin.brands.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.brands.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">branding_watermark</span>
+                Brands
+            </a>
             <a href="{{ route('admin.inventory.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.inventory.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
                 <span class="material-symbols-outlined text-[20px]">warehouse</span>
                 Inventory
+            </a>
+            <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.reviews.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">reviews</span>
+                Reviews
             </a>
 
             <div class="pt-4 pb-1">
@@ -59,6 +67,10 @@
                 @if($pendingOrdersCount > 0)
                     <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $pendingOrdersCount }}</span>
                 @endif
+            </a>
+            <a href="{{ route('admin.returns.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.returns.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">assignment_return</span>
+                Return Requests
             </a>
             <a href="{{ route('admin.customers.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.customers.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
                 <span class="material-symbols-outlined text-[20px]">group</span>
@@ -84,10 +96,38 @@
                 <span class="material-symbols-outlined text-[20px]">article</span>
                 Blog Posts
             </a>
+            <a href="{{ route('admin.banners.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.banners.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">view_carousel</span>
+                Banners
+            </a>
+            <a href="{{ route('admin.testimonials.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.testimonials.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">reviews</span>
+                Testimonials
+            </a>
+            <a href="{{ route('admin.pages.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.pages.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">description</span>
+                Pages
+            </a>
+            <a href="{{ route('admin.media.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.media.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">perm_media</span>
+                Media Library
+            </a>
 
             <div class="pt-4 pb-1">
                 <p class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">System</p>
             </div>
+            <a href="{{ route('admin.shipping.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.shipping.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">local_shipping</span>
+                Shipping
+            </a>
+            <a href="{{ route('admin.payment_methods.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.payment_methods.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">payments</span>
+                Payment Methods
+            </a>
+            <a href="{{ route('admin.taxes.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.taxes.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">account_balance</span>
+                Taxes
+            </a>
             <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.settings.*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white transition' }}">
                 <span class="material-symbols-outlined text-[20px]">settings</span>
                 Settings

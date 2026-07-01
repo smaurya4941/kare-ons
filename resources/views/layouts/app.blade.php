@@ -160,10 +160,7 @@
                     </button>
                     <div class="absolute top-full left-0 w-64 bg-white shadow-lg border border-outline-variant opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 rounded-b-lg overflow-hidden">
                         <div class="flex flex-col py-1">
-                            @php
-                                $navCategories = \App\Models\Category::where('status', true)->get();
-                            @endphp
-                            @foreach($navCategories as $navCat)
+                            @foreach($headerCategories ?? [] as $navCat)
                                 <a class="px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container hover:text-primary transition-colors" href="{{ route('shop.index', ['category' => $navCat->slug]) }}">{{ $navCat->name }}</a>
                             @endforeach
                         </div>
@@ -223,7 +220,7 @@
                 <div class="py-3 border-b border-surface-container">
                     <p class="text-sm font-medium text-on-surface mb-2">Categories</p>
                     <div class="flex flex-col pl-4 gap-3">
-                        @foreach($navCategories as $navCat)
+                        @foreach($headerCategories ?? [] as $navCat)
                             <a class="text-sm text-on-surface-variant hover:text-primary" href="{{ route('shop.index', ['category' => $navCat->slug]) }}">{{ $navCat->name }}</a>
                         @endforeach
                     </div>
@@ -281,10 +278,10 @@
 <div>
 <h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Company</h5>
 <ul class="space-y-4">
+@foreach($footerPages ?? [] as $page)
+<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="{{ route('page.show', $page->slug) }}">{{ $page->title }}</a></li>
+@endforeach
 <li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="{{ route('about') }}">About Us</a></li>
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Privacy Policy</a></li>
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Terms of Service</a></li>
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Returns &amp; Shipping</a></li>
 </ul>
 </div>
 <div>
@@ -385,6 +382,50 @@
                     document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
                 }
             });
+        }
+        
+        async function toggleWishlist(productId) {
+            try {
+                const response = await fetch(`/wishlist/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                if (response.status === 401) {
+                    window.location.href = '{{ route("login") }}';
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.status === 'added') {
+                    document.querySelectorAll(`.wishlist-icon-${productId}`).forEach(icon => {
+                        icon.style.fontVariationSettings = "'FILL' 1";
+                        icon.classList.add('text-primary');
+                        icon.classList.remove('text-on-surface-variant');
+                        if (icon.parentElement.tagName === 'BUTTON') {
+                            icon.parentElement.classList.add('border-primary', 'bg-primary/10');
+                            icon.parentElement.classList.remove('border-soft-border');
+                        }
+                    });
+                } else if (data.status === 'removed') {
+                    document.querySelectorAll(`.wishlist-icon-${productId}`).forEach(icon => {
+                        icon.style.fontVariationSettings = "'FILL' 0";
+                        icon.classList.remove('text-primary');
+                        icon.classList.add('text-on-surface-variant');
+                        if (icon.parentElement.tagName === 'BUTTON') {
+                            icon.parentElement.classList.remove('border-primary', 'bg-primary/10');
+                            icon.parentElement.classList.add('border-soft-border');
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error toggling wishlist:', error);
+            }
         }
     </script>
 </body>

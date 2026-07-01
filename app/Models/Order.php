@@ -33,4 +33,14 @@ class Order extends Model
     {
         return $this->hasOne(Payment::class);
     }
+
+    public function timelines(): HasMany
+    {
+        return $this->hasMany(OrderTimeline::class)->orderBy('created_at', 'desc');
+    }
+
+    public function returnRequests(): HasMany
+    {
+        return $this->hasMany(ReturnRequest::class);
+    }
 }

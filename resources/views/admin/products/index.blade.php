@@ -3,96 +3,98 @@
 @section('title', 'Products')
 
 @section('content')
-<div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-    <form action="{{ route('admin.products.index') }}" method="GET" class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+<div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+    <form action="{{ route('admin.products.index') }}" method="GET" class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
         <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-                <span class="material-symbols-outlined text-[20px]">search</span>
+            <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-gray-400">
+                <span class="material-symbols-outlined text-[16px]">search</span>
             </span>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-64">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..." class="pl-8 pr-3 py-1.5 border border-gray-200 rounded-md text-[11px] focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-56 shadow-sm">
         </div>
-        <select name="category" class="border border-gray-300 rounded-lg text-sm px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">
+        <select name="category" class="border border-gray-200 rounded-md text-[11px] px-2.5 py-1.5 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm bg-white">
             <option value="">All Categories</option>
             @foreach($categories as $category)
                 <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
             @endforeach
         </select>
-        <button type="submit" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition">Filter</button>
+        <button type="submit" class="bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-[11px] font-medium hover:bg-gray-50 transition shadow-sm">Filter</button>
         @if(request()->hasAny(['search', 'category']))
-            <a href="{{ route('admin.products.index') }}" class="text-sm text-gray-500 hover:text-indigo-600 flex items-center px-2">Clear</a>
+            <a href="{{ route('admin.products.index') }}" class="text-[11px] text-gray-500 hover:text-indigo-600 flex items-center px-2">Clear</a>
         @endif
     </form>
     
-    <a href="{{ route('admin.products.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
-        <span class="material-symbols-outlined text-[20px]">add</span>
+    <a href="{{ route('admin.products.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md text-[11px] font-medium transition shadow-sm flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-[16px]">add</span>
         Add Product
     </a>
 </div>
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
-                <tr class="bg-gray-50 border-b border-gray-100 text-xs text-gray-500 uppercase tracking-wider">
-                    <th class="px-6 py-4 font-medium">Product</th>
-                    <th class="px-6 py-4 font-medium">SKU</th>
-                    <th class="px-6 py-4 font-medium">Category</th>
-                    <th class="px-6 py-4 font-medium">Price</th>
-                    <th class="px-6 py-4 font-medium">Stock</th>
-                    <th class="px-6 py-4 font-medium">Status</th>
-                    <th class="px-6 py-4 font-medium text-right">Actions</th>
+                <tr class="bg-gray-50 border-b border-gray-200 text-[10px] text-gray-500 uppercase tracking-wider">
+                    <th class="px-4 py-2.5 font-semibold">Product</th>
+                    <th class="px-4 py-2.5 font-semibold">SKU</th>
+                    <th class="px-4 py-2.5 font-semibold">Category</th>
+                    <th class="px-4 py-2.5 font-semibold text-right">Price</th>
+                    <th class="px-4 py-2.5 font-semibold text-center">Stock</th>
+                    <th class="px-4 py-2.5 font-semibold text-center">Status</th>
+                    <th class="px-4 py-2.5 font-semibold text-right">Actions</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-gray-100 text-[11px]">
                 @forelse($products as $product)
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0">
+                <tr class="hover:bg-gray-50 transition group">
+                    <td class="px-4 py-2">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded border border-gray-200 overflow-hidden flex-shrink-0 bg-white">
                                 @if($product->main_image)
                                     <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
                                 @else
-                                    <span class="material-symbols-outlined text-gray-400 w-full h-full flex items-center justify-center text-[20px]">image</span>
+                                    <span class="material-symbols-outlined text-gray-300 w-full h-full flex items-center justify-center text-[16px]">image</span>
                                 @endif
                             </div>
-                            <div>
-                                <p class="text-sm font-semibold text-gray-800 line-clamp-1">{{ $product->name }}</p>
-                                <a href="{{ route('product.show', $product->slug) }}" target="_blank" class="text-xs text-indigo-600 hover:underline">View in store</a>
+                            <div class="flex flex-col max-w-[200px]">
+                                <p class="font-medium text-gray-800 truncate" title="{{ $product->name }}">{{ $product->name }}</p>
+                                <a href="{{ route('product.show', $product->slug) }}" target="_blank" class="text-[9px] text-indigo-500 hover:underline">View in store</a>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 text-sm font-mono text-gray-600">{{ $product->sku }}</td>
-                    <td class="px-6 py-4 text-sm text-gray-600">{{ $product->category->name ?? 'None' }}</td>
-                    <td class="px-6 py-4">
+                    <td class="px-4 py-2 font-mono text-gray-500">{{ $product->sku }}</td>
+                    <td class="px-4 py-2 text-gray-600 truncate max-w-[120px]" title="{{ $product->category->name ?? 'None' }}">{{ $product->category->name ?? 'None' }}</td>
+                    <td class="px-4 py-2 text-right">
                         @if($product->sale_price)
-                            <span class="text-sm font-semibold text-gray-800">₹{{ number_format($product->sale_price, 2) }}</span>
-                            <span class="text-xs text-gray-400 line-through block">₹{{ number_format($product->price, 2) }}</span>
+                            <div class="flex flex-col items-end">
+                                <span class="font-semibold text-gray-800">₹{{ number_format($product->sale_price, 2) }}</span>
+                                <span class="text-[9px] text-gray-400 line-through">₹{{ number_format($product->price, 2) }}</span>
+                            </div>
                         @else
-                            <span class="text-sm font-semibold text-gray-800">₹{{ number_format($product->price, 2) }}</span>
+                            <span class="font-semibold text-gray-800">₹{{ number_format($product->price, 2) }}</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4">
-                        <span class="text-sm {{ $product->stock_quantity > 10 ? 'text-emerald-600' : ($product->stock_quantity > 0 ? 'text-amber-600' : 'text-red-600') }} font-medium">
+                    <td class="px-4 py-2 text-center">
+                        <span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded text-[10px] font-medium {{ $product->stock_quantity > 10 ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : ($product->stock_quantity > 0 ? 'bg-amber-50 text-amber-700 border border-amber-100' : 'bg-red-50 text-red-700 border border-red-100') }}">
                             {{ $product->stock_quantity }}
                         </span>
                     </td>
-                    <td class="px-6 py-4">
+                    <td class="px-4 py-2 text-center">
                         @if($product->status)
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Active</span>
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">Active</span>
                         @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">Inactive</span>
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-gray-50 text-gray-600 border border-gray-200">Inactive</span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex justify-end gap-2">
-                            <a href="{{ route('admin.products.edit', $product->id) }}" class="text-gray-400 hover:text-indigo-600 transition" title="Edit">
-                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                    <td class="px-4 py-2 text-right">
+                        <div class="flex justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ route('admin.products.edit', $product->id) }}" class="p-1 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded transition" title="Edit">
+                                <span class="material-symbols-outlined text-[16px]">edit</span>
                             </a>
                             <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this product?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-gray-400 hover:text-red-600 transition" title="Delete">
-                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                <button type="submit" class="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition" title="Delete">
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>
                                 </button>
                             </form>
                         </div>
@@ -100,7 +102,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-6 py-8 text-center text-gray-500 text-sm">
+                    <td colspan="7" class="px-4 py-8 text-center text-gray-500 text-[11px]">
                         No products found matching your criteria.
                     </td>
                 </tr>
@@ -109,8 +111,8 @@
         </table>
     </div>
     @if($products->hasPages())
-    <div class="px-6 py-4 border-t border-gray-100">
-        {{ $products->links() }}
+    <div class="px-4 py-2 border-t border-gray-100 bg-gray-50/50">
+        {{ $products->links('pagination::tailwind') }}
     </div>
     @endif
 </div>

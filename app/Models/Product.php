@@ -13,6 +13,17 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
+    protected static function booted()
+    {
+        static::saved(function ($model) {
+            \Illuminate\Support\Facades\Cache::forget('homepage_data');
+        });
+
+        static::deleted(function ($model) {
+            \Illuminate\Support\Facades\Cache::forget('homepage_data');
+        });
+    }
+
     /**
      * Cast boolean and decimal fields to their native PHP types.
      * This is critical for status badge comparisons in Blade views.
@@ -21,7 +32,10 @@ class Product extends Model
     {
         return [
             'status'   => 'boolean',
-            'featured' => 'boolean',
+            'featured' => 'boolean', // old
+            'is_featured' => 'boolean',
+            'is_best_seller' => 'boolean',
+            'is_trending' => 'boolean',
             'price'    => 'decimal:2',
             'sale_price' => 'decimal:2',
         ];
@@ -32,9 +46,19 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class);
+    }
+    
+    public function tax(): BelongsTo
+    {
+        return $this->belongsTo(Tax::class);
     }
 
     public function reviews(): HasMany

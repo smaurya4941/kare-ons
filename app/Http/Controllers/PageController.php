@@ -12,6 +12,12 @@ class PageController extends Controller
     {
         return view('pages.about');
     }
+    
+    public function show($slug)
+    {
+        $page = \App\Models\Page::where('slug', $slug)->where('status', true)->firstOrFail();
+        return view('pages.show', compact('page'));
+    }
 
     public function contact()
     {

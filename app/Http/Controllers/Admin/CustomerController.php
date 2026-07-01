@@ -28,13 +28,30 @@ class CustomerController extends Controller
 
     public function show(User $customer)
     {
-        // Ensure we are viewing a customer
         if ($customer->role !== 'customer') {
             return redirect()->route('admin.customers.index')->with('error', 'Invalid customer profile.');
         }
 
-        $customer->load(['orders.items', 'addresses']);
+        $customer->load(['orders.items', 'addresses', 'wishlists.product']);
         
         return view('admin.customers.show', compact('customer'));
+    }
+
+    public function update(Request $request, User $customer)
+    {
+        if ($customer->role !== 'customer') {
+            return back()->with('error', 'Invalid customer profile.');
+        }
+
+        $validated = $request->validate([
+            'notes'          => 'nullable|string',
+            'reward_points'  => 'required|integer|min:0',
+            'wallet_balance' => 'required|numeric|min:0',
+            'status'         => 'required|boolean',
+        ]);
+
+        $customer->update($validated);
+
+        return back()->with('success', 'Customer profile updated successfully.');
     }
 }

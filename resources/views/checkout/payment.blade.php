@@ -4,24 +4,56 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto px-margin-desktop py-20 text-center min-h-[70vh] flex flex-col items-center justify-center">
-    <!-- Simulated Loading Spinner -->
     <div class="w-16 h-16 border-4 border-surface-container-high border-t-primary rounded-full animate-spin mb-8 mx-auto"></div>
     
-    <h1 class="text-3xl font-display font-bold text-on-surface mb-4">Initializing Razorpay...</h1>
-    <p class="text-secondary mb-8">Please wait while we redirect you to the secure payment gateway. Do not refresh this page.</p>
-    
-    <!-- Phase 12 Placeholder Note -->
-    <div class="bg-amber-50 text-amber-800 p-6 rounded-xl border border-amber-200 max-w-md w-full mt-4 text-left text-sm">
-        <div class="flex gap-3">
-            <span class="material-symbols-outlined text-amber-500">info</span>
-            <div>
-                <strong class="block mb-1">Developer Note (Phase 12)</strong>
-                This is a placeholder for the Razorpay integration. In production, this view will automatically trigger the Razorpay checkout modal via JavaScript, process the payment, and redirect to the success callback. For now, you can proceed via Cash on Delivery.
-                <div class="mt-4">
-                    <a href="{{ route('checkout.index') }}" class="font-medium underline hover:text-amber-900">Return to Checkout</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h1 class="text-3xl font-display font-bold text-on-surface mb-4">Initializing Secure Payment...</h1>
+    <p class="text-secondary mb-8">Please wait while we open the secure payment gateway. Do not refresh this page.</p>
+
+    <!-- Hidden form for Razorpay Callback -->
+    <form action="{{ route('checkout.callback') }}" method="POST" id="razorpay-form" class="hidden">
+        @csrf
+        <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+        <input type="hidden" name="razorpay_order_id" id="razorpay_order_id">
+        <input type="hidden" name="razorpay_signature" id="razorpay_signature">
+    </form>
 </div>
+
+@push('scripts')
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var options = {
+            "key": "{{ setting('razorpay_key') }}", 
+            "amount": "{{ round($order->grand_total * 100) }}", 
+            "currency": "INR",
+            "name": "{{ setting('site_name', 'Kare Ons Herbal') }}",
+            "description": "Payment for Order #{{ $order->order_number }}",
+            "image": "{{ setting('site_logo') ? asset('storage/' . setting('site_logo')) : '' }}",
+            "order_id": "{{ $order->payment->razorpay_order_id }}",
+            "handler": function (response){
+                document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                document.getElementById('razorpay_order_id').value = response.razorpay_order_id;
+                document.getElementById('razorpay_signature').value = response.razorpay_signature;
+                document.getElementById('razorpay-form').submit();
+            },
+            "prefill": {
+                "name": "{{ $order->address->full_name ?? ($order->user->name ?? '') }}",
+                "email": "{{ $order->user->email ?? '' }}",
+                "contact": "{{ $order->address->phone ?? ($order->user->phone ?? '') }}"
+            },
+            "theme": {
+                "color": "#1A5A3C"
+            },
+            "modal": {
+                "ondismiss": function(){
+                    // Redirect to orders if payment is dismissed so they can retry later
+                    window.location.href = "{{ route('orders.index') }}";
+                }
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+    });
+</script>
+@endpush
 @endsection

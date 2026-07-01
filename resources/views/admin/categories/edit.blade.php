@@ -3,82 +3,154 @@
 @section('title', 'Edit Category: ' . $category->name)
 
 @section('content')
-<div class="mb-6">
-    <a href="{{ route('admin.categories.index') }}" class="text-sm font-medium text-gray-500 hover:text-indigo-600 flex items-center gap-1 w-fit">
-        <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back to Categories
+<div class="mb-4 flex items-center justify-between">
+    <a href="{{ route('admin.categories.index') }}" class="text-[11px] font-medium text-gray-500 hover:text-indigo-600 flex items-center gap-1 w-fit">
+        <span class="material-symbols-outlined text-[14px]">arrow_back</span> Back to Categories
     </a>
 </div>
 
-<div class="max-w-2xl">
-    <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
-        @csrf
-        @method('PUT')
+<form action="{{ route('admin.categories.update', $category->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4 max-w-full">
+    @csrf
+    @method('PUT')
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
-            <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-3">Category Details</h3>
-
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
-                    Name <span class="text-red-500">*</span>
-                </label>
-                <input type="text" name="name" id="name" value="{{ old('name', $category->name) }}" required autofocus
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500 @error('name') border-red-500 @enderror">
-                @error('name') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
-            </div>
-
-            <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea name="description" id="description" rows="3"
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">{{ old('description', $category->description) }}</textarea>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
-                @if($category->image)
-                    <div class="mb-3 flex items-center gap-4">
-                        <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}"
-                            class="w-20 h-20 rounded-lg object-cover border border-gray-200">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <!-- Main Form Details -->
+        <div class="xl:col-span-2 space-y-4">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <h3 class="text-xs font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 uppercase tracking-wide">Category Details</h3>
+                
+                <div class="space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
-                            <p class="text-xs text-gray-500">Current image</p>
-                            <label class="flex items-center gap-2 mt-1 cursor-pointer text-sm text-red-500">
-                                <input type="checkbox" name="remove_image" value="1" class="rounded border-gray-300 text-red-500">
-                                Remove current image
+                            <label for="name" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">
+                                Name <span class="text-red-500">*</span>
                             </label>
+                            <input type="text" name="name" id="name" value="{{ old('name', $category->name) }}" required autofocus
+                                class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm @error('name') border-red-500 @enderror">
+                            @error('name') <p class="text-[9px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div>
+                            <label for="parent_id" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">
+                                Parent Category
+                            </label>
+                            <select name="parent_id" id="parent_id" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm bg-white">
+                                <option value="">None (Top Level)</option>
+                                @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}" {{ old('parent_id', $category->parent_id) == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('parent_id') <p class="text-[9px] text-red-500 mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
-                @endif
-                <input type="file" name="image" id="image" accept="image/*"
-                    class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500
-                           file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold
-                           file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 @error('image') border-red-500 @enderror">
-                <p class="text-xs text-gray-500 mt-1">Leave blank to keep current image. PNG, JPG or WEBP — max 2MB</p>
-                @error('image') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+
+                    <div>
+                        <label for="description" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Description</label>
+                        <textarea name="description" id="description" rows="3"
+                            class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">{{ old('description', $category->description) }}</textarea>
+                        @error('description') <p class="text-[9px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
             </div>
 
-            <div class="flex items-center gap-6">
-                <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select name="status" id="status" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="1" {{ old('status', $category->status) == '1' ? 'selected' : '' }}>Active</option>
-                        <option value="0" {{ old('status', $category->status) == '0' ? 'selected' : '' }}>Inactive</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="sort_order" class="block text-sm font-medium text-gray-700 mb-1">Sort Order</label>
-                    <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $category->sort_order ?? 0) }}" min="0"
-                        class="w-24 border border-gray-300 rounded-lg px-4 py-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <!-- SEO Information -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <h3 class="text-xs font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 uppercase tracking-wide">Search Engine Optimization</h3>
+                <div class="space-y-3">
+                    <div>
+                        <label for="meta_title" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Meta Title</label>
+                        <input type="text" name="meta_title" id="meta_title" value="{{ old('meta_title', $category->meta_title) }}" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+                    </div>
+                    <div>
+                        <label for="meta_description" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Meta Description</label>
+                        <textarea name="meta_description" id="meta_description" rows="2" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">{{ old('meta_description', $category->meta_description) }}</textarea>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="flex gap-3">
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-6 rounded-lg transition shadow-sm flex items-center gap-2">
-                <span class="material-symbols-outlined text-[20px]">save</span> Update Category
-            </button>
-            <a href="{{ route('admin.categories.index') }}" class="bg-white border border-gray-300 text-gray-700 font-medium py-2.5 px-6 rounded-lg hover:bg-gray-50 transition">
-                Cancel
-            </a>
+        <!-- Sidebar -->
+        <div class="space-y-4">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <h3 class="text-xs font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 uppercase tracking-wide">Status & Sorting</h3>
+                <div class="space-y-3">
+                    <div>
+                        <label for="status" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Status</label>
+                        <select name="status" id="status" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm bg-white">
+                            <option value="1" {{ old('status', $category->status) == '1' ? 'selected' : '' }}>Active</option>
+                            <option value="0" {{ old('status', $category->status) == '0' ? 'selected' : '' }}>Inactive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sort_order" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Sort Order</label>
+                        <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $category->sort_order ?? 0) }}" min="0"
+                            class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <h3 class="text-xs font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 uppercase tracking-wide">Media</h3>
+                
+                <div class="space-y-4">
+                    <div x-data="imageViewer('{{ $category->image ? asset('storage/' . $category->image) : '' }}')">
+                        <label class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Category Image</label>
+                        <div class="flex items-center justify-center w-full">
+                            <label for="image" class="flex flex-col items-center justify-center w-full h-32 border border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden relative transition">
+                                <div class="flex flex-col items-center justify-center pt-4 pb-4" x-show="!imageUrl">
+                                    <span class="material-symbols-outlined text-gray-400 mb-1 text-2xl">cloud_upload</span>
+                                    <p class="mb-1 text-[11px] text-gray-500"><span class="font-semibold">Upload Image</span></p>
+                                    <p class="text-[9px] text-gray-400">Max 2MB</p>
+                                </div>
+                                <img :src="imageUrl" x-show="imageUrl" class="absolute inset-0 w-full h-full object-cover">
+                                <input id="image" name="image" type="file" class="hidden" accept="image/*" @change="fileChosen">
+                            </label>
+                        </div>
+                        @error('image') <p class="text-[9px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div x-data="imageViewer('{{ $category->banner_image ? asset('storage/' . $category->banner_image) : '' }}')">
+                        <label class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Banner Image</label>
+                        <div class="flex items-center justify-center w-full">
+                            <label for="banner_image" class="flex flex-col items-center justify-center w-full h-24 border border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden relative transition">
+                                <div class="flex flex-col items-center justify-center pt-4 pb-4" x-show="!imageUrl">
+                                    <span class="material-symbols-outlined text-gray-400 mb-1 text-2xl">panorama</span>
+                                    <p class="mb-1 text-[11px] text-gray-500"><span class="font-semibold">Upload Banner</span></p>
+                                    <p class="text-[9px] text-gray-400">Max 2MB</p>
+                                </div>
+                                <img :src="imageUrl" x-show="imageUrl" class="absolute inset-0 w-full h-full object-cover">
+                                <input id="banner_image" name="banner_image" type="file" class="hidden" accept="image/*" @change="fileChosen">
+                            </label>
+                        </div>
+                        @error('banner_image') <p class="text-[9px] text-red-500 mt-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition shadow-sm flex justify-center items-center gap-1.5 text-[11px]">
+                    <span class="material-symbols-outlined text-[16px]">save</span> Update Category
+                </button>
+            </div>
         </div>
-    </form>
-</div>
+    </div>
+</form>
+
+<script>
+    function imageViewer(initialUrl) {
+        return {
+            imageUrl: initialUrl,
+            fileChosen(event) {
+                this.fileToDataUrl(event, src => this.imageUrl = src)
+            },
+            fileToDataUrl(event, callback) {
+                if (! event.target.files.length) return
+                let file = event.target.files[0],
+                    reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onload = e => callback(e.target.result)
+            },
+        }
+    }
+</script>
 @endsection

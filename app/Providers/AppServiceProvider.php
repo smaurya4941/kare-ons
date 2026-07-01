@@ -79,5 +79,25 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('reviews', function (Request $request) {
             return Limit::perHour(5)->by($request->user()?->id ?: $request->ip());
         });
+
+        // -----------------------------------------------------------------------
+        // View Composers
+        // -----------------------------------------------------------------------
+        \Illuminate\Support\Facades\View::composer('*', function ($view) {
+            try {
+                if (!$view->offsetExists('headerCategories')) {
+                    $headerCategories = \Illuminate\Support\Facades\Cache::rememberForever('header_categories', function () {
+                        return \App\Models\Category::where('status', true)->whereNull('parent_id')->with('children')->orderBy('sort_order')->take(5)->get();
+                    });
+                    $view->with('headerCategories', $headerCategories);
+                }
+                if (!$view->offsetExists('footerPages')) {
+                    $footerPages = \Illuminate\Support\Facades\Cache::rememberForever('footer_pages', function () {
+                        return \App\Models\Page::where('status', true)->orderBy('title')->get();
+                    });
+                    $view->with('footerPages', $footerPages);
+                }
+            } catch (\Exception $e) {}
+        });
     }
 }

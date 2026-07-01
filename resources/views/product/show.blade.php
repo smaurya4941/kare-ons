@@ -94,7 +94,7 @@
                 </div>
                 <div class="text-xs font-medium text-on-surface-variant space-x-2 mt-1">
                     <span>SKU: {{ $product->sku }}</span>
-                    @if($product->brand)<span>| Brand: <span class="text-on-surface font-bold">{{ $product->brand }}</span></span>@endif
+                    @if($product->brand)<span class="text-gray-400">|</span> <span>Brand: <span class="text-on-surface font-bold">{{ $product->brand->name }}</span></span>@endif
                     @if($product->pack_size)<span>| Pack Size: <span class="text-on-surface font-bold">{{ $product->pack_size }}</span></span>@endif
                 </div>
             </div>
@@ -150,6 +150,19 @@
                         <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
                         Add to Cart
                     </button>
+                    
+                    @auth
+                        @php
+                            $inWishlist = auth()->user()->wishlists()->where('product_id', $product->id)->exists();
+                        @endphp
+                        <button type="button" onclick="toggleWishlist({{ $product->id }})" class="btn-squish flex items-center justify-center w-12 h-12 rounded-lg border {{ $inWishlist ? 'border-primary bg-primary/10' : 'border-soft-border hover:border-primary' }} transition-colors" title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+                            <span class="wishlist-icon-{{ $product->id }} material-symbols-outlined text-[24px] {{ $inWishlist ? 'text-primary' : 'text-on-surface-variant hover:text-primary' }}" style="font-variation-settings: 'FILL' {{ $inWishlist ? '1' : '0' }};">favorite</span>
+                        </button>
+                    @else
+                        <a href="{{ route('login') }}" class="btn-squish flex items-center justify-center w-12 h-12 rounded-lg border border-soft-border text-on-surface-variant hover:border-primary hover:text-primary transition-colors" title="Log in to save">
+                            <span class="material-symbols-outlined text-[24px]">favorite</span>
+                        </a>
+                    @endauth
                 </div>
             </form>
 
@@ -341,30 +354,86 @@
                 <p class="text-on-surface-variant font-medium mb-8">Based on {{ $totalReviews }} reviews</p>
                 
                 @auth
-                    <div x-data="{ openReviewForm: false }">
-                        <button @click="openReviewForm = !openReviewForm" class="w-full border-2 border-primary text-primary font-bold py-3 rounded-lg hover:bg-primary hover:text-white transition-colors mb-4">Write a Review</button>
+                    <div x-data="{ 
+                        openReviewForm: false, 
+                        isSubmitting: false, 
+                        successMessage: '', 
+                        errorMessage: '', 
+                        rating: 5, 
+                        title: '', 
+                        comment: '',
+                        async submitReview() {
+                            this.isSubmitting = true;
+                            this.errorMessage = '';
+                            this.successMessage = '';
+                            
+                            try {
+                                const response = await fetch('{{ route('review.store', $product->id) }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Accept': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        rating: this.rating,
+                                        title: this.title,
+                                        comment: this.comment
+                                    })
+                                });
+                                
+                                const data = await response.json();
+                                
+                                if (response.ok) {
+                                    this.successMessage = data.message || 'Review submitted successfully! It is pending moderation.';
+                                    this.openReviewForm = false;
+                                    this.title = '';
+                                    this.comment = '';
+                                    this.rating = 5;
+                                } else {
+                                    this.errorMessage = data.message || 'Failed to submit review. Please check your inputs.';
+                                }
+                            } catch (error) {
+                                this.errorMessage = 'An unexpected error occurred.';
+                            } finally {
+                                this.isSubmitting = false;
+                            }
+                        }
+                    }">
+                        <button x-show="!successMessage" @click="openReviewForm = !openReviewForm" class="w-full border-2 border-primary text-primary font-bold py-3 rounded-lg hover:bg-primary hover:text-white transition-colors mb-4" x-text="openReviewForm ? 'Cancel' : 'Write a Review'"></button>
                         
-                        <form x-show="openReviewForm" action="{{ route('review.store', $product->id) }}" method="POST" class="bg-surface p-6 rounded-xl border border-soft-border space-y-4 shadow-sm" x-transition>
-                            @csrf
+                        <div x-show="successMessage" class="bg-emerald-50 text-emerald-800 p-4 rounded-lg mb-4 text-sm font-medium border border-emerald-200 flex items-center gap-2" x-transition>
+                            <span class="material-symbols-outlined text-emerald-600 text-[20px]">check_circle</span>
+                            <span x-text="successMessage"></span>
+                        </div>
+                        <div x-show="errorMessage" class="bg-error/10 text-error p-4 rounded-lg mb-4 text-sm font-medium border border-error/20 flex items-center gap-2" x-transition>
+                            <span class="material-symbols-outlined text-error text-[20px]">error</span>
+                            <span x-text="errorMessage"></span>
+                        </div>
+                        
+                        <form x-show="openReviewForm" @submit.prevent="submitReview" class="bg-surface p-6 rounded-xl border border-soft-border space-y-4 shadow-sm" x-transition>
                             <div>
                                 <label class="block text-sm font-medium text-on-surface mb-2">Your Rating</label>
                                 <div class="flex gap-2 flex-row-reverse justify-end peer">
-                                    <input type="radio" name="rating" id="star5" value="5" class="peer hidden"><label for="star5" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
-                                    <input type="radio" name="rating" id="star4" value="4" class="peer hidden"><label for="star4" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 peer-checked:~label:text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
-                                    <input type="radio" name="rating" id="star3" value="3" class="peer hidden"><label for="star3" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
-                                    <input type="radio" name="rating" id="star2" value="2" class="peer hidden"><label for="star2" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
-                                    <input type="radio" name="rating" id="star1" value="1" class="peer hidden" checked><label for="star1" class="material-symbols-outlined cursor-pointer text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
+                                    <input type="radio" x-model="rating" id="star5" value="5" class="peer hidden"><label for="star5" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
+                                    <input type="radio" x-model="rating" id="star4" value="4" class="peer hidden"><label for="star4" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 peer-checked:~label:text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
+                                    <input type="radio" x-model="rating" id="star3" value="3" class="peer hidden"><label for="star3" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
+                                    <input type="radio" x-model="rating" id="star2" value="2" class="peer hidden"><label for="star2" class="material-symbols-outlined cursor-pointer text-outline hover:text-amber-400 peer-checked:text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
+                                    <input type="radio" x-model="rating" id="star1" value="1" class="peer hidden"><label for="star1" class="material-symbols-outlined cursor-pointer text-amber-400 text-3xl transition-colors" style="font-variation-settings: 'FILL' 1;">star</label>
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-on-surface mb-1">Review Title</label>
-                                <input type="text" name="title" required class="w-full border border-soft-border rounded-lg focus:ring-primary focus:border-primary px-4 py-2 bg-white">
+                                <input type="text" x-model="title" required class="w-full border border-soft-border rounded-lg focus:ring-primary focus:border-primary px-4 py-2 bg-white">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-on-surface mb-1">Your Review</label>
-                                <textarea name="comment" rows="4" required class="w-full border border-soft-border rounded-lg focus:ring-primary focus:border-primary px-4 py-2 bg-white"></textarea>
+                                <textarea x-model="comment" rows="4" minlength="10" maxlength="2000" required class="w-full border border-soft-border rounded-lg focus:ring-primary focus:border-primary px-4 py-2 bg-white"></textarea>
                             </div>
-                            <button type="submit" class="w-full bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">Submit Review</button>
+                            <button type="submit" :disabled="isSubmitting" class="w-full bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-70">
+                                <span x-show="isSubmitting" class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span>
+                                <span x-text="isSubmitting ? 'Submitting...' : 'Submit Review'"></span>
+                            </button>
                         </form>
                     </div>
                 @else

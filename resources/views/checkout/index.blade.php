@@ -54,6 +54,34 @@
                     </div>
                 @endguest
 
+                @auth
+                    @if($addresses->isNotEmpty())
+                        <div x-data="{
+                            selectedAddress: '{{ $addresses->where('is_default', true)->first()?->id ?? '' }}',
+                            addresses: {{ Js::from($addresses->keyBy('id')) }},
+                            fillAddress() {
+                                if(this.selectedAddress && this.addresses[this.selectedAddress]) {
+                                    const addr = this.addresses[this.selectedAddress];
+                                    document.getElementById('full_name').value = addr.full_name;
+                                    document.getElementById('phone').value = addr.phone;
+                                    document.getElementById('address_line_1').value = addr.address_line_1;
+                                    document.getElementById('city').value = addr.city;
+                                    document.getElementById('state').value = addr.state;
+                                    document.getElementById('postal_code').value = addr.postal_code;
+                                }
+                            }
+                        }" x-init="fillAddress()" class="mb-6">
+                            <label class="block text-sm font-medium text-secondary mb-2">Use a Saved Address</label>
+                            <select x-model="selectedAddress" @change="fillAddress()" class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary bg-surface-container-lowest text-on-surface">
+                                <option value="">-- Or enter a new address below --</option>
+                                @foreach($addresses as $addr)
+                                    <option value="{{ $addr->id }}">{{ $addr->full_name }} ({{ $addr->postal_code }}) - {{ $addr->address_line_1 }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+                @endauth
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="full_name" class="block text-sm font-medium text-secondary mb-1">Full Name <span class="text-error">*</span></label>
@@ -90,30 +118,24 @@
                 </div>
 
                 <div class="space-y-4">
-                    <label class="flex items-center justify-between p-4 border border-outline-variant rounded-xl cursor-pointer hover:bg-surface-container transition has-[:checked]:border-primary has-[:checked]:bg-primary-fixed opacity-60">
+                    @foreach($paymentMethods as $index => $pm)
+                    <label class="flex items-center justify-between p-4 border rounded-xl cursor-pointer hover:bg-surface-container transition {{ $index == 0 ? 'border-primary bg-primary-fixed' : 'border-outline-variant' }} has-[:checked]:border-primary has-[:checked]:bg-primary-fixed">
                         <div class="flex items-center gap-3">
-                            <input type="radio" name="payment_method" value="razorpay" class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" disabled>
+                            <input type="radio" name="payment_method" value="{{ $pm->code }}" class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" {{ $index == 0 ? 'checked' : '' }}>
                             <div>
                                 <h3 class="font-semibold text-on-surface flex items-center gap-2">
-                                    Razorpay (Cards, UPI, NetBanking)
-                                    <span class="inline-block bg-amber-100 text-amber-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Coming Soon</span>
+                                    {{ $pm->name }}
                                 </h3>
-                                <p class="text-xs text-secondary mt-1">Online payment — available soon</p>
+                                @if($pm->instructions)
+                                <p class="text-xs text-secondary mt-1">{{ $pm->instructions }}</p>
+                                @endif
                             </div>
                         </div>
-                        <span class="material-symbols-outlined text-outline text-[32px]">account_balance</span>
+                        <span class="material-symbols-outlined text-[32px] {{ $index == 0 ? 'text-primary' : 'text-outline has-[:checked]:text-primary' }}">
+                            {{ $pm->code === 'cod' ? 'local_shipping' : ($pm->code === 'razorpay' ? 'account_balance' : 'account_balance_wallet') }}
+                        </span>
                     </label>
-
-                    <label class="flex items-center justify-between p-4 border border-primary rounded-xl cursor-pointer bg-primary-fixed has-[:checked]:border-primary has-[:checked]:bg-primary-fixed">
-                        <div class="flex items-center gap-3">
-                            <input type="radio" name="payment_method" value="cod" class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" checked>
-                            <div>
-                                <h3 class="font-semibold text-on-surface">Cash on Delivery</h3>
-                                <p class="text-xs text-secondary mt-1">Pay when you receive the order</p>
-                            </div>
-                        </div>
-                        <span class="material-symbols-outlined text-primary text-[32px]">local_shipping</span>
-                    </label>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -155,6 +177,12 @@
                         <span>Subtotal</span>
                         <span class="font-medium text-on-surface">₹{{ number_format($subtotal, 2) }}</span>
                     </div>
+                    @if($taxAmount > 0)
+                    <div class="flex justify-between items-center text-secondary">
+                        <span>Tax (GST)</span>
+                        <span class="font-medium text-on-surface">₹{{ number_format($taxAmount, 2) }}</span>
+                    </div>
+                    @endif
                     <div class="flex justify-between items-center text-secondary">
                         <span>Shipping</span>
                         @if($shipping == 0)
@@ -170,7 +198,6 @@
                         <span class="text-lg font-bold text-on-surface">Total</span>
                         <span class="text-2xl font-bold text-on-surface">₹{{ number_format($total, 2) }}</span>
                     </div>
-                    <p class="text-xs text-secondary mt-1 text-right">Inclusive of all taxes</p>
                 </div>
 
                 <button type="submit" class="w-full flex items-center justify-center gap-2 bg-primary text-white font-medium py-4 rounded-xl hover:bg-on-primary-fixed-variant transition shadow-sm">

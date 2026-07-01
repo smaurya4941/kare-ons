@@ -21,4 +21,21 @@ class OrderController extends Controller
 
         return view('orders.index', compact('orders'));
     }
+
+    /**
+     * Display the specific order details for the customer.
+     */
+    public function show(\App\Models\Order $order)
+    {
+        // Ensure the order belongs to the authenticated user
+        if ($order->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $order->load(['items.product', 'address', 'timelines' => function($q) {
+            $q->latest();
+        }]);
+
+        return view('orders.show', compact('order'));
+    }
 }

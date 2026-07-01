@@ -20,6 +20,9 @@ class User extends Authenticatable
         'status',
         'avatar',
         'last_login_at',
+        'notes',
+        'reward_points',
+        'wallet_balance',
     ];
 
     protected $hidden = [
@@ -55,5 +58,10 @@ class User extends Authenticatable
     public function cartItems(): HasMany
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(Wishlist::class);
     }
 }

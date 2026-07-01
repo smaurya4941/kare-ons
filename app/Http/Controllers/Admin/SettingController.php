@@ -136,6 +136,7 @@ class SettingController extends Controller
 
         // Clear the cached settings so the site updates instantly
         Cache::forget('global_settings');
+        Cache::forget('homepage_data');
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
     }

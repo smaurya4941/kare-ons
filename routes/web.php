@@ -12,6 +12,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [\App\Http\Controllers\PageController::class, 'about'])->name('about');
 Route::get('/contact', [\App\Http\Controllers\PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [\App\Http\Controllers\PageController::class, 'submitContact'])->name('contact.submit');
+Route::get('/page/{slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 Route::get('/shop', [\App\Http\Controllers\Web\ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 
@@ -51,14 +52,22 @@ Route::middleware('auth')->group(function () {
 
     // Customer Orders
     Route::get('/orders', [\App\Http\Controllers\Web\OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [\App\Http\Controllers\Web\OrderController::class, 'show'])->name('orders.show');
 
     // Checkout Routes
     Route::get('/checkout', [\App\Http\Controllers\Web\CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout', [\App\Http\Controllers\Web\CheckoutController::class, 'store'])->name('checkout.store');
     Route::get('/checkout/payment', [\App\Http\Controllers\Web\CheckoutController::class, 'payment'])->name('checkout.payment');
+    Route::post('/checkout/callback', [\App\Http\Controllers\Web\CheckoutController::class, 'callback'])->name('checkout.callback');
     Route::get('/checkout/success', [\App\Http\Controllers\Web\CheckoutController::class, 'success'])->name('checkout.success');
 
-    // Profile
+    // Wishlist
+    Route::get('/wishlist', [\App\Http\Controllers\Web\WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/{product}', [\App\Http\Controllers\Web\WishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::delete('/wishlist/{product}', [\App\Http\Controllers\Web\WishlistController::class, 'destroy'])->name('wishlist.remove');
+
+    // Profile & Addresses
+    Route::resource('addresses', \App\Http\Controllers\Web\AddressController::class)->except(['show']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -76,8 +85,22 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
          ->name('products.images.destroy');
 
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['show']);
+    Route::resource('brands', \App\Http\Controllers\Admin\BrandController::class)->except(['show']);
     Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->except(['create', 'store', 'edit']);
-    Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class)->only(['index', 'show']);
+    Route::get('orders/{order}/invoice', [\App\Http\Controllers\Admin\OrderController::class, 'printInvoice'])->name('orders.invoice');
+    Route::get('orders/{order}/packing-slip', [\App\Http\Controllers\Admin\OrderController::class, 'printPackingSlip'])->name('orders.packing_slip');
+    Route::get('orders/{order}/shipping-label', [\App\Http\Controllers\Admin\OrderController::class, 'printShippingLabel'])->name('orders.shipping_label');
+    
+    Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+    Route::resource('testimonials', \App\Http\Controllers\Admin\TestimonialController::class)->except(['show']);
+    Route::resource('pages', \App\Http\Controllers\Admin\PageController::class)->except(['show']);
+    Route::resource('media', \App\Http\Controllers\Admin\MediaController::class)->only(['index', 'store', 'destroy']);
+    Route::resource('shipping', \App\Http\Controllers\Admin\ShippingZoneController::class)->except(['show']);
+    Route::resource('taxes', \App\Http\Controllers\Admin\TaxController::class)->except(['show']);
+    Route::resource('payment_methods', \App\Http\Controllers\Admin\PaymentMethodController::class)->only(['index', 'edit', 'update']);
+    Route::resource('returns', \App\Http\Controllers\Admin\ReturnRequestController::class)->only(['index', 'show', 'update']);
+    Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class)->only(['index', 'show', 'update']);
+    Route::resource('reviews', \App\Http\Controllers\Admin\ReviewController::class)->except(['create', 'store', 'edit']);
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
     Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
     

@@ -39,12 +39,23 @@ class CheckoutController extends Controller
             }
         }
 
-        $subtotal  = $this->calculateSubtotal($cartItems);
-        $shipping  = $subtotal > 500 ? 0 : 50;
-        $total     = $subtotal + $shipping;
-        $addresses = Auth::check() ? Auth::user()->addresses : collect();
+        // Calculate total tax
+        $taxAmount = 0;
+        foreach ($cartItems as $item) {
+            $unitPrice = $item->product->sale_price ?? $item->product->price;
+            $taxRate = $item->product->tax ? $item->product->tax->rate : 0;
+            $taxAmount += ($unitPrice * $item->quantity) * ($taxRate / 100);
+        }
 
-        return view('checkout.index', compact('cartItems', 'subtotal', 'shipping', 'total', 'addresses'));
+        $subtotal  = $this->calculateSubtotal($cartItems);
+        // Default shipping for display purposes, will be recalculated on submission
+        $defaultZone = \App\Models\ShippingZone::where('is_default', true)->first();
+        $shipping  = $defaultZone ? ($subtotal >= $defaultZone->free_shipping_threshold ? 0 : $defaultZone->base_charge) : 0;
+        $total     = $subtotal + $shipping + $taxAmount;
+        $addresses = Auth::check() ? Auth::user()->addresses : collect();
+        $paymentMethods = \App\Models\PaymentMethod::where('status', true)->get();
+
+        return view('checkout.index', compact('cartItems', 'subtotal', 'shipping', 'taxAmount', 'total', 'addresses', 'paymentMethods'));
     }
 
     /**
@@ -52,6 +63,8 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {
+        $validPaymentMethods = \App\Models\PaymentMethod::where('status', true)->pluck('code')->toArray();
+        
         $request->validate([
             'full_name'      => 'required|string|max:255',
             'phone'          => 'required|string|max:20',
@@ -60,7 +73,7 @@ class CheckoutController extends Controller
             'city'           => 'required|string|max:100',
             'state'          => 'required|string|max:100',
             'postal_code'    => 'required|string|max:20',
-            'payment_method' => 'required|in:razorpay,cod',
+            'payment_method' => 'required|in:' . implode(',', $validPaymentMethods),
             'coupon_code'    => 'nullable|string|max:50',
         ]);
 
@@ -77,8 +90,36 @@ class CheckoutController extends Controller
             }
         }
 
-        $subtotal       = $this->calculateSubtotal($cartItems);
-        $shipping       = $subtotal > 500 ? 0 : 50;
+        $subtotal = $this->calculateSubtotal($cartItems);
+        
+        // Calculate tax
+        $taxAmount = 0;
+        foreach ($cartItems as $item) {
+            $unitPrice = $item->product->sale_price ?? $item->product->price;
+            $taxRate = $item->product->tax ? $item->product->tax->rate : 0;
+            $taxAmount += ($unitPrice * $item->quantity) * ($taxRate / 100);
+        }
+
+        // Calculate dynamic shipping
+        $postalCode = $request->postal_code;
+        $shippingZone = \App\Models\ShippingZone::where('is_active', true)
+            ->where(function ($query) use ($postalCode) {
+                $query->where('coverage', 'like', "%{$postalCode}%")
+                      ->orWhere('is_default', true);
+            })->orderBy('is_default', 'asc')->first();
+
+        $shipping = 0;
+        if ($shippingZone) {
+            if ($shippingZone->free_shipping_threshold && $subtotal >= $shippingZone->free_shipping_threshold) {
+                $shipping = 0;
+            } else {
+                $shipping = $shippingZone->base_charge;
+            }
+            if ($request->payment_method === 'cod') {
+                $shipping += $shippingZone->cod_charge;
+            }
+        }
+
         $discountAmount = 0;
         $coupon         = null;
 
@@ -90,10 +131,10 @@ class CheckoutController extends Controller
             }
         }
 
-        $grandTotal = max(0, $subtotal + $shipping - $discountAmount);
+        $grandTotal = max(0, $subtotal + $shipping + $taxAmount - $discountAmount);
 
         try {
-            $order = DB::transaction(function () use ($request, $cartItems, $subtotal, $shipping, $discountAmount, $grandTotal, $coupon) {
+            $order = DB::transaction(function () use ($request, $cartItems, $subtotal, $shipping, $taxAmount, $discountAmount, $grandTotal, $coupon) {
 
                 // Save address for both authenticated and guest users
                 $address = Address::create([
@@ -116,7 +157,7 @@ class CheckoutController extends Controller
                     'subtotal'        => $subtotal,
                     'shipping_charge' => $shipping,
                     'discount_amount' => $discountAmount,
-                    'tax_amount'      => 0,
+                    'tax_amount'      => $taxAmount,
                     'grand_total'     => $grandTotal,
                     'payment_method'  => $request->payment_method,
                     'payment_status'  => $request->payment_method === 'cod' ? 'pending' : 'pending',
@@ -173,10 +214,36 @@ class CheckoutController extends Controller
         }
 
         if ($request->payment_method === 'razorpay') {
-            // TODO: Initialise Razorpay order and pass to payment page
-            return redirect()->route('checkout.payment')
-                ->with('order_id', $order->id)
-                ->with('message', 'Redirecting to secure payment gateway...');
+            try {
+                $api = new \Razorpay\Api\Api(setting('razorpay_key'), setting('razorpay_secret'));
+                
+                $razorpayOrder = $api->order->create([
+                    'receipt'         => $order->order_number,
+                    'amount'          => round($order->grand_total * 100), // in paise
+                    'currency'        => 'INR',
+                    'payment_capture' => 1
+                ]);
+
+                \App\Models\Payment::create([
+                    'order_id' => $order->id,
+                    'razorpay_order_id' => $razorpayOrder['id'],
+                    'amount' => $order->grand_total,
+                    'currency' => 'INR',
+                    'status' => 'pending'
+                ]);
+
+                return redirect()->route('checkout.payment')
+                    ->with('order_id', $order->id)
+                    ->with('message', 'Redirecting to secure payment gateway...');
+            } catch (\Exception $e) {
+                report($e);
+                return redirect()->route('cart.index')->with('error', 'Payment gateway initialization failed. Please try again.');
+            }
+        }
+
+        // Send Email Notification
+        if ($order->user) {
+            \Illuminate\Support\Facades\Mail::to($order->user->email)->send(new \App\Mail\OrderPlaced($order));
         }
 
         // COD — redirect to success page with order number
@@ -187,11 +254,77 @@ class CheckoutController extends Controller
 
     public function payment()
     {
-        return view('checkout.payment');
+        $orderId = session('order_id');
+        if (!$orderId) {
+            return redirect()->route('shop.index')->with('error', 'Invalid payment session.');
+        }
+
+        $order = Order::with(['payment', 'user'])->findOrFail($orderId);
+        
+        // Re-flash order_id in case they refresh the page
+        session()->flash('order_id', $orderId);
+
+        return view('checkout.payment', compact('order'));
+    }
+
+    public function callback(Request $request)
+    {
+        $input = $request->all();
+        $api = new \Razorpay\Api\Api(setting('razorpay_key'), setting('razorpay_secret'));
+
+        try {
+            $attributes = [
+                'razorpay_order_id'   => $input['razorpay_order_id'],
+                'razorpay_payment_id' => $input['razorpay_payment_id'],
+                'razorpay_signature'  => $input['razorpay_signature']
+            ];
+
+            $api->utility->verifyPaymentSignature($attributes);
+
+            // Payment verified successfully
+            $payment = \App\Models\Payment::where('razorpay_order_id', $input['razorpay_order_id'])->firstOrFail();
+            $payment->update([
+                'razorpay_payment_id' => $input['razorpay_payment_id'],
+                'status'              => 'success',
+                'paid_at'             => now(),
+            ]);
+
+            $order = $payment->order;
+            $order->update([
+                'payment_status' => 'paid',
+                'order_status'   => 'processing',
+            ]);
+
+            // Send Email Notification
+            if ($order->user) {
+                \Illuminate\Support\Facades\Mail::to($order->user->email)->send(new \App\Mail\OrderPlaced($order));
+            }
+
+            return redirect()->route('checkout.success')
+                ->with('order_number', $order->order_number)
+                ->with('success', "Payment successful! Your order #{$order->order_number} has been placed.");
+
+        } catch (\Exception $e) {
+            report($e);
+            
+            // Mark payment as failed
+            if (isset($input['razorpay_order_id'])) {
+                $payment = \App\Models\Payment::where('razorpay_order_id', $input['razorpay_order_id'])->first();
+                if ($payment) {
+                    $payment->update(['status' => 'failed']);
+                    $payment->order->update(['payment_status' => 'failed']);
+                }
+            }
+            
+            return redirect()->route('cart.index')->with('error', 'Payment failed or signature verification failed. Please try again.');
+        }
     }
 
     public function success()
     {
+        if (!session('order_number')) {
+            return redirect()->route('shop.index');
+        }
         return view('checkout.success');
     }
 
