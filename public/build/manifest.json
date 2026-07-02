@@ -1,6 +1,15 @@
 {
+  "resources/css/admin.css": {
+    "file": "assets/admin-DQNN20Fi.css",
+    "src": "resources/css/admin.css",
+    "isEntry": true,
+    "name": "admin",
+    "names": [
+      "admin.css"
+    ]
+  },
   "resources/css/app.css": {
-    "file": "assets/app-CCp3JWPg.css",
+    "file": "assets/app-Dm5ns9Mk.css",
     "src": "resources/css/app.css",
     "isEntry": true,
     "name": "app",

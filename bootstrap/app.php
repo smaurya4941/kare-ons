@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+
+        // Razorpay posts server-to-server and cannot send a CSRF token.
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/razorpay',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

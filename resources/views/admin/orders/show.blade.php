@@ -8,13 +8,13 @@
         <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back to Orders
     </a>
     <div class="flex items-center gap-3">
-        <a href="{{ route('orders.invoice', $order->id) }}" target="_blank" class="bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-[11px] font-medium hover:bg-gray-50 transition shadow-sm flex items-center gap-1">
+        <a href="{{ route('admin.orders.invoice', $order->id) }}" target="_blank" class="bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-[11px] font-medium hover:bg-gray-50 transition shadow-sm flex items-center gap-1">
             <span class="material-symbols-outlined text-[16px]">receipt_long</span> Invoice
         </a>
-        <a href="{{ route('orders.packing_slip', $order->id) }}" target="_blank" class="bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-[11px] font-medium hover:bg-gray-50 transition shadow-sm flex items-center gap-1">
+        <a href="{{ route('admin.orders.packing_slip', $order->id) }}" target="_blank" class="bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-[11px] font-medium hover:bg-gray-50 transition shadow-sm flex items-center gap-1">
             <span class="material-symbols-outlined text-[16px]">inventory_2</span> Packing Slip
         </a>
-        <a href="{{ route('orders.shipping_label', $order->id) }}" target="_blank" class="bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-[11px] font-medium hover:bg-gray-50 transition shadow-sm flex items-center gap-1">
+        <a href="{{ route('admin.orders.shipping_label', $order->id) }}" target="_blank" class="bg-white border border-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-[11px] font-medium hover:bg-gray-50 transition shadow-sm flex items-center gap-1">
             <span class="material-symbols-outlined text-[16px]">local_shipping</span> Label
         </a>
         <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST"

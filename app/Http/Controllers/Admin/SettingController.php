@@ -71,6 +71,7 @@ class SettingController extends Controller
             $rules = [
                 'razorpay_key' => 'nullable|string',
                 'razorpay_secret' => 'nullable|string',
+                'razorpay_webhook_secret' => 'nullable|string',
             ];
         } elseif ($tab === 'shipping') {
             $rules = [

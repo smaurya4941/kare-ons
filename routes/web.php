@@ -32,6 +32,9 @@ Route::post('/coupon/remove', [\App\Http\Controllers\Web\CouponController::class
 Route::get('/blog', [\App\Http\Controllers\Web\BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [\App\Http\Controllers\Web\BlogController::class, 'show'])->name('blog.show');
 
+// Razorpay Webhook (server-to-server; no auth, CSRF-exempt — see bootstrap/app.php)
+Route::post('/webhooks/razorpay', [\App\Http\Controllers\Web\RazorpayWebhookController::class, 'handle'])->name('webhooks.razorpay');
+
 // Sitemap
 Route::get('/sitemap.xml', [\App\Http\Controllers\Web\SitemapController::class, 'index'])->name('sitemap.index');
 

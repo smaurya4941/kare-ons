@@ -268,38 +268,24 @@ class CheckoutController extends Controller
         return view('checkout.payment', compact('order'));
     }
 
-    public function callback(Request $request)
+    public function callback(Request $request, \App\Services\RazorpayPaymentService $paymentService)
     {
         $input = $request->all();
-        $api = new \Razorpay\Api\Api(setting('razorpay_key'), setting('razorpay_secret'));
 
         try {
-            $attributes = [
+            $api = new \Razorpay\Api\Api(setting('razorpay_key'), setting('razorpay_secret'));
+            $api->utility->verifyPaymentSignature([
                 'razorpay_order_id'   => $input['razorpay_order_id'],
                 'razorpay_payment_id' => $input['razorpay_payment_id'],
-                'razorpay_signature'  => $input['razorpay_signature']
-            ];
-
-            $api->utility->verifyPaymentSignature($attributes);
-
-            // Payment verified successfully
-            $payment = \App\Models\Payment::where('razorpay_order_id', $input['razorpay_order_id'])->firstOrFail();
-            $payment->update([
-                'razorpay_payment_id' => $input['razorpay_payment_id'],
-                'status'              => 'success',
-                'paid_at'             => now(),
+                'razorpay_signature'  => $input['razorpay_signature'],
             ]);
+
+            // Signature verified. Confirm the order via the shared service — this is
+            // idempotent, so if the webhook already confirmed it nothing is duplicated.
+            $payment = \App\Models\Payment::where('razorpay_order_id', $input['razorpay_order_id'])->firstOrFail();
+            $paymentService->markPaid($payment, $input['razorpay_payment_id']);
 
             $order = $payment->order;
-            $order->update([
-                'payment_status' => 'paid',
-                'order_status'   => 'confirmed',
-            ]);
-
-            // Send Email Notification
-            if ($order->user) {
-                \Illuminate\Support\Facades\Mail::to($order->user->email)->send(new \App\Mail\OrderPlaced($order));
-            }
 
             return redirect()->route('checkout.success')
                 ->with('order_number', $order->order_number)
@@ -308,16 +294,15 @@ class CheckoutController extends Controller
 
         } catch (\Exception $e) {
             report($e);
-            
-            // Mark payment as failed
+
+            // Mark payment as failed (idempotent; never downgrades a success)
             if (isset($input['razorpay_order_id'])) {
                 $payment = \App\Models\Payment::where('razorpay_order_id', $input['razorpay_order_id'])->first();
                 if ($payment) {
-                    $payment->update(['status' => 'failed']);
-                    $payment->order->update(['payment_status' => 'failed']);
+                    $paymentService->markFailed($payment);
                 }
             }
-            
+
             return redirect()->route('cart.index')->with('error', 'Payment failed or signature verification failed. Please try again.');
         }
     }
