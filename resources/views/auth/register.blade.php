@@ -3,24 +3,24 @@
     <!-- Register Container -->
     <main class="w-full max-w-md z-10">
         <!-- Brand / Identity Context -->
-        <div class="text-center mb-8">
+        <div class="text-center mb-6">
             <a href="{{ route('home') }}" class="inline-block">
-                <h1 class="font-headline-lg text-4xl font-bold text-primary tracking-tight">Kare Ons Herbal</h1>
+                <h1 class="font-display-lg text-3xl font-bold text-primary tracking-tight">Kare Ons Herbal</h1>
             </a>
-            <p class="font-body-md text-base text-on-surface-variant mt-2">Pure Ayurveda, Elevated.</p>
+            <p class="font-body-md text-sm text-on-surface-variant mt-2">Pure Ayurveda, Elevated.</p>
         </div>
         
         <!-- Registration Card -->
-        <div class="bg-white border border-soft-border rounded-xl shadow-sm p-8 md:p-10 transition-all duration-300 hover:border-outline-variant hover:shadow-lg relative overflow-hidden group">
+        <div class="bg-white border border-soft-border rounded-xl shadow-sm p-6 md:p-9 transition-all duration-300 hover:border-outline-variant hover:shadow-lg relative overflow-hidden group">
             <!-- Subtle decorative top bar -->
             <div class="absolute top-0 left-0 w-full h-1 bg-surface-container-low group-hover:bg-primary transition-colors duration-500"></div>
             
-            <div class="mb-8">
+            <div class="mb-6">
                 <h2 class="font-headline-md text-2xl font-bold text-on-surface mb-2">Create Account</h2>
-                <p class="font-body-md text-base text-on-surface-variant">Join the community for elevated learning and authentic Ayurvedic remedies.</p>
+                <p class="font-body-md text-sm text-on-surface-variant">Join the community for elevated learning and authentic Ayurvedic remedies.</p>
             </div>
             
-            <form method="POST" action="{{ route('register') }}" class="space-y-6">
+            <form method="POST" action="{{ route('register') }}" class="space-y-5">
                 @csrf
                 
                 <!-- Full Name -->
@@ -83,8 +83,8 @@
             </form>
             
             <!-- Secondary Actions -->
-            <div class="mt-8 text-center">
-                <p class="font-body-md text-base text-on-surface-variant">
+            <div class="mt-6 text-center">
+                <p class="font-body-md text-sm text-on-surface-variant">
                     Already have an account? 
                     <a class="text-primary font-semibold hover:text-primary/80 transition-colors hover:underline underline-offset-4" href="{{ route('login') }}">Login</a>
                 </p>

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(php artisan route:list --name=home 2>&1)",
+      "PowerShell(php -l resources/views/home.blade.php 2>&1)",
+      "Bash(npm run *)"
+    ]
+  }
+}

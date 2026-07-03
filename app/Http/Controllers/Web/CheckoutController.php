@@ -160,13 +160,24 @@ class CheckoutController extends Controller
                     'tax_amount'      => $taxAmount,
                     'grand_total'     => $grandTotal,
                     'payment_method'  => $request->payment_method,
-                    'payment_status'  => $request->payment_method === 'cod' ? 'pending' : 'pending',
+                    'payment_status'  => 'pending',
                     'order_status'    => 'pending',
                     'notes'           => null,
                 ]);
 
                 // Create Order Items & decrement stock
                 foreach ($cartItems as $item) {
+                    // Re-fetch the product under a row lock and re-check stock inside
+                    // the transaction. This closes the check-then-decrement race where
+                    // two concurrent orders for the last unit could both succeed.
+                    $product = \App\Models\Product::whereKey($item->product_id)->lockForUpdate()->first();
+
+                    if (! $product || $product->stock_quantity < $item->quantity) {
+                        throw new \App\Exceptions\InsufficientStockException(
+                            "Insufficient stock for '{$item->product->name}'. Please update your cart."
+                        );
+                    }
+
                     $unitPrice = $item->product->sale_price ?? $item->product->price;
                     OrderItem::create([
                         'order_id'     => $order->id,
@@ -178,8 +189,8 @@ class CheckoutController extends Controller
                         'total'        => $unitPrice * $item->quantity,
                     ]);
 
-                    // Decrement stock
-                    $item->product->decrement('stock_quantity', $item->quantity);
+                    // Decrement stock on the locked row
+                    $product->decrement('stock_quantity', $item->quantity);
 
                     // Log inventory transaction
                     InventoryTransaction::create([
@@ -208,6 +219,10 @@ class CheckoutController extends Controller
                 return $order;
             });
 
+        } catch (\App\Exceptions\InsufficientStockException $e) {
+            // Stock ran out between the pre-check and the locked re-check; the whole
+            // transaction is rolled back, so no order/stock changes persisted.
+            return redirect()->route('cart.index')->withInput()->with('error', $e->getMessage());
         } catch (\Throwable $e) {
             report($e);
             return back()->withInput()->with('error', 'An unexpected error occurred while placing your order. Please try again.');

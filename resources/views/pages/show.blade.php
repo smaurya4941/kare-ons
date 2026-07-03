@@ -9,7 +9,7 @@
     </div>
 </div>
 
-<div class="max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop py-section-gap prose prose-lg prose-indigo">
+<div class="max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop py-10 prose prose-lg prose-neutral prose-headings:text-herbal-deep prose-a:text-primary">
     {!! $page->content !!}
 </div>
 @endsection

@@ -3,11 +3,11 @@
 @section('title', 'Processing Payment - Kare Ons Herbal')
 
 @section('content')
-<div class="max-w-3xl mx-auto px-margin-desktop py-20 text-center min-h-[70vh] flex flex-col items-center justify-center">
+<div class="max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop py-16 text-center min-h-[70vh] flex flex-col items-center justify-center">
     <div class="w-16 h-16 border-4 border-surface-container-high border-t-primary rounded-full animate-spin mb-8 mx-auto"></div>
     
-    <h1 class="text-3xl font-display font-bold text-on-surface mb-4">Initializing Secure Payment...</h1>
-    <p class="text-secondary mb-8">Please wait while we open the secure payment gateway. Do not refresh this page.</p>
+    <h1 class="text-2xl font-display font-bold text-herbal-deep mb-3">Initializing Secure Payment...</h1>
+    <p class="text-on-surface-variant mb-8">Please wait while we open the secure payment gateway. Do not refresh this page.</p>
 
     <!-- Hidden form for Razorpay Callback -->
     <form action="{{ route('checkout.callback') }}" method="POST" id="razorpay-form" class="hidden">
@@ -42,7 +42,7 @@
                 "contact": "{{ $order->address->phone ?? ($order->user->phone ?? '') }}"
             },
             "theme": {
-                "color": "#1A5A3C"
+                "color": "#2d5a27"
             },
             "modal": {
                 "ondismiss": function(){

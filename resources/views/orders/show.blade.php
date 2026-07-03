@@ -9,7 +9,7 @@
             </a>
             <div>
                 <h1 class="text-2xl font-bold text-on-surface">Order Details</h1>
-                <p class="text-sm text-secondary">#{{ $order->order_number }} • Placed on {{ $order->created_at->format('M d, Y') }}</p>
+                <p class="text-sm text-on-surface-variant">#{{ $order->order_number }} • Placed on {{ $order->created_at->format('M d, Y') }}</p>
             </div>
         </div>
 
@@ -22,25 +22,25 @@
                 {{-- Delivery Address --}}
                 <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-6">
                     <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary text-[22px]">location_on</span>
+                        <span class="material-symbols-outlined text-on-surface-variant text-[22px]">location_on</span>
                         Delivery Address
                     </h2>
                     @if($order->address)
                         <div class="text-on-surface">
                             <p class="font-semibold text-lg">{{ $order->address->full_name }}</p>
-                            <p class="text-secondary mt-1 leading-relaxed">
+                            <p class="text-on-surface-variant mt-1 leading-relaxed">
                                 {{ $order->address->address_line_1 }}<br>
                                 @if($order->address->address_line_2) {{ $order->address->address_line_2 }}<br> @endif
                                 {{ $order->address->city }}, {{ $order->address->state }} - <span class="font-medium text-on-surface">{{ $order->address->postal_code }}</span><br>
                                 {{ $order->address->country }}
                             </p>
                             <p class="font-medium mt-3 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px] text-secondary">call</span>
+                                <span class="material-symbols-outlined text-[18px] text-on-surface-variant">call</span>
                                 {{ $order->address->phone }}
                             </p>
                         </div>
                     @else
-                        <p class="text-secondary italic">No address recorded for this order.</p>
+                        <p class="text-on-surface-variant italic">No address recorded for this order.</p>
                     @endif
                 </div>
 
@@ -48,7 +48,7 @@
                 <div class="bg-surface rounded-xl border border-outline-variant shadow-sm overflow-hidden">
                     <div class="px-6 py-4 border-b border-outline-variant bg-surface-container/40">
                         <h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
-                            <span class="material-symbols-outlined text-secondary text-[22px]">inventory_2</span>
+                            <span class="material-symbols-outlined text-on-surface-variant text-[22px]">inventory_2</span>
                             Products
                         </h2>
                     </div>
@@ -68,14 +68,14 @@
                                     <a href="{{ $item->product ? route('product.show', $item->product->slug) : '#' }}" class="text-lg font-bold text-on-surface hover:text-primary transition-colors line-clamp-2 mb-1">
                                         {{ $item->product_name }}
                                     </a>
-                                    <p class="text-sm text-secondary mb-3">Seller: Kare Ons Herbal</p>
+                                    <p class="text-sm text-on-surface-variant mb-3">Seller: Kare Ons Herbal</p>
                                     
                                     <div class="flex items-end justify-between">
                                         <div>
-                                            <p class="text-xs text-secondary mb-1">Price Details</p>
+                                            <p class="text-xs text-on-surface-variant mb-1">Price Details</p>
                                             <div class="flex items-center gap-3">
                                                 <p class="text-xl font-bold text-on-surface">₹{{ number_format($item->price, 2) }}</p>
-                                                <span class="text-sm text-secondary font-medium">Qty: {{ $item->quantity }}</span>
+                                                <span class="text-sm text-on-surface-variant font-medium">Qty: {{ $item->quantity }}</span>
                                             </div>
                                         </div>
                                         @if($order->order_status === 'delivered' && $item->product)
@@ -98,7 +98,7 @@
                 {{-- Track Order --}}
                 <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-6">
                     <h2 class="text-lg font-bold text-on-surface mb-6 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary text-[22px]">local_shipping</span>
+                        <span class="material-symbols-outlined text-on-surface-variant text-[22px]">local_shipping</span>
                         Track Order
                     </h2>
                     
@@ -154,9 +154,9 @@
                                         <span class="material-symbols-outlined text-[16px]">{{ $icons[$status] }}</span>
                                     </div>
                                     <div>
-                                        <p class="font-bold {{ $isCompleted ? 'text-on-surface' : 'text-secondary' }} capitalize">{{ $status }}</p>
+                                        <p class="font-bold {{ $isCompleted ? 'text-on-surface' : 'text-on-surface-variant' }} capitalize">{{ $status }}</p>
                                         @if($timeline)
-                                            <p class="text-xs text-secondary mt-1">{{ $timeline->created_at->format('D, M d Y - h:i A') }}</p>
+                                            <p class="text-xs text-on-surface-variant mt-1">{{ $timeline->created_at->format('D, M d Y - h:i A') }}</p>
                                         @elseif($isCurrent)
                                             <p class="text-xs text-primary font-medium mt-1">In Progress...</p>
                                         @endif
@@ -172,7 +172,7 @@
                     <h2 class="text-lg font-bold text-on-surface mb-4">Price Details</h2>
                     
                     <div class="space-y-3 text-sm border-b border-outline-variant pb-4 mb-4">
-                        <div class="flex justify-between text-secondary">
+                        <div class="flex justify-between text-on-surface-variant">
                             <span>List Price ({{ $order->items->count() }} items)</span>
                             <span>₹{{ number_format($order->subtotal ?? $order->grand_total, 2) }}</span>
                         </div>
@@ -182,7 +182,7 @@
                                 <span>-₹{{ number_format($order->discount_amount, 2) }}</span>
                             </div>
                         @endif
-                        <div class="flex justify-between text-secondary">
+                        <div class="flex justify-between text-on-surface-variant">
                             <span>Delivery Charges</span>
                             <span class="{{ ($order->shipping_charge == 0) ? 'text-emerald-600 font-medium' : '' }}">
                                 {{ ($order->shipping_charge == 0) ? 'FREE' : '₹' . number_format($order->shipping_charge, 2) }}
@@ -197,7 +197,7 @@
 
                     <div class="p-4 bg-surface-container rounded-lg">
                         <p class="text-sm font-medium text-on-surface mb-2 border-b border-outline-variant pb-2">Payment Information</p>
-                        <div class="space-y-1 text-sm text-secondary">
+                        <div class="space-y-1 text-sm text-on-surface-variant">
                             <p>Method: <strong class="text-on-surface">{{ strtoupper($order->payment_method) }}</strong></p>
                             <p>Status: 
                                 <strong class="{{ $order->payment_status === 'paid' ? 'text-emerald-600' : 'text-amber-600' }}">
@@ -212,7 +212,7 @@
                 @if($activeReturn || $order->order_status === 'delivered')
                 <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-6">
                     <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-secondary text-[22px]">assignment_return</span>
+                        <span class="material-symbols-outlined text-on-surface-variant text-[22px]">assignment_return</span>
                         Returns &amp; Replacements
                     </h2>
 
@@ -228,28 +228,28 @@
                         @endphp
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
-                                <span class="text-sm text-secondary">Request Type</span>
+                                <span class="text-sm text-on-surface-variant">Request Type</span>
                                 <span class="text-sm font-semibold text-on-surface capitalize">{{ $activeReturn->type }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-sm text-secondary">Status</span>
+                                <span class="text-sm text-on-surface-variant">Status</span>
                                 <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase {{ $rStatusColor }}">{{ $activeReturn->status }}</span>
                             </div>
                             <div>
-                                <p class="text-sm text-secondary">Reason</p>
+                                <p class="text-sm text-on-surface-variant">Reason</p>
                                 <p class="text-sm text-on-surface mt-1">{{ $activeReturn->reason }}</p>
                             </div>
                             @if($activeReturn->admin_note && in_array($activeReturn->status, ['approved','rejected','completed']))
                                 <div class="bg-surface-container rounded-lg p-3">
                                     <p class="text-xs font-semibold text-on-surface mb-1">Response from our team</p>
-                                    <p class="text-sm text-secondary">{{ $activeReturn->admin_note }}</p>
+                                    <p class="text-sm text-on-surface-variant">{{ $activeReturn->admin_note }}</p>
                                 </div>
                             @endif
-                            <p class="text-xs text-secondary">Requested on {{ $activeReturn->created_at->format('M d, Y') }}</p>
+                            <p class="text-xs text-on-surface-variant">Requested on {{ $activeReturn->created_at->format('M d, Y') }}</p>
                         </div>
                     @elseif($canRequestReturn)
                         <div x-data="{ open: false }">
-                            <p class="text-sm text-secondary mb-4">Not happy with your order? You can request a return or replacement within {{ $windowDays }} days of delivery.</p>
+                            <p class="text-sm text-on-surface-variant mb-4">Not happy with your order? You can request a return or replacement within {{ $windowDays }} days of delivery.</p>
                             <button type="button" x-show="!open" @click="open = true"
                                     class="w-full border-2 border-primary text-primary font-semibold py-2.5 rounded-lg hover:bg-primary hover:text-white transition-colors">
                                 Request Return / Replacement
@@ -290,13 +290,13 @@
                                 </div>
 
                                 <div class="flex gap-2">
-                                    <button type="submit" class="flex-1 bg-primary text-white font-semibold py-2.5 rounded-lg hover:bg-on-primary-fixed-variant transition">Submit Request</button>
+                                    <button type="submit" class="flex-1 bg-primary text-white font-semibold py-2.5 rounded-lg hover:bg-primary/90 transition">Submit Request</button>
                                     <button type="button" @click="open = false" class="px-4 py-2.5 border border-outline-variant rounded-lg text-on-surface hover:bg-surface-container transition">Cancel</button>
                                 </div>
                             </form>
                         </div>
                     @else
-                        <p class="text-sm text-secondary">The {{ $windowDays }}-day return window for this order has passed. Please contact support if you need assistance.</p>
+                        <p class="text-sm text-on-surface-variant">The {{ $windowDays }}-day return window for this order has passed. Please contact support if you need assistance.</p>
                     @endif
                 </div>
                 @endif

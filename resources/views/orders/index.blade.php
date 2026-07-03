@@ -10,13 +10,13 @@
                     @endif
 
                     @if($orders->isEmpty())
-                        <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-16 text-center">
-                            <div class="w-20 h-20 bg-surface-container mx-auto rounded-full flex items-center justify-center mb-6">
-                                <span class="material-symbols-outlined text-secondary text-3xl">inbox</span>
+                        <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-10 text-center">
+                            <div class="w-16 h-16 bg-herbal-light mx-auto rounded-full flex items-center justify-center mb-5">
+                                <span class="material-symbols-outlined text-herbal-accent text-3xl">inbox</span>
                             </div>
                             <h3 class="text-xl font-bold text-on-surface mb-2">No orders yet</h3>
-                            <p class="text-sm text-secondary mb-6">You haven't placed any orders yet. Explore our Ayurvedic range!</p>
-                            <a href="{{ route('shop.index') }}" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-on-primary-fixed-variant transition">
+                            <p class="text-sm text-on-surface-variant mb-6">You haven't placed any orders yet. Explore our Ayurvedic range!</p>
+                            <a href="{{ route('shop.index') }}" class="inline-flex items-center gap-2 bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-primary/90 transition">
                                 <span class="material-symbols-outlined text-[18px]">storefront</span>
                                 Browse Products
                             </a>
@@ -46,11 +46,11 @@
                                                     {{ ucfirst($order->order_status) }}
                                                 </span>
                                             </div>
-                                            <p class="text-sm text-secondary">Placed on {{ $order->created_at->format('M d, Y \a\t h:i A') }}</p>
+                                            <p class="text-sm text-on-surface-variant">Placed on {{ $order->created_at->format('M d, Y \a\t h:i A') }}</p>
                                         </div>
                                         <div class="flex items-center gap-4">
                                             <div class="text-right">
-                                                <p class="text-xs text-secondary">Total</p>
+                                                <p class="text-xs text-on-surface-variant">Total</p>
                                                 <p class="font-bold text-on-surface text-lg">₹{{ number_format($order->grand_total, 2) }}</p>
                                             </div>
                                             <a href="{{ route('orders.show', $order->id) }}" class="inline-flex items-center justify-center border border-outline-variant hover:bg-surface-container transition-colors rounded-lg px-4 py-2 text-sm font-medium text-on-surface">
@@ -75,18 +75,18 @@
                                                     </div>
                                                     <div class="flex-1">
                                                         <p class="text-sm font-medium text-on-surface line-clamp-1">{{ $item->product_name }}</p>
-                                                        <p class="text-xs text-secondary">Qty: {{ $item->quantity }} × ₹{{ number_format($item->price, 2) }}</p>
+                                                        <p class="text-xs text-on-surface-variant">Qty: {{ $item->quantity }} × ₹{{ number_format($item->price, 2) }}</p>
                                                     </div>
                                                     <p class="text-sm font-bold text-on-surface">₹{{ number_format($item->total, 2) }}</p>
                                                 </div>
                                             @endforeach
                                             @if($order->items->count() > 3)
-                                                <p class="text-xs text-secondary mt-2">+ {{ $order->items->count() - 3 }} more item(s)</p>
+                                                <p class="text-xs text-on-surface-variant mt-2">+ {{ $order->items->count() - 3 }} more item(s)</p>
                                             @endif
                                         </div>
 
                                         {{-- Payment & Delivery Info --}}
-                                        <div class="mt-4 pt-4 border-t border-outline-variant flex flex-wrap gap-4 text-sm text-secondary">
+                                        <div class="mt-4 pt-4 border-t border-outline-variant flex flex-wrap gap-4 text-sm text-on-surface-variant">
                                             <div class="flex items-center gap-1.5">
                                                 <span class="material-symbols-outlined text-[16px]">payments</span>
                                                 {{ strtoupper($order->payment_method) }}

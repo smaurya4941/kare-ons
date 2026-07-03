@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Mail\OrderPlaced;
+use App\Models\InventoryTransaction;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -67,7 +68,13 @@ class RazorpayPaymentService
     }
 
     /**
-     * Mark a payment (and its order) as failed. Never downgrades a successful/refunded payment.
+     * Mark a payment (and its order) as failed. Never downgrades a
+     * successful/refunded payment, and is idempotent for already-failed
+     * payments so a retried callback/webhook cannot restock twice.
+     *
+     * Because stock is deducted at order creation (before payment), a failed
+     * payment must return that stock to inventory and cancel the order —
+     * otherwise abandoned Razorpay checkouts silently leak stock.
      */
     public function markFailed(Payment $payment): void
     {
@@ -75,15 +82,42 @@ class RazorpayPaymentService
             /** @var Payment|null $locked */
             $locked = Payment::whereKey($payment->id)->lockForUpdate()->first();
 
-            if (! $locked || in_array($locked->status, ['success', 'refunded'], true)) {
+            // Idempotent: only the first pending -> failed transition does work.
+            if (! $locked || in_array($locked->status, ['success', 'refunded', 'failed'], true)) {
                 return;
             }
 
             $locked->update(['status' => 'failed']);
 
-            if ($locked->order) {
-                $locked->order->update(['payment_status' => 'failed']);
+            $order = $locked->order;
+            if (! $order) {
+                return;
             }
+
+            // Restore stock for each line and log the reversal, mirroring the
+            // admin cancellation path. Skipped for orders already in a
+            // stock-restored state to avoid double restocking.
+            if (! in_array($order->order_status, ['cancelled', 'returned'], true)) {
+                foreach ($order->items as $item) {
+                    if ($item->product) {
+                        $item->product->increment('stock_quantity', $item->quantity);
+
+                        InventoryTransaction::create([
+                            'product_id'   => $item->product_id,
+                            'user_id'      => $order->user_id,
+                            'type'         => 'order_cancellation',
+                            'quantity'     => $item->quantity, // Positive for restocking
+                            'reference_id' => $order->order_number,
+                            'notes'        => 'Stock restored due to failed/abandoned payment.',
+                        ]);
+                    }
+                }
+            }
+
+            $order->update([
+                'payment_status' => 'failed',
+                'order_status'   => 'cancelled',
+            ]);
         });
     }
 }

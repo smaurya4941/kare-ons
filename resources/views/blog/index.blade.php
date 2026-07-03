@@ -3,29 +3,29 @@
 @section('title', 'Wellness Blog - Kare Ons Herbal')
 
 @section('content')
-<div class="bg-surface-container-lowest py-16">
-    <div class="max-w-container-max mx-auto px-margin-desktop text-center">
-        <h1 class="text-4xl md:text-5xl font-display font-bold text-on-surface mb-6">Ayurvedic Wellness Blog</h1>
-        <p class="text-lg text-secondary max-w-2xl mx-auto">Discover ancient wisdom for modern living. Expert articles on herbs, health tips, and holistic wellbeing.</p>
+<div class="bg-surface-container-lowest py-10">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center">
+        <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg font-bold text-herbal-deep mb-3">Ayurvedic Wellness Blog</h1>
+        <p class="text-body-md text-on-surface-variant max-w-2xl mx-auto">Discover ancient wisdom for modern living. Expert articles on herbs, health tips, and holistic wellbeing.</p>
     </div>
 </div>
 
-<div class="max-w-container-max mx-auto px-margin-desktop py-12 min-h-[50vh]">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 min-h-[50vh]">
     <!-- Categories Filter -->
     @if($categories->count() > 0)
-    <div class="flex flex-wrap gap-3 mb-12 justify-center">
-        <a href="{{ route('blog.index') }}" class="px-6 py-2 rounded-full border border-outline-variant font-medium {{ !request('category') ? 'bg-primary text-white border-primary' : 'bg-surface hover:bg-surface-container transition text-on-surface' }}">All Articles</a>
+    <div class="flex flex-wrap gap-2 mb-8 justify-center">
+        <a href="{{ route('blog.index') }}" class="px-5 py-1.5 rounded-full border text-sm border-outline-variant font-medium {{ !request('category') ? 'bg-primary text-white border-primary' : 'bg-surface hover:bg-surface-container transition text-on-surface' }}">All Articles</a>
         @foreach($categories as $category)
             @if($category)
-                <a href="{{ route('blog.index', ['category' => $category]) }}" class="px-6 py-2 rounded-full border border-outline-variant font-medium {{ request('category') === $category ? 'bg-primary text-white border-primary' : 'bg-surface hover:bg-surface-container transition text-on-surface' }}">{{ $category }}</a>
+                <a href="{{ route('blog.index', ['category' => $category]) }}" class="px-5 py-1.5 rounded-full border text-sm border-outline-variant font-medium {{ request('category') === $category ? 'bg-primary text-white border-primary' : 'bg-surface hover:bg-surface-container transition text-on-surface' }}">{{ $category }}</a>
             @endif
         @endforeach
     </div>
     @endif
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         @forelse($blogs as $blog)
-            <article class="bg-surface rounded-2xl border border-outline-variant overflow-hidden group hover:border-primary transition-colors shadow-sm flex flex-col">
+            <article class="bg-surface rounded-xl border border-outline-variant overflow-hidden group hover:border-primary transition-colors shadow-sm flex flex-col">
                 <a href="{{ route('blog.show', $blog->slug) }}" class="block aspect-[16/10] bg-surface-container overflow-hidden relative">
                     @if($blog->featured_image)
                         <img src="{{ asset('storage/' . $blog->featured_image) }}" alt="{{ $blog->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -40,12 +40,12 @@
                         </span>
                     @endif
                 </a>
-                <div class="p-6 flex flex-col flex-1">
-                    <div class="text-sm text-secondary mb-3 flex items-center gap-2">
+                <div class="p-5 flex flex-col flex-1">
+                    <div class="text-sm text-on-surface-variant mb-3 flex items-center gap-2">
                         <span class="material-symbols-outlined text-[16px]">calendar_today</span>
                         {{ $blog->published_at ? $blog->published_at->format('M d, Y') : $blog->created_at->format('M d, Y') }}
                     </div>
-                    <h2 class="text-xl font-bold text-on-surface mb-3 group-hover:text-primary transition line-clamp-2">
+                    <h2 class="text-lg font-bold text-on-surface mb-2 group-hover:text-primary transition line-clamp-2">
                         <a href="{{ route('blog.show', $blog->slug) }}">{{ $blog->title }}</a>
                     </h2>
                     <p class="text-on-surface-variant mb-6 line-clamp-3 text-sm leading-relaxed flex-1">
@@ -57,10 +57,10 @@
                 </div>
             </article>
         @empty
-            <div class="col-span-full text-center py-20 bg-surface-container-lowest rounded-2xl border border-outline-variant">
+            <div class="col-span-full text-center py-16 bg-surface-container-lowest rounded-xl border border-outline-variant">
                 <span class="material-symbols-outlined text-[48px] text-outline mb-4">article</span>
                 <h3 class="text-xl font-bold text-on-surface mb-2">No Articles Found</h3>
-                <p class="text-secondary">Check back soon for new wellness insights and herbal tips.</p>
+                <p class="text-on-surface-variant">Check back soon for new wellness insights and herbal tips.</p>
             </div>
         @endforelse
     </div>

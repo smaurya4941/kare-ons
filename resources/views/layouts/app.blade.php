@@ -40,37 +40,40 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-background text-on-background font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+    <!-- Toast notifications -->
+    <div id="toast-container" class="fixed top-16 right-4 z-[100] flex flex-col gap-2 w-[calc(100%-2rem)] max-w-sm pointer-events-none" aria-live="polite" aria-atomic="true"></div>
+
     <!-- TopNavBar -->
     <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-outline-variant transition-all duration-300" id="navbar">
-        <div class="flex justify-between items-center max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-16">
+        <div class="flex justify-between items-center max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-14">
             <a href="{{ route('home') }}" class="flex items-center">
-                <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-12 w-auto object-contain">
+                <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-9 w-auto object-contain">
             </a>
-            <div class="hidden md:flex items-center gap-8 h-full">
-                <a class="{{ request()->routeIs('home') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('home') }}">Home</a>
-                <a class="{{ request()->routeIs('shop.index') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('shop.index') }}">Shop</a>
+            <div class="hidden md:flex items-center gap-6 h-full">
+                <a class="{{ request()->routeIs('home') ? 'nav-link-active' : 'text-on-surface hover:text-brand-gold-dark transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('home') }}">Home</a>
+                <a class="{{ request()->routeIs('shop.index') ? 'nav-link-active' : 'text-on-surface hover:text-brand-gold-dark transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('shop.index') }}">Shop</a>
                 <div class="relative group h-full flex items-center">
-                    <button class="flex items-center gap-1 text-on-surface font-medium hover:text-primary transition-colors duration-200 text-sm">
+                    <button class="flex items-center gap-1 text-on-surface font-medium hover:text-brand-gold-dark transition-colors duration-200 text-sm">
                         Categories
                         <span class="material-symbols-outlined text-sm">expand_more</span>
                     </button>
                     <div class="absolute top-full left-0 w-64 bg-white shadow-lg border border-outline-variant opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 rounded-b-lg overflow-hidden">
                         <div class="flex flex-col py-1">
                             @foreach($headerCategories ?? [] as $navCat)
-                                <a class="px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container hover:text-primary transition-colors" href="{{ route('shop.index', ['category' => $navCat->slug]) }}">{{ $navCat->name }}</a>
+                                <a class="px-4 py-3 text-sm font-medium text-on-surface hover:bg-surface-container hover:text-brand-gold-dark transition-colors" href="{{ route('shop.index', ['category' => $navCat->slug]) }}">{{ $navCat->name }}</a>
                             @endforeach
                         </div>
                     </div>
                 </div>
-                <a class="{{ request()->routeIs('about') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('about') }}">About</a>
-                <a class="{{ request()->routeIs('blog.index') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('blog.index') }}">Blog</a>
-                <a class="{{ request()->routeIs('contact') ? 'nav-link-active' : 'text-on-surface hover:text-primary transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('contact') }}">Contact</a>
+                <a class="{{ request()->routeIs('about') ? 'nav-link-active' : 'text-on-surface hover:text-brand-gold-dark transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('about') }}">About</a>
+                <a class="{{ request()->routeIs('blog.index') ? 'nav-link-active' : 'text-on-surface hover:text-brand-gold-dark transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('blog.index') }}">Blog</a>
+                <a class="{{ request()->routeIs('contact') ? 'nav-link-active' : 'text-on-surface hover:text-brand-gold-dark transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('contact') }}">Contact</a>
             </div>
             <div class="flex items-center gap-4">
-                <button class="text-on-surface hover:text-primary transition">
+                <button class="text-on-surface hover:text-brand-gold-dark transition">
                     <span class="material-symbols-outlined">search</span>
                 </button>
-                <a href="{{ route('cart.index') }}" class="relative text-on-surface hover:text-primary transition">
+                <a href="{{ route('cart.index') }}" class="relative text-on-surface hover:text-brand-gold-dark transition">
                     <span class="material-symbols-outlined">shopping_cart</span>
                     @php
                         $cartCount = 0;
@@ -80,22 +83,20 @@
                             $cartCount = \App\Models\CartItem::where('session_id', Session::getId())->sum('quantity');
                         }
                     @endphp
-                    @if($cartCount > 0)
-                        <span class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">{{ $cartCount }}</span>
-                    @endif
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-brand-gold text-brand-forest text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center {{ $cartCount > 0 ? '' : 'hidden' }}">{{ $cartCount }}</span>
                 </a>
                 @auth
-                    <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" class="text-on-surface hover:text-primary transition ml-2 flex items-center gap-1">
+                    <a href="{{ Auth::user()->role === 'admin' ? route('admin.dashboard') : route('dashboard') }}" class="text-on-surface hover:text-brand-gold-dark transition ml-2 flex items-center gap-1">
                         <span class="material-symbols-outlined">account_circle</span>
                         <span class="text-sm font-medium hidden md:inline">Account</span>
                     </a>
                 @else
                     <div class="flex items-center gap-4 ml-2">
-                        <a href="{{ route('login') }}" class="text-on-surface hover:text-primary transition flex items-center gap-1">
+                        <a href="{{ route('login') }}" class="text-on-surface hover:text-brand-gold-dark transition flex items-center gap-1">
                             <span class="material-symbols-outlined">login</span>
                             <span class="text-sm font-medium hidden md:inline">Login</span>
                         </a>
-                        <a href="{{ route('register') }}" class="bg-primary text-white hover:bg-on-surface-variant transition px-4 py-2 rounded-md text-sm font-medium flex items-center gap-1">
+                        <a href="{{ route('register') }}" class="bg-brand-forest text-white hover:bg-brand-gold hover:text-brand-forest transition px-4 py-2 rounded-md text-sm font-medium flex items-center gap-1">
                             <span class="material-symbols-outlined text-[18px]">person_add</span>
                             <span class="hidden md:inline">Register</span>
                         </a>
@@ -108,7 +109,7 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-outline-variant absolute top-16 left-0 w-full shadow-lg h-[calc(100vh-64px)] overflow-y-auto">
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-outline-variant absolute top-14 left-0 w-full shadow-lg h-[calc(100vh-56px)] overflow-y-auto">
             <div class="flex flex-col py-4 px-margin-mobile">
                 <a class="{{ request()->routeIs('home') ? 'nav-link-active' : 'text-on-surface' }} py-3 text-sm font-medium border-b border-surface-container" href="{{ route('home') }}">Home</a>
                 <a class="{{ request()->routeIs('shop.index') ? 'nav-link-active' : 'text-on-surface' }} py-3 text-sm font-medium border-b border-surface-container" href="{{ route('shop.index') }}">Shop</a>
@@ -117,7 +118,7 @@
                     <p class="text-sm font-medium text-on-surface mb-2">Categories</p>
                     <div class="flex flex-col pl-4 gap-3">
                         @foreach($headerCategories ?? [] as $navCat)
-                            <a class="text-sm text-on-surface-variant hover:text-primary" href="{{ route('shop.index', ['category' => $navCat->slug]) }}">{{ $navCat->name }}</a>
+                            <a class="text-sm text-on-surface-variant hover:text-brand-gold-dark" href="{{ route('shop.index', ['category' => $navCat->slug]) }}">{{ $navCat->name }}</a>
                         @endforeach
                     </div>
                 </div>
@@ -131,102 +132,127 @@
     
     <!-- Main Content -->
     @isset($header)
-        <header class="bg-surface shadow-sm border-b border-outline-variant mt-16">
-            <div class="max-w-container-max mx-auto py-6 px-margin-mobile md:px-margin-desktop">
+        <header class="bg-surface shadow-sm border-b border-outline-variant mt-14">
+            <div class="max-w-container-max mx-auto py-5 px-margin-mobile md:px-margin-desktop">
                 {{ $header }}
             </div>
         </header>
     @endisset
 
-    <main class="flex-grow pt-16">
+    <main class="flex-grow pt-14">
         @yield('content')
         {{ $slot ?? '' }}
     </main>
 
-    <footer class="w-full bg-primary dark:bg-tertiary-container">
-<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-section-gap grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-gutter">
-<div class="col-span-1 md:col-span-1">
-<a class="block mb-6" href="{{ route('home') }}">
-    <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-20 w-auto object-contain bg-white rounded-full p-2">
-</a>
-<p class="text-on-primary/80 text-label-md mb-8 leading-relaxed">
-                    {!! setting('about_text', 'Setting the global benchmark for scientific Ayurveda and botanical clinical excellence since 1999.') !!}
+    <footer class="relative w-full bg-herbal-deep text-on-primary overflow-hidden">
+        {{-- Thin brand accent line --}}
+        <div class="h-px w-full bg-gradient-to-r from-transparent via-secondary-fixed/70 to-transparent"></div>
+
+        {{-- Main footer grid --}}
+        <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-12 gap-x-gutter gap-y-6">
+            {{-- Brand column --}}
+            <div class="col-span-2 md:col-span-4 lg:col-span-4">
+                <a class="inline-block mb-4" href="{{ route('home') }}">
+                    <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-12 w-auto object-contain bg-white rounded-lg p-1.5">
+                </a>
+                <p class="text-on-primary/70 font-body-md text-label-md leading-relaxed max-w-xs mb-5">
+                    {{ \Illuminate\Support\Str::limit(strip_tags(setting('about_text', 'Pure, potent Ayurvedic wellness — 5,000 years of Vedic wisdom, made for modern life.')), 130) }}
                 </p>
-</div>
-<div>
-<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Explore</h5>
-<ul class="space-y-4">
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Contract Manufacturing</a></li>
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Bulk Extracts</a></li>
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Formulation Lab</a></li>
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">White Labeling</a></li>
-</ul>
-</div>
-<div>
-<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Science</h5>
-<ul class="space-y-4">
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Clinical Studies</a></li>
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Ingredient Sourcing</a></li>
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Quality Control</a></li>
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="#">Regulatory Support</a></li>
-</ul>
-</div>
-<div>
-<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Company</h5>
-<ul class="space-y-4">
-@foreach($footerPages ?? [] as $page)
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="{{ route('page.show', $page->slug) }}">{{ $page->title }}</a></li>
-@endforeach
-<li class=""><a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="{{ route('about') }}">About Us</a></li>
-</ul>
-</div>
-<div>
-<h5 class="text-secondary-fixed font-label-md uppercase tracking-widest mb-6">Contact Us</h5>
-<ul class="space-y-4">
-@if(setting('site_email'))
-<li class="flex items-start gap-3">
-<span class="material-symbols-outlined text-secondary-fixed text-[20px]">mail</span>
-<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="mailto:{{ setting('site_email') }}">{{ setting('site_email') }}</a>
-</li>
-@endif
-@if(setting('site_phone'))
-<li class="flex items-start gap-3">
-<span class="material-symbols-outlined text-secondary-fixed text-[20px]">call</span>
-<a class="text-on-primary/80 hover:text-secondary-fixed transition-colors font-body-md" href="tel:{{ setting('site_phone') }}">{{ setting('site_phone') }}</a>
-</li>
-@endif
-@if(setting('address'))
-<li class="flex items-start gap-3">
-<span class="material-symbols-outlined text-secondary-fixed text-[20px]">location_on</span>
-<span class="text-on-primary/80 font-body-md">{{ setting('address') }}</span>
-</li>
-@endif
-</ul>
-<div class="flex gap-4 mt-6">
-@if(setting('linkedin_url'))
-<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('linkedin_url') }}" target="_blank" title="LinkedIn">
-<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-</a>
-@endif
-@if(setting('instagram_url'))
-<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('instagram_url') }}" target="_blank" title="Instagram">
-<span class="material-symbols-outlined text-[20px]">photo_camera</span>
-</a>
-@endif
-@if(setting('twitter_url'))
-<a class="w-10 h-10 rounded-full border border-on-primary/20 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed transition-colors" href="{{ setting('twitter_url') }}" target="_blank" title="Twitter">
-<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-</a>
-@endif
-</div>
-</div>
-</div>
-<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 border-t border-on-primary/10">
-<p class="text-on-primary/60 text-label-sm text-center">
-                {{ setting('copyright_text', '© ' . date('Y') . ' Kare ONS Herbals. All rights reserved.') }}
-            </p>
-</div>
-</footer>
+                <div class="flex gap-2.5">
+                    @if(setting('instagram_url'))
+                        <a class="w-9 h-9 rounded-full bg-on-primary/5 border border-on-primary/15 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed hover:border-secondary-fixed transition-all" href="{{ setting('instagram_url') }}" target="_blank" rel="noopener" title="Instagram" aria-label="Follow us on Instagram">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                    @endif
+                    @if(setting('twitter_url'))
+                        <a class="w-9 h-9 rounded-full bg-on-primary/5 border border-on-primary/15 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed hover:border-secondary-fixed transition-all" href="{{ setting('twitter_url') }}" target="_blank" rel="noopener" title="Twitter / X" aria-label="Follow us on Twitter">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                        </a>
+                    @endif
+                    @if(setting('linkedin_url'))
+                        <a class="w-9 h-9 rounded-full bg-on-primary/5 border border-on-primary/15 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed hover:border-secondary-fixed transition-all" href="{{ setting('linkedin_url') }}" target="_blank" rel="noopener" title="LinkedIn" aria-label="Connect on LinkedIn">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                    @endif
+                    @if(setting('site_email'))
+                        <a class="w-9 h-9 rounded-full bg-on-primary/5 border border-on-primary/15 flex items-center justify-center text-on-primary hover:bg-secondary-fixed hover:text-on-secondary-fixed hover:border-secondary-fixed transition-all" href="mailto:{{ setting('site_email') }}" title="Email us" aria-label="Email us">
+                            <span class="material-symbols-outlined text-[18px]">mail</span>
+                        </a>
+                    @endif
+                </div>
+            </div>
+
+            {{-- Shop by category (dynamic) --}}
+            <div class="col-span-1 md:col-span-1 lg:col-span-2">
+                <h5 class="text-secondary-fixed font-label-md text-label-sm uppercase tracking-widest mb-3">Shop</h5>
+                <ul class="space-y-2">
+                    <li><a class="footer-link" href="{{ route('shop.index') }}">All Products</a></li>
+                    @foreach(($headerCategories ?? [])->take(4) as $navCat)
+                        <li><a class="footer-link" href="{{ route('shop.index', ['category' => $navCat->slug]) }}">{{ $navCat->name }}</a></li>
+                    @endforeach
+                </ul>
+            </div>
+
+            {{-- Company --}}
+            <div class="col-span-1 md:col-span-1 lg:col-span-2">
+                <h5 class="text-secondary-fixed font-label-md text-label-sm uppercase tracking-widest mb-3">Company</h5>
+                <ul class="space-y-2">
+                    <li><a class="footer-link" href="{{ route('about') }}">About Us</a></li>
+                    <li><a class="footer-link" href="{{ route('blog.index') }}">Journal</a></li>
+                    <li><a class="footer-link" href="{{ route('contact') }}">Contact</a></li>
+                    @foreach($footerPages ?? [] as $page)
+                        <li><a class="footer-link" href="{{ route('page.show', $page->slug) }}">{{ $page->title }}</a></li>
+                    @endforeach
+                </ul>
+            </div>
+
+            {{-- Customer care --}}
+            <div class="col-span-1 md:col-span-1 lg:col-span-2">
+                <h5 class="text-secondary-fixed font-label-md text-label-sm uppercase tracking-widest mb-3">Account</h5>
+                <ul class="space-y-2">
+                    @auth
+                        <li><a class="footer-link" href="{{ route('dashboard') }}">Dashboard</a></li>
+                        <li><a class="footer-link" href="{{ route('orders.index') }}">My Orders</a></li>
+                        <li><a class="footer-link" href="{{ route('wishlist.index') }}">Wishlist</a></li>
+                    @else
+                        <li><a class="footer-link" href="{{ route('login') }}">Sign In</a></li>
+                        <li><a class="footer-link" href="{{ route('register') }}">Create Account</a></li>
+                    @endauth
+                    <li><a class="footer-link" href="{{ route('cart.index') }}">My Cart</a></li>
+                </ul>
+            </div>
+
+            {{-- Contact --}}
+            <div class="col-span-1 md:col-span-1 lg:col-span-2">
+                <h5 class="text-secondary-fixed font-label-md text-label-sm uppercase tracking-widest mb-3">Contact</h5>
+                <ul class="space-y-2">
+                    @if(setting('site_phone'))
+                        <li><a class="footer-link" href="tel:{{ setting('site_phone') }}">{{ setting('site_phone') }}</a></li>
+                    @endif
+                    @if(setting('site_email'))
+                        <li><a class="footer-link break-all" href="mailto:{{ setting('site_email') }}">{{ setting('site_email') }}</a></li>
+                    @endif
+                    @if(setting('address'))
+                        <li class="text-on-primary/70 font-body-md text-label-md leading-relaxed">{{ setting('address') }}</li>
+                    @endif
+                </ul>
+            </div>
+        </div>
+
+        {{-- Bottom bar --}}
+        <div class="border-t border-on-primary/10">
+            <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-4 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+                <p class="text-on-primary/60 text-label-sm text-center sm:text-left">
+                    {{ setting('copyright_text', '© ' . date('Y') . ' ' . setting('site_name', 'Kare ONS Herbals') . '. All rights reserved.') }}
+                </p>
+                <div class="flex items-center gap-1.5" aria-label="Accepted payment methods">
+                    @foreach(['Visa', 'Mastercard', 'UPI', 'RuPay'] as $pay)
+                        <span class="px-2 py-0.5 rounded bg-on-primary/5 border border-on-primary/10 text-on-primary/70 text-[10px] font-semibold tracking-wide">{{ $pay }}</span>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </footer>
     
     <script>
         // Micro-interactions and scroll effects
@@ -301,28 +327,129 @@
                 if (data.status === 'added') {
                     document.querySelectorAll(`.wishlist-icon-${productId}`).forEach(icon => {
                         icon.style.fontVariationSettings = "'FILL' 1";
-                        icon.classList.add('text-primary');
+                        icon.classList.add('text-brand-gold-dark');
                         icon.classList.remove('text-on-surface-variant');
                         if (icon.parentElement.tagName === 'BUTTON') {
-                            icon.parentElement.classList.add('border-primary', 'bg-primary/10');
+                            icon.parentElement.classList.add('border-brand-gold-dark', 'bg-brand-gold/10');
                             icon.parentElement.classList.remove('border-soft-border');
                         }
                     });
                 } else if (data.status === 'removed') {
                     document.querySelectorAll(`.wishlist-icon-${productId}`).forEach(icon => {
                         icon.style.fontVariationSettings = "'FILL' 0";
-                        icon.classList.remove('text-primary');
+                        icon.classList.remove('text-brand-gold-dark');
                         icon.classList.add('text-on-surface-variant');
                         if (icon.parentElement.tagName === 'BUTTON') {
-                            icon.parentElement.classList.remove('border-primary', 'bg-primary/10');
+                            icon.parentElement.classList.remove('border-brand-gold-dark', 'bg-brand-gold/10');
                             icon.parentElement.classList.add('border-soft-border');
                         }
                     });
                 }
+                if (data.message) {
+                    showToast(data.message, data.status === 'removed' ? 'info' : 'success');
+                }
             } catch (error) {
                 console.error('Error toggling wishlist:', error);
+                showToast('Something went wrong. Please try again.', 'error');
             }
         }
+
+        // -------------------------------------------------------------------------
+        // Toast notifications
+        // -------------------------------------------------------------------------
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const palette = {
+                success: { bg: 'bg-secondary', icon: 'check_circle' },
+                error:   { bg: 'bg-error',     icon: 'error' },
+                info:    { bg: 'bg-on-surface', icon: 'info' },
+            }[type] || { bg: 'bg-on-surface', icon: 'info' };
+
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto ${palette.bg} text-white rounded-lg shadow-lg px-4 py-3 flex items-center gap-3 text-sm font-medium translate-x-4 opacity-0 transition-all duration-300`;
+            toast.setAttribute('role', 'status');
+            toast.innerHTML = `<span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">${palette.icon}</span><span class="flex-1">${message}</span>`;
+            container.appendChild(toast);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-x-4', 'opacity-0');
+            });
+
+            // Auto dismiss
+            setTimeout(() => {
+                toast.classList.add('translate-x-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // -------------------------------------------------------------------------
+        // AJAX add-to-cart (progressive enhancement of any form.js-cart-form)
+        // -------------------------------------------------------------------------
+        document.addEventListener('submit', async (e) => {
+            const form = e.target.closest('form.js-cart-form');
+            if (!form) return;
+            e.preventDefault();
+
+            const btn = form.querySelector('[type="submit"]');
+            if (btn?.dataset.loading === '1') return; // guard against double submit
+            const originalHtml = btn ? btn.innerHTML : null;
+            if (btn) {
+                btn.dataset.loading = '1';
+                btn.disabled = true;
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+            }
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    },
+                    body: new FormData(form),
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (typeof data.cart_count !== 'undefined') updateCartCount(data.cart_count);
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                    return;
+                }
+
+                if (response.ok && data.status === 'success') {
+                    showToast(data.message || 'Added to your cart.', 'success');
+                } else {
+                    showToast(data.message || 'Could not add to cart.', 'error');
+                }
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                showToast('Something went wrong. Please try again.', 'error');
+            } finally {
+                if (btn) {
+                    btn.dataset.loading = '0';
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
+            }
+        });
+
+        function updateCartCount(count) {
+            const badge = document.getElementById('cart-count');
+            if (!badge) return;
+            badge.textContent = count;
+            badge.classList.toggle('hidden', !(count > 0));
+        }
+
+        // Surface server-side flash messages as toasts
+        document.addEventListener('DOMContentLoaded', () => {
+            @if(session('success')) showToast(@json(session('success')), 'success'); @endif
+            @if(session('error'))   showToast(@json(session('error')), 'error');     @endif
+        });
     </script>
 
     @stack('scripts')

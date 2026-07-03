@@ -14,6 +14,20 @@
     .btn-primary {
         @apply inline-flex items-center justify-center bg-primary text-clinical-white font-body-md px-8 py-3 rounded transition-transform active:scale-95;
     }
+    /* Storefront footer link: subtle indent-on-hover with an animated accent lead-in. */
+    .footer-link {
+        @apply relative inline-flex items-center text-on-primary/70 font-body-md text-body-md hover:text-secondary-fixed transition-colors duration-200;
+    }
+    .footer-link::before {
+        content: '';
+        @apply absolute left-0 top-1/2 -translate-y-1/2 w-0 h-px bg-secondary-fixed opacity-0 transition-all duration-200;
+    }
+    .footer-link:hover {
+        @apply pl-4;
+    }
+    .footer-link:hover::before {
+        @apply w-2.5 opacity-100;
+    }
 }
 
 .material-symbols-outlined {
@@ -27,19 +41,30 @@
     transition: all 0.3s ease;
 }
 .clinical-card:hover {
-    box-shadow: 0 10px 30px -10px rgba(19, 27, 46, 0.08);
-    border-color: #006a61;
+    box-shadow: 0 10px 30px -10px rgba(30, 58, 51, 0.14);
+    border-color: #c9a452;
 }
 .glass-header {
     backdrop-filter: blur(8px);
     background: rgba(252, 248, 250, 0.85);
 }
 .portfolio-overlay {
-    background: linear-gradient(to top, rgba(11, 28, 48, 0.9) 0%, rgba(11, 28, 48, 0.2) 60%, transparent 100%);
+    background: linear-gradient(to top, rgba(30, 58, 51, 0.9) 0%, rgba(30, 58, 51, 0.2) 60%, transparent 100%);
 }
 .nav-link-active {
-    border-bottom: 2px solid #0f62fe;
-    color: #0f62fe;
+    border-bottom: 2px solid #1e3a33;
+    color: #1e3a33;
 }
+
+/* Shared card motif for the storefront: subtle, premium hover lift. */
+.hover-electric {
+    transition: border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+.hover-electric:hover {
+    border-color: #c9a452;
+    box-shadow: 0 10px 28px -12px rgba(30, 58, 51, 0.2);
+    transform: translateY(-3px);
+}
+.hover-border-primary:hover { border-color: #c9a452; }
 
 [x-cloak] { display: none !important; }

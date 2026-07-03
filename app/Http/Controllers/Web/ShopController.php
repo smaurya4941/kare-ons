@@ -31,7 +31,10 @@ class ShopController extends Controller
             'sort'      => 'nullable|string|in:' . implode(',', array_keys(self::SORT_OPTIONS)),
         ]);
 
-        $query = Product::where('status', 1)->with('category');
+        $query = Product::where('status', 1)
+            ->with('category')
+            ->withAvg('reviews', 'rating')   // → reviews_avg_rating
+            ->withCount('reviews');          // → reviews_count
 
         // Filter by Search
         if ($request->filled('search')) {
@@ -64,6 +67,11 @@ class ShopController extends Controller
         $products   = $query->paginate(12)->withQueryString();
         $categories = Category::where('status', 1)->get();
 
-        return view('shop.index', compact('products', 'categories'));
+        // Per-user wishlist product IDs — resolved once to avoid an N+1 per card.
+        $wishlistIds = \Illuminate\Support\Facades\Auth::check()
+            ? \App\Models\Wishlist::where('user_id', \Illuminate\Support\Facades\Auth::id())->pluck('product_id')->all()
+            : [];
+
+        return view('shop.index', compact('products', 'categories', 'wishlistIds'));
     }
 }

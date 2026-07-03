@@ -4,7 +4,7 @@
 @section('meta_description', 'Get in touch with ' . setting('site_name', 'Kare ONS Herbals') . ' for product inquiries, wellness guidance, or support.')
 
 @section('content')
-<main class="pt-32 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto min-h-screen flex flex-col">
+<main class="pt-8 pb-16 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto min-h-screen flex flex-col">
 <!-- Hero Section -->
 <section class="mb-20 text-center max-w-3xl mx-auto">
 <h1 class="font-display-lg text-display-lg text-on-surface mb-6">Get in Touch</h1>
@@ -13,7 +13,7 @@
             </p>
 </section>
 <!-- Contact Grid -->
-<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-12">
 <!-- Left: Contact Form -->
 <div class="md:col-span-7 bg-clinical-white p-8 md:p-12 border border-soft-border rounded">
 <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-8">Send a Message</h2>

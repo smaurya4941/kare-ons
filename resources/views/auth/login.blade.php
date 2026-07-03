@@ -2,18 +2,18 @@
 <div class="min-h-screen flex items-center justify-center p-4 md:p-16 relative overflow-hidden bg-background">
     <!-- Subtle ambient background decoration -->
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 opacity-30 pointer-events-none">
-        <div class="absolute top-[-10%] right-[-5%] w-[50vw] h-[50vw] rounded-full bg-primary-fixed blur-[120px]"></div>
-        <div class="absolute bottom-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-surface-container blur-[100px]"></div>
+        <div class="absolute top-[-10%] right-[-5%] w-[50vw] h-[50vw] rounded-full bg-herbal-light blur-[120px]"></div>
+        <div class="absolute bottom-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-secondary-fixed/40 blur-[100px]"></div>
     </div>
-    
+
     <!-- Login Container -->
-    <main class="w-full max-w-[480px] bg-white/70 backdrop-blur-md border border-soft-border rounded-xl shadow-sm p-8 md:p-12 relative z-10 flex flex-col gap-8">
+    <main class="w-full max-w-[440px] bg-white/70 backdrop-blur-md border border-soft-border rounded-xl shadow-sm p-6 md:p-9 relative z-10 flex flex-col gap-6">
         <!-- Header -->
-        <header class="text-center flex flex-col gap-2">
+        <header class="text-center flex flex-col gap-1">
             <a href="{{ route('home') }}" class="inline-block">
-                <h1 class="font-display-lg text-4xl font-bold text-primary">Kare Ons Herbal</h1>
+                <h1 class="font-display-lg text-3xl font-bold text-primary">Kare Ons Herbal</h1>
             </a>
-            <p class="font-body-lg text-lg text-on-surface-variant mt-2">Pure Ayurvedic &amp; Herbal Products</p>
+            <p class="font-body-md text-body-md text-on-surface-variant">Pure Ayurvedic &amp; Herbal Products</p>
         </header>
         
         <!-- Session Status -->
@@ -59,12 +59,12 @@
             </div>
             
             <!-- Actions -->
-            <div class="flex flex-col gap-4 mt-4">
-                <button type="submit" class="bg-primary hover:bg-primary/90 text-white w-full py-4 rounded-lg font-label-md text-sm font-medium uppercase tracking-wider flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md hover:shadow-lg">
+            <div class="flex flex-col gap-3 mt-2">
+                <button type="submit" class="bg-primary hover:bg-primary/90 text-white w-full py-3 rounded-lg font-label-md text-sm font-medium uppercase tracking-wider flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md hover:shadow-lg">
                     Sign In
                     <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                 </button>
-                <p class="text-center font-body-md text-base text-on-surface-variant mt-4">
+                <p class="text-center font-body-md text-sm text-on-surface-variant mt-2">
                     New to Kare Ons? 
                     <a class="font-headline-md text-base font-semibold text-primary hover:underline underline-offset-4 ml-1" href="{{ route('register') }}">Create an Account</a>
                 </p>

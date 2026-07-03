@@ -11,28 +11,28 @@
         </div>
 
         @if($addresses->isEmpty())
-            <div class="bg-surface rounded-xl border border-outline-variant p-12 text-center shadow-sm">
-                <div class="w-20 h-20 bg-surface-container rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined text-outline text-[40px]">location_on</span>
+            <div class="bg-surface rounded-xl border border-outline-variant p-10 text-center shadow-sm">
+                <div class="w-16 h-16 bg-herbal-light rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-outlined text-herbal-accent text-[40px]">location_on</span>
                 </div>
                 <h3 class="text-lg font-bold text-on-surface mb-2">No Addresses Found</h3>
-                <p class="text-secondary mb-6">You haven't saved any delivery addresses yet.</p>
-                <a href="{{ route('addresses.create') }}" class="inline-flex items-center gap-2 border border-primary text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-primary-fixed transition-colors">
+                <p class="text-on-surface-variant mb-6">You haven't saved any delivery addresses yet.</p>
+                <a href="{{ route('addresses.create') }}" class="inline-flex items-center gap-2 border border-primary text-primary px-6 py-2.5 rounded-lg font-medium hover:bg-herbal-light transition-colors">
                     Add Address
                 </a>
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 @foreach($addresses as $address)
-                    <div class="bg-surface rounded-xl border {{ $address->is_default ? 'border-primary shadow-md ring-1 ring-primary/20' : 'border-outline-variant shadow-sm' }} p-6 relative group transition-shadow">
+                    <div class="bg-surface rounded-xl border {{ $address->is_default ? 'border-primary shadow-md ring-1 ring-primary/20' : 'border-outline-variant shadow-sm' }} p-5 relative group transition-shadow">
                         <div class="absolute top-4 right-4 flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                            <a href="{{ route('addresses.edit', $address->id) }}" class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container hover:bg-primary-fixed text-secondary hover:text-primary transition-colors">
+                            <a href="{{ route('addresses.edit', $address->id) }}" class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container hover:bg-herbal-light text-on-surface-variant hover:text-primary transition-colors">
                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                             </a>
                             <form action="{{ route('addresses.destroy', $address->id) }}" method="POST" onsubmit="return confirm('Delete this address?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container hover:bg-error-container text-secondary hover:text-error transition-colors">
+                                <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-full bg-surface-container hover:bg-error-container text-on-surface-variant hover:text-error transition-colors">
                                     <span class="material-symbols-outlined text-[18px]">delete</span>
                                 </button>
                             </form>
@@ -45,7 +45,7 @@
                                     <span class="bg-primary/10 text-primary border border-primary/20 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">Default</span>
                                 @endif
                             </div>
-                            <p class="text-sm font-medium text-secondary mb-3">{{ $address->phone }}</p>
+                            <p class="text-sm font-medium text-on-surface-variant mb-3">{{ $address->phone }}</p>
                             
                             <p class="text-on-surface leading-relaxed text-sm">
                                 {{ $address->address_line_1 }}<br>

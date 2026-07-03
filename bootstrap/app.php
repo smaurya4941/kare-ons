@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
 
+        // Attach conservative security headers to every web response.
+        $middleware->web(append: [
+            \App\Http\Middleware\SecurityHeaders::class,
+        ]);
+
         // Razorpay posts server-to-server and cannot send a CSRF token.
         $middleware->validateCsrfTokens(except: [
             'webhooks/razorpay',

@@ -2,139 +2,237 @@
 
 @section('content')
 <style>
-    .hover-electric:hover {
-        border-color: theme('colors.primary');
-        box-shadow: 0 8px 24px rgba(161, 0, 255, 0.08);
-        transform: translateY(-2px);
+    .section-eyebrow {
+        letter-spacing: 0.18em;
+    }
+    /* Palette-aware product card lift */
+    .card-lift {
+        transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    }
+    .card-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 40px -20px rgba(30, 58, 51, 0.35);
+        border-color: rgba(201, 164, 82, 0.5);
     }
 </style>
 
-<!-- Hero Section -->
-<section class="relative h-[90vh] flex items-center overflow-hidden">
+@php
+    // ---------------------------------------------------------------------
+    // Hero imagery: prefer an admin "hero" banner (with a mobile variant),
+    // fall back to the hero background setting, then a bundled local asset.
+    // ---------------------------------------------------------------------
+    $heroBanner  = $banners->firstWhere('type', 'hero');
+    $heroDesktop = $heroBanner
+        ? asset('storage/' . $heroBanner->desktop_image)
+        : (setting('home_hero_bg') ? asset('storage/' . setting('home_hero_bg')) : asset('images/home/hero.jpg'));
+    $heroMobile  = ($heroBanner && $heroBanner->mobile_image)
+        ? asset('storage/' . $heroBanner->mobile_image)
+        : $heroDesktop;
+@endphp
+
+{{-- Reusable star-rating display for product cards --}}
+@php
+    if (! function_exists('kareon_stars')) {
+        function kareon_stars($avg) {
+            $avg = (float) $avg;
+            $out = [];
+            for ($i = 1; $i <= 5; $i++) {
+                if ($avg >= $i)            $out[] = 'star';        // full
+                elseif ($avg >= $i - 0.5)  $out[] = 'star_half';   // half
+                else                       $out[] = 'star_outline';// empty
+            }
+            return $out;
+        }
+    }
+@endphp
+
+<!-- Hero Section (full-width banner) -->
+<section class="relative w-full overflow-hidden bg-brand-forest min-h-[360px] lg:min-h-[460px] flex items-center">
+    <!-- Full-bleed, art-directed background image -->
     <div class="absolute inset-0 z-0">
-        @php
-            $hero = $banners->where('type', 'hero')->first();
-        @endphp
-        @if($hero)
-            <div class="w-full h-full bg-cover bg-center opacity-40" data-alt="Hero Background" style='background-image: url("{{ asset('storage/' . $hero->desktop_image) }}");'></div>
-        @else
-            <div class="w-full h-full bg-cover bg-center opacity-40" data-alt="Hero Background" style='background-image: url("{{ setting('home_hero_bg') ? asset('storage/' . setting('home_hero_bg')) : 'https://lh3.googleusercontent.com/aida-public/AB6AXuAwFEioZmdWOcM4DVlVqnXarX4GXg6E_3pqPGJ9qld0IO7yJ_CZhfX3Zwp-qnfpt__FyCN0_K5j531wTlQtqctdZg3Gx1pIH1uh9nusroOJkFg-4k2bteEfXQ3FfZQIDnCXtiDUChXHGayo4eI99Ax69rK1C_Q5P-r5_2mvlw808GrBotWHQg3L3Yq3SXQFczGMbSu5GDBz2jZMqe-gC6IKOGxWpGBYz3K0_d73R6J4v4oHQVyVshr45hwO4DUnZ9rqUUIVRqOPdnU' }}");'></div>
-        @endif
-        <div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
+        <picture>
+            <source media="(max-width: 768px)" srcset="{{ $heroMobile }}">
+            <img class="w-full h-full object-cover" src="{{ $heroDesktop }}" alt="{{ setting('site_name', 'Kareon') }} premium Ayurvedic products" fetchpriority="high" decoding="async"/>
+        </picture>
+        <div class="absolute inset-0 bg-gradient-to-r from-brand-forest via-brand-forest/80 to-brand-forest/30"></div>
     </div>
-    
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop relative z-10 w-full">
+
+    <!-- Overlaid content -->
+    <div class="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 lg:py-16">
         <div class="max-w-2xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full mb-8">
-                <span class="material-symbols-outlined text-[18px]">verified</span>
-                <span class="text-label-sm font-bold uppercase tracking-wider">GMP Certified Excellence</span>
+            <div class="inline-flex items-center gap-2 bg-brand-gold text-brand-forest font-label-md text-label-sm uppercase section-eyebrow px-3.5 py-1 rounded-full mb-4 shadow-sm">
+                <span class="material-symbols-outlined text-[15px]" style="font-variation-settings:'FILL' 1;" aria-hidden="true">spa</span>
+                {{ setting('home_hero_badge', 'Since 1999') }}
             </div>
-            <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background mb-6">{!! setting('home_hero_title', 'Nature\'s Wisdom, <br/><span class="text-secondary">Refined by Science.</span>') !!}</h1>
-            <p class="font-body-lg text-body-lg text-on-surface-variant mb-10 leading-relaxed">
-                {!! setting('home_hero_subtitle', 'Pioneering clinical-grade Ayurvedic medicine through rigorous scientific validation. Our state-of-the-art manufacturing facilities deliver holistic wellness solutions that honor ancient traditions while meeting modern pharmaceutical standards.') !!}
+            <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-brand-cream mb-4 leading-tight">
+                {!! setting('home_hero_title', 'Scientific Ayurveda for <br/><span class="text-brand-gold">Modern Wellness</span>') !!}
+            </h1>
+            <p class="font-body-lg text-body-md md:text-body-lg text-brand-cream/85 mb-6 max-w-xl leading-relaxed">
+                {!! setting('home_hero_subtitle', 'Harmonizing elemental nature with diagnostic precision. We bridge 5,000 years of Vedic wisdom with contemporary clinical validation to restore your inherent vitality.') !!}
             </p>
-            <div class="flex flex-wrap gap-4">
-                <a href="{{ setting('home_cta_link', route('shop.index')) }}" class="bg-primary text-on-primary px-10 py-4 rounded-full font-label-md text-label-md hover:scale-105 transition-transform duration-300">{{ setting('home_cta_text', 'Start Your Inquiry') }}</a>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ setting('home_cta_link', route('shop.index')) }}" class="bg-brand-gold text-brand-forest font-label-md text-label-md px-6 py-2.5 rounded-full transition-all hover:bg-brand-gold-dark hover:shadow-lg hover:scale-105 active:scale-95">
+                    {{ setting('home_cta_text', 'Shop Now') }}
+                </a>
+                <a href="{{ route('about') }}" class="border border-brand-cream/60 text-brand-cream font-label-md text-label-md px-6 py-2.5 rounded-full transition-all hover:bg-brand-cream hover:text-brand-forest active:scale-95">
+                    Learn Our Process
+                </a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Trusted Logos -->
-<section class="bg-surface py-12 border-y border-outline-variant/20">
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-        <p class="text-center text-label-sm text-outline uppercase tracking-[0.2em] mb-8 font-bold">Standard of Excellence Certifications</p>
-        <div class="flex flex-wrap justify-between items-center gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-            <div class="flex items-center gap-2"><span class="text-headline-sm font-bold">GMP </span><span class="text-label-sm">Certified</span></div>
-            <div class="flex items-center gap-2"><span class="text-headline-sm font-bold">ISO 9001:2015</span></div>
-            <div class="flex items-center gap-2"><span class="text-headline-sm font-bold">AYUSH</span><span class="text-label-sm">Premium Mark</span></div>
-            <div class="flex items-center gap-2"><span class="text-headline-sm font-bold">PAN INDIA</span><span class="text-label-sm">Distribution</span></div>
-            <div class="flex items-center gap-2"><span class="text-headline-sm font-bold">FDA</span><span class="text-label-sm">Compliant</span></div>
-        </div>
-    </div>
-</section>
-
-<!-- Featured Categories -->
-@if($homepageCategories->count() > 0)
-<section class="py-section-gap bg-surface-container-low">
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-        <div class="mb-12">
-            <span class="text-label-sm font-bold text-secondary uppercase tracking-widest mb-3 block">Our Portfolio</span>
-            <h2 class="font-headline-md text-headline-md text-on-background">Curated Ayurvedic Collections</h2>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-            @foreach($homepageCategories as $category)
-            <div class="group relative overflow-hidden rounded-xl clinical-card h-[400px]">
-                @php $categoryImage = $category->banner_image ?? $category->image; @endphp
-                <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="{{ $category->name }}" src="{{ $categoryImage ? asset('storage/'.$categoryImage) : 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=800&auto=format&fit=crop' }}"/>
-                <div class="absolute inset-0 portfolio-overlay"></div>
-                <div class="absolute bottom-0 left-0 p-8 text-white w-full">
-                    <h3 class="font-headline-sm text-headline-sm mb-4 text-white">{{ $category->name }}</h3>
-                    <a href="{{ route('shop.index', ['category' => $category->slug]) }}" class="inline-block text-label-md font-bold text-white border-b-2 border-secondary pb-1 hover:text-secondary-fixed transition-all">Explore Range</a>
+<!-- Standard of Excellence (Certifications) — trust signals directly under the hero -->
+<section class="py-6 bg-brand-cream border-b border-brand-beige">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop text-center">
+        <p class="font-label-md text-label-sm text-brand-sage-dark uppercase section-eyebrow mb-4">Standard of Excellence Certifications</p>
+        <div class="flex flex-wrap justify-center items-center gap-x-10 gap-y-4">
+            @php
+                $certs = [
+                    ['icon' => 'verified', 'label' => 'GMP Certified'],
+                    ['icon' => 'workspace_premium', 'label' => 'ISO 9001:2015'],
+                    ['icon' => 'eco', 'label' => 'AYUSH Premium'],
+                    ['icon' => 'public', 'label' => 'PAN INDIA'],
+                    ['icon' => 'inventory_2', 'label' => 'FDA Compliant'],
+                ];
+            @endphp
+            @foreach($certs as $cert)
+                <div class="flex items-center gap-2.5 group">
+                    <span class="material-symbols-outlined text-[28px] text-brand-forest transition-transform group-hover:scale-110 group-hover:text-brand-gold-dark" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">{{ $cert['icon'] }}</span>
+                    <span class="font-label-md text-label-md text-brand-forest">{{ $cert['label'] }}</span>
                 </div>
-            </div>
             @endforeach
         </div>
     </div>
 </section>
-@endif
+
+<!-- Category Grid -->
+<section class="py-10 md:py-14 bg-brand-beige">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 mb-6 md:mb-8">
+            <div>
+                <span class="text-label-sm font-bold text-brand-gold-dark uppercase section-eyebrow mb-2 block">Curated Care</span>
+                <h2 class="font-headline-md text-display-lg-mobile text-brand-forest mb-1">Explore Solutions</h2>
+                <p class="font-body-md text-body-md text-brand-forest/70">Targeted botanical care for your unique physiological needs.</p>
+            </div>
+            <a href="{{ route('shop.index') }}" class="text-brand-gold-dark font-label-md text-label-md flex items-center gap-1 hover:gap-2 transition-all shrink-0">
+                View All Categories <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+            </a>
+        </div>
+        @php
+            // Bundled placeholder imagery, cycled through for categories without an image.
+            $categoryPlaceholders = ['images/home/women.jpg', 'images/home/skin.jpg', 'images/home/hair.jpg', 'images/home/health.jpg'];
+        @endphp
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-gutter">
+            @forelse($homepageCategories as $i => $category)
+                @php
+                    $categoryImage = $category->banner_image ?? $category->image;
+                    $categorySrc   = $categoryImage
+                        ? asset('storage/'.$categoryImage)
+                        : asset($categoryPlaceholders[$i % count($categoryPlaceholders)]);
+                @endphp
+                <a href="{{ route('shop.index', ['category' => $category->slug]) }}" class="group relative block overflow-hidden rounded-xl aspect-[4/5] bg-brand-forest shadow-sm hover:shadow-xl transition-all">
+                    <img class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500" src="{{ $categorySrc }}" alt="{{ $category->name }}" loading="lazy" decoding="async"/>
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-forest via-brand-forest/40 to-transparent"></div>
+                    <div class="absolute inset-x-0 bottom-0 p-4 md:p-5">
+                        <h3 class="font-headline-sm text-lg md:text-headline-sm text-brand-cream mb-1 leading-tight">{{ $category->name }}</h3>
+                        <span class="inline-flex items-center gap-1 text-brand-gold font-label-md text-label-sm uppercase section-eyebrow opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all">
+                            Explore <span class="material-symbols-outlined text-[16px]" aria-hidden="true">arrow_forward</span>
+                        </span>
+                    </div>
+                </a>
+            @empty
+                <div class="col-span-full text-center py-12 text-brand-forest/60">
+                    <span class="material-symbols-outlined text-5xl mb-2 block" aria-hidden="true">category</span>
+                    <p class="font-body-md text-body-md">Categories are being curated. Please check back soon.</p>
+                </div>
+            @endforelse
+        </div>
+    </div>
+</section>
 
 <!-- Best Sellers -->
 @if($bestSellers->count() > 0)
-<section class="py-section-gap bg-white">
+<section class="py-10 md:py-14 bg-brand-cream">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-        <div class="mb-12 flex justify-between items-end">
+        <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 mb-6 md:mb-8">
             <div>
-                <span class="text-label-sm font-bold text-secondary uppercase tracking-widest mb-3 block">Most Loved</span>
-                <h2 class="font-headline-md text-headline-md text-on-background">Best Sellers</h2>
+                <span class="text-label-sm font-bold text-brand-gold-dark uppercase section-eyebrow mb-2 block">Most Loved</span>
+                <h2 class="font-headline-md text-display-lg-mobile text-brand-forest">Best Sellers</h2>
             </div>
-            <a href="{{ route('shop.index') }}" class="text-secondary font-medium hover:underline text-sm hidden md:block">View All</a>
+            <a href="{{ route('shop.index') }}" class="text-brand-gold-dark font-label-md text-label-md flex items-center gap-1 hover:gap-2 transition-all shrink-0">
+                View All <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+            </a>
         </div>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-gutter">
             @foreach($bestSellers as $product)
-                <div class="group bg-white border border-soft-border rounded-lg overflow-hidden transition-all duration-300 hover-electric flex flex-col h-full relative shadow-sm">
+                @php
+                    $inWishlist = in_array($product->id, $wishlistIds ?? []);
+                    $avg        = round((float) ($product->reviews_avg_rating ?? 0), 1);
+                    $count      = (int) ($product->reviews_count ?? 0);
+                @endphp
+                <div class="group bg-white border border-brand-beige rounded-xl overflow-hidden card-lift flex flex-col h-full relative shadow-sm">
                     @if($product->sale_price)
-                        <div class="absolute top-3 left-3 z-10 flex gap-2">
-                            <span class="px-2 py-1 bg-error/10 text-error font-label-sm text-xs font-bold rounded backdrop-blur-sm bg-white/90">SALE</span>
+                        <div class="absolute top-3 left-3 z-10">
+                            <span class="px-2 py-1 text-error text-xs font-bold rounded backdrop-blur-sm bg-white/90">SALE</span>
                         </div>
                     @endif
-                    
-                    <a href="{{ route('product.show', $product->slug) }}" class="block aspect-square bg-surface-container overflow-hidden relative">
-                        @if($product->main_image)
-                            <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+
+                    <!-- Wishlist -->
+                    <div class="absolute top-3 right-3 z-20">
+                        @auth
+                            <button type="button" onclick="toggleWishlist({{ $product->id }})" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white transition-colors" title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}" aria-label="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+                                <span class="wishlist-icon-{{ $product->id }} material-symbols-outlined text-[20px] {{ $inWishlist ? 'text-brand-gold-dark' : 'text-brand-forest/50 hover:text-brand-gold-dark' }}" style="font-variation-settings: 'FILL' {{ $inWishlist ? '1' : '0' }};">favorite</span>
+                            </button>
                         @else
-                            <div class="w-full h-full flex items-center justify-center bg-gray-50 text-gray-300">
-                                <span class="material-symbols-outlined text-5xl">image</span>
+                            <a href="{{ route('login') }}" class="w-9 h-9 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white transition-colors text-brand-forest/50 hover:text-brand-gold-dark" title="Log in to save" aria-label="Log in to save to wishlist">
+                                <span class="material-symbols-outlined text-[20px]">favorite</span>
+                            </a>
+                        @endauth
+                    </div>
+
+                    <a href="{{ route('product.show', $product->slug) }}" class="block aspect-square bg-brand-cream overflow-hidden relative">
+                        @if($product->main_image)
+                            <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center bg-brand-beige text-brand-sage">
+                                <span class="material-symbols-outlined text-5xl" aria-hidden="true">image</span>
                             </div>
                         @endif
                     </a>
-                    
-                    <div class="p-5 flex flex-col flex-grow">
-                        <div class="text-xs font-medium text-primary mb-1 tracking-wider uppercase">{{ $product->category->name ?? 'Ayurvedic' }}</div>
-                        <div class="flex justify-between items-start mb-2">
-                            <a href="{{ route('product.show', $product->slug) }}" class="font-headline-md text-xl font-semibold text-on-surface leading-tight hover:text-primary transition-colors line-clamp-1">
-                                {{ $product->name }}
-                            </a>
+
+                    <div class="p-4 flex flex-col flex-grow">
+                        <div class="text-[11px] font-medium text-brand-sage-dark mb-1 tracking-wider uppercase">{{ $product->category->name ?? 'Ayurvedic' }}</div>
+                        <a href="{{ route('product.show', $product->slug) }}" class="font-headline-sm text-base font-semibold text-brand-forest leading-tight hover:text-brand-gold-dark transition-colors line-clamp-1 mb-1.5">
+                            {{ $product->name }}
+                        </a>
+
+                        <!-- Rating (real, from approved reviews) -->
+                        <div class="flex items-center gap-1 mb-2 h-5">
+                            @if($count > 0)
+                                @foreach(kareon_stars($avg) as $starIcon)
+                                    <span class="material-symbols-outlined text-[15px]" style="color:#c9a452;font-variation-settings: 'FILL' {{ $starIcon === 'star_outline' ? '0' : '1' }};" aria-hidden="true">{{ $starIcon === 'star_outline' ? 'star' : $starIcon }}</span>
+                                @endforeach
+                                <span class="text-xs text-brand-forest/60 ml-1">{{ number_format($avg, 1) }} ({{ $count }})</span>
+                            @else
+                                <span class="text-xs text-brand-forest/40">No reviews yet</span>
+                            @endif
                         </div>
-                        <p class="font-body-md text-sm text-on-surface-variant line-clamp-2 mb-3">
-                            {{ strip_tags($product->short_description ?? $product->description) }}
-                        </p>
-                        
-                        <div class="mt-auto pt-4 flex items-center justify-between border-t border-soft-border group-hover:border-primary/20 transition-colors">
+
+                        <div class="mt-auto pt-3 flex items-center justify-between border-t border-brand-beige group-hover:border-brand-gold/30 transition-colors">
                             <div class="flex flex-col">
                                 @if($product->sale_price)
-                                    <span class="font-label-sm text-xs text-on-surface-variant line-through">₹{{ number_format($product->price, 2) }}</span>
-                                    <span class="font-headline-md text-xl font-bold text-on-background">₹{{ number_format($product->sale_price, 2) }}</span>
+                                    <span class="text-xs text-brand-forest/50 line-through">₹{{ number_format($product->price, 2) }}</span>
+                                    <span class="text-lg font-bold text-brand-forest">₹{{ number_format($product->sale_price, 2) }}</span>
                                 @else
-                                    <span class="font-headline-md text-xl font-bold text-on-background">₹{{ number_format($product->price, 2) }}</span>
+                                    <span class="text-lg font-bold text-brand-forest">₹{{ number_format($product->price, 2) }}</span>
                                 @endif
                             </div>
-                            <form action="{{ route('cart.add') }}" method="POST">
+                            <form action="{{ route('cart.add') }}" method="POST" class="js-cart-form">
                                 @csrf
                                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                                 <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="w-10 h-10 rounded border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors active:scale-95 shadow-sm" title="Add to Cart">
+                                <button type="submit" class="w-10 h-10 rounded-full bg-brand-forest text-brand-cream flex items-center justify-center hover:bg-brand-gold hover:text-brand-forest transition-colors active:scale-95 shadow-sm" title="Add to Cart" aria-label="Add {{ $product->name }} to cart">
                                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">add_shopping_cart</span>
                                 </button>
                             </form>
@@ -147,91 +245,92 @@
 </section>
 @endif
 
-<!-- Expert Spotlight (Static but nice to keep) -->
-<section class="py-section-gap overflow-hidden bg-surface-container-low">
-    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-        <div class="bg-white border border-outline-variant/30 rounded-3xl overflow-hidden flex flex-col lg:flex-row items-stretch">
-            <div class="lg:w-1/2 h-96 lg:h-auto relative">
-                <div class="w-full h-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB2dyUmn2OYzoxeJ34xYl2v30ARYuhHNow-zAi4ZwdAx1cWv0H-ZrJSXznQnuwKcLzu9wApe62fZHxZeeN1UNhJZQ2OoqM5StXwR3rVcLXLaZVM6PUwfgGrAB8v35WGMhKk3sEwICtCODP0Z5_Es5jUGeH2Gl1H5SmK_a61zwgHXvt8z1qwYCfRQs3MWk9scA83f3f15WchryT4fX5ifLXoOF-ty0ERSuC0k0cb00gCZ9B3Fh4NLMxHwIshuXyCaPAykPryDmsix7c");'></div>
+<!-- Expert Quote Section (driven by real testimonials) -->
+@php
+    $quote = $testimonials->firstWhere('rating', 5) ?? $testimonials->first();
+@endphp
+<section class="py-10 md:py-14 bg-brand-forest text-brand-cream relative overflow-hidden">
+    <div class="pointer-events-none absolute -top-16 -right-10 w-72 h-72 rounded-full bg-brand-gold/10 blur-3xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -bottom-20 -left-10 w-72 h-72 rounded-full bg-brand-sage/10 blur-3xl" aria-hidden="true"></div>
+    <div class="relative max-w-[960px] mx-auto px-margin-mobile md:px-margin-desktop text-center">
+        <span class="material-symbols-outlined text-[48px] mb-4 text-brand-gold" style="font-variation-settings:'FILL' 1;" aria-hidden="true">format_quote</span>
+        <h3 class="font-display-lg text-headline-sm md:text-headline-md italic mb-8 leading-relaxed">
+            "{{ $quote->content ?? 'True healing occurs when we harmonize the elemental wisdom of nature with the diagnostic precision of science.' }}"
+        </h3>
+        <div class="flex flex-col items-center">
+            <div class="w-14 h-14 rounded-full border-2 border-brand-gold mb-3 bg-brand-sage/30 flex items-center justify-center overflow-hidden">
+                <span class="material-symbols-outlined text-[28px] text-brand-cream" aria-hidden="true">person</span>
             </div>
-            <div class="lg:w-1/2 p-12 lg:p-20 flex flex-col justify-center bg-surface-container-lowest">
-                <span class="material-symbols-outlined text-secondary text-[48px] mb-8" style='font-variation-settings: "FILL" 1;'>format_quote</span>
-                <h3 class="font-headline-md text-headline-md mb-6 italic leading-snug">"True healing occurs when we harmonize the elemental wisdom of nature with the diagnostic precision of science."</h3>
-                <div class="mb-10">
-                    <p class="font-headline-sm text-headline-sm text-primary">Dr. Rajni Dubey</p>
-                    <p class="text-secondary font-label-md">Expert Ayurvedic Vaidya (B.A.M.S)</p>
-                    <p class="text-on-surface-variant text-label-sm mt-2">20+ Years Clinical Practice &amp; Formulation Research</p>
-                </div>
-            </div>
+            @if($quote)
+                <p class="font-headline-sm text-headline-sm">{{ $quote->name }}</p>
+                @if($quote->designation)
+                    <p class="font-body-md text-body-md text-brand-gold">{{ $quote->designation }}</p>
+                @endif
+            @else
+                <p class="font-headline-sm text-headline-sm">Dr. Rajni Dubey</p>
+                <p class="font-body-md text-body-md text-brand-gold">Expert Ayurvedic Vaidya (B.A.M.S)</p>
+                <p class="font-label-md text-label-md text-brand-cream/70 mt-1">20+ Years Clinical Practice &amp; Formulation Research</p>
+            @endif
         </div>
     </div>
 </section>
 
-<!-- Values Section -->
-<section class="bg-primary-container py-section-gap">
+<!-- Ethos Section -->
+<section class="py-10 md:py-14 bg-brand-cream">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-        <div class="text-center max-w-3xl mx-auto mb-20">
-            <h2 class="font-headline-md text-headline-md text-on-primary mb-4">Our Ethos</h2>
-            <p class="text-on-primary-container font-body-md">The core principles that guide our clinical excellence and pharmaceutical integrity.</p>
+        <div class="text-center max-w-2xl mx-auto mb-10 md:mb-12">
+            <span class="text-label-sm font-bold text-brand-gold-dark uppercase section-eyebrow mb-2 block">What Drives Us</span>
+            <h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-brand-forest mb-3">Our Ethos</h2>
+            <p class="font-body-md text-body-md text-brand-forest/70">The core principles that guide our clinical excellence and pharmaceutical integrity.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
-            <div class="bg-white/5 border border-white/10 p-10 rounded-xl hover:bg-white/10 transition-colors">
-                <div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-8">
-                    <span class="material-symbols-outlined text-secondary-fixed text-[32px]">shield_person</span>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-gutter">
+            @php
+                $ethos = [
+                    ['icon' => 'shield_person', 'title' => 'Integrity', 'text' => 'Absolute transparency in sourcing and manufacturing for unwavering trust.'],
+                    ['icon' => 'groups', 'title' => 'Teamwork', 'text' => 'Collaborative intelligence of scientists, vaidyas, and process engineers.'],
+                    ['icon' => 'eco', 'title' => 'Pure Ayurveda', 'text' => 'Upholding the sanctity of ancient recipes with pharmaceutical precision.'],
+                    ['icon' => 'psychology_alt', 'title' => 'Innovation', 'text' => 'Continuous R&D to improve bioavailability and therapeutic delivery.'],
+                ];
+            @endphp
+            @foreach($ethos as $item)
+                <div class="text-center p-4 md:p-5 rounded-xl bg-white border border-brand-beige hover:border-brand-gold/40 hover:shadow-md transition-all">
+                    <div class="w-12 h-12 bg-brand-sage/15 rounded-full flex items-center justify-center mx-auto mb-3 border border-brand-sage/30">
+                        <span class="material-symbols-outlined text-brand-forest text-[28px]" style="font-variation-settings:'FILL' 1;" aria-hidden="true">{{ $item['icon'] }}</span>
+                    </div>
+                    <h4 class="font-headline-sm text-lg md:text-headline-sm text-brand-forest mb-2">{{ $item['title'] }}</h4>
+                    <p class="font-body-md text-label-md text-brand-forest/70 leading-relaxed">{{ $item['text'] }}</p>
                 </div>
-                <h4 class="text-on-primary font-headline-sm mb-4">Integrity</h4>
-                <p class="text-on-primary-container text-label-md">Absolute transparency in sourcing and manufacturing for unwavering trust.</p>
-            </div>
-            <div class="bg-white/5 border border-white/10 p-10 rounded-xl hover:bg-white/10 transition-colors">
-                <div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-8">
-                    <span class="material-symbols-outlined text-secondary-fixed text-[32px]">groups</span>
-                </div>
-                <h4 class="text-on-primary font-headline-sm mb-4">Teamwork</h4>
-                <p class="text-on-primary-container text-label-md">Collaborative intelligence of scientists, vaidyas, and process engineers.</p>
-            </div>
-            <div class="bg-white/5 border border-white/10 p-10 rounded-xl hover:bg-white/10 transition-colors">
-                <div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-8">
-                    <span class="material-symbols-outlined text-secondary-fixed text-[32px]">eco</span>
-                </div>
-                <h4 class="text-on-primary font-headline-sm mb-4">Pure Ayurveda</h4>
-                <p class="text-on-primary-container text-label-md">Upholding the sanctity of ancient recipes with pharmaceutical precision.</p>
-            </div>
-            <div class="bg-white/5 border border-white/10 p-10 rounded-xl hover:bg-white/10 transition-colors">
-                <div class="w-14 h-14 bg-secondary/20 rounded-full flex items-center justify-center mb-8">
-                    <span class="material-symbols-outlined text-secondary-fixed text-[32px]">psychology_alt</span>
-                </div>
-                <h4 class="text-on-primary font-headline-sm mb-4">Innovation</h4>
-                <p class="text-on-primary-container text-label-md">Continuous R&amp;D to improve bioavailability and therapeutic delivery.</p>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
 
 <!-- Testimonials -->
 @if($testimonials->count() > 0)
-<section class="py-section-gap bg-surface-container-low">
+<section class="py-10 md:py-14 bg-brand-beige">
     <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
-        <div class="text-center mb-12">
-            <h2 class="font-headline-md text-headline-md text-on-background">What Our Patients Say</h2>
+        <div class="text-center mb-8 md:mb-10">
+            <span class="text-label-sm font-bold text-brand-gold-dark uppercase section-eyebrow mb-2 block">Real Results</span>
+            <h2 class="font-display-lg text-display-lg-mobile text-brand-forest">What Our Patients Say</h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-gutter">
             @foreach($testimonials as $testimonial)
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-outline-variant/30 flex flex-col justify-between">
-                <div>
-                    <div class="flex text-yellow-400 mb-4">
-                        @for($i = 0; $i < $testimonial->rating; $i++)
-                            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
-                        @endfor
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-brand-beige flex flex-col justify-between hover:shadow-md hover:border-brand-gold/40 transition-all">
+                    <div>
+                        <div class="flex mb-3" style="color:#c9a452;" aria-label="{{ $testimonial->rating }} out of 5 stars">
+                            @for($i = 0; $i < $testimonial->rating; $i++)
+                                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;" aria-hidden="true">star</span>
+                            @endfor
+                        </div>
+                        <p class="text-brand-forest/80 italic mb-6 text-body-md leading-relaxed">"{{ $testimonial->content }}"</p>
                     </div>
-                    <p class="text-on-surface-variant italic mb-6">"{{ $testimonial->content }}"</p>
+                    <div>
+                        <p class="font-bold text-brand-forest">{{ $testimonial->name }}</p>
+                        @if($testimonial->designation)
+                            <p class="text-sm text-brand-gold-dark">{{ $testimonial->designation }}</p>
+                        @endif
+                    </div>
                 </div>
-                <div>
-                    <p class="font-bold text-primary">{{ $testimonial->name }}</p>
-                    @if($testimonial->designation)
-                        <p class="text-sm text-secondary">{{ $testimonial->designation }}</p>
-                    @endif
-                </div>
-            </div>
             @endforeach
         </div>
     </div>

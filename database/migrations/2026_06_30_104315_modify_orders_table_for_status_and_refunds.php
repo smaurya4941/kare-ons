@@ -9,8 +9,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE orders MODIFY COLUMN order_status ENUM('pending', 'confirmed', 'packed', 'shipped', 'delivered', 'returned', 'cancelled') DEFAULT 'pending'");
-        
+        // ENUM widening is a MySQL-specific concern. On other drivers (e.g. the
+        // sqlite test DB) the column is plain text, so this statement is skipped.
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE orders MODIFY COLUMN order_status ENUM('pending', 'confirmed', 'packed', 'shipped', 'delivered', 'returned', 'cancelled') DEFAULT 'pending'");
+        }
+
         Schema::table('orders', function (Blueprint $table) {
             $table->string('refund_status', 20)->default('none')->after('order_status'); // none, pending, partial, refunded
         });
@@ -21,7 +25,9 @@ return new class extends Migration
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('refund_status');
         });
-        
-        DB::statement("ALTER TABLE orders MODIFY COLUMN order_status ENUM('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending'");
+
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement("ALTER TABLE orders MODIFY COLUMN order_status ENUM('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending'");
+        }
     }
 };

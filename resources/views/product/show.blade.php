@@ -8,7 +8,7 @@
 @section('content')
 <style>
     .btn-squish:active { transform: scale(0.95); transition: transform 0.1s; }
-    .hover-border-primary:hover { border-color: theme('colors.primary'); transition: border-color 0.3s; }
+    .hover-border-herbal-accent { transition: border-color 0.3s; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .product-content { font-size: 0.95rem; line-height: 1.5; }
@@ -24,16 +24,16 @@
     <!-- Breadcrumbs -->
     <nav class="flex text-xs text-on-surface-variant mb-6 font-body-md">
         <ol class="flex items-center space-x-2">
-            <li><a href="{{ route('home') }}" class="hover:text-primary transition-colors">Home</a></li>
+            <li><a href="{{ route('home') }}" class="hover:text-herbal-accent transition-colors">Home</a></li>
             <li><span class="material-symbols-outlined text-[14px]">chevron_right</span></li>
-            <li><a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="hover:text-primary transition-colors">{{ $product->category->name }}</a></li>
+            <li><a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="hover:text-herbal-accent transition-colors">{{ $product->category->name }}</a></li>
             <li><span class="material-symbols-outlined text-[14px]">chevron_right</span></li>
             <li class="text-on-surface font-medium line-clamp-1" aria-current="page">{{ $product->name }}</li>
         </ol>
     </nav>
 
     <!-- Hero Product Section -->
-    <section class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-12">
+    <section class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-10">
         
         <!-- Left: Image Gallery -->
         <div class="md:col-span-5 flex flex-col gap-3" x-data="{ 
@@ -46,8 +46,8 @@
             ]
         }">
             <!-- Main Image -->
-            <div class="bg-white rounded-xl border border-soft-border p-4 flex items-center justify-center relative hover-border-primary overflow-hidden aspect-square shadow-sm">
-                <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at center, #a100ff 1px, transparent 1px); background-size: 20px 20px;"></div>
+            <div class="bg-white rounded-xl border border-soft-border p-4 flex items-center justify-center relative hover-border-herbal-accent overflow-hidden aspect-square shadow-sm">
+                <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at center, #2d5a27 1px, transparent 1px); background-size: 20px 20px;"></div>
                 <img :src="activeImage" alt="{{ $product->name }}" class="w-full h-full object-contain z-10 relative transition-transform duration-500 hover:scale-105">
                 @if($product->sale_price)
                     <div class="absolute top-3 left-3 z-20 bg-error/10 text-error font-label-sm text-[10px] font-bold px-2 py-1 rounded shadow-sm backdrop-blur-sm bg-white/90">
@@ -58,11 +58,11 @@
 
             <!-- Thumbnails -->
             <div class="grid grid-cols-5 gap-2">
-                <button @click="activeImage = images[0]" class="aspect-square rounded-lg border-2 overflow-hidden bg-white hover:border-primary transition-colors" :class="activeImage === images[0] ? 'border-primary' : 'border-soft-border'">
+                <button @click="activeImage = images[0]" class="aspect-square rounded-lg border-2 overflow-hidden bg-white hover:border-herbal-accent transition-colors" :class="activeImage === images[0] ? 'border-herbal-accent' : 'border-soft-border'">
                     <img src="{{ asset('storage/' . $product->main_image) }}" alt="Main Image" class="w-full h-full object-cover">
                 </button>
                 @foreach($product->images as $index => $image)
-                    <button @click="activeImage = images[{{ $index + 1 }}]" class="aspect-square rounded-lg border-2 overflow-hidden bg-white hover:border-primary transition-colors" :class="activeImage === images[{{ $index + 1 }}] ? 'border-primary' : 'border-soft-border'">
+                    <button @click="activeImage = images[{{ $index + 1 }}]" class="aspect-square rounded-lg border-2 overflow-hidden bg-white hover:border-herbal-accent transition-colors" :class="activeImage === images[{{ $index + 1 }}] ? 'border-herbal-accent' : 'border-soft-border'">
                         <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gallery Image {{ $index + 1 }}" class="w-full h-full object-cover">
                     </button>
                 @endforeach
@@ -72,17 +72,17 @@
         <!-- Right: Product Info -->
         <div class="md:col-span-7 flex flex-col justify-start py-2">
             <div class="flex gap-2 mb-3">
-                <span class="bg-green-50 text-green-700 font-label-sm text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest border border-green-100">Ayurvedic</span>
-                <span class="bg-blue-50 text-blue-700 font-label-sm text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest border border-blue-100">GMP Certified</span>
+                <span class="bg-herbal-light text-herbal-accent font-label-sm text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest border border-herbal-accent/20">Ayurvedic</span>
+                <span class="bg-secondary/10 text-secondary font-label-sm text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-widest border border-secondary/20">GMP Certified</span>
             </div>
             
-            <h1 class="font-display-lg text-2xl lg:text-3xl font-bold text-on-surface mb-2 leading-tight">{{ $product->name }}</h1>
+            <h1 class="font-display-lg text-2xl lg:text-2xl font-bold text-on-surface mb-2 leading-tight">{{ $product->name }}</h1>
             
             <div class="flex flex-col gap-1 mb-4">
                 <div class="flex items-center gap-2">
                     <div class="flex text-amber-400">
                         @php
-                            $avgRating = collect($product->reviews)->avg('rating') ?? 5;
+                            $avgRating = round((float) (collect($product->reviews)->avg('rating') ?? 0), 1);
                             $totalReviews = collect($product->reviews)->count();
                         @endphp
                         @for($i = 1; $i <= 5; $i++)
@@ -108,7 +108,7 @@
 
             <div class="flex items-end gap-3 mb-6">
                 @if($product->sale_price)
-                    <span class="font-headline-lg text-3xl font-bold text-on-surface">₹{{ number_format($product->sale_price, 2) }}</span>
+                    <span class="font-headline-lg text-2xl font-bold text-on-surface">₹{{ number_format($product->sale_price, 2) }}</span>
                     <span class="text-lg text-on-surface-variant line-through mb-0.5 font-medium">₹{{ number_format($product->price, 2) }}</span>
                     @php
                         $saved = $product->price - $product->sale_price;
@@ -116,7 +116,7 @@
                     @endphp
                     <span class="bg-error/10 text-error font-label-sm text-[10px] font-bold px-1.5 py-0.5 rounded mb-1">{{ $percent }}% OFF</span>
                 @else
-                    <span class="font-headline-lg text-3xl font-bold text-on-surface">₹{{ number_format($product->price, 2) }}</span>
+                    <span class="font-headline-lg text-2xl font-bold text-on-surface">₹{{ number_format($product->price, 2) }}</span>
                 @endif
             </div>
 
@@ -149,7 +149,7 @@
                         </button>
                     </div>
 
-                    <button type="submit" name="action" value="cart" class="btn-squish flex-1 bg-primary text-white font-body-md text-sm font-medium py-2.5 px-5 rounded-lg shadow-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-2" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
+                    <button type="submit" name="action" value="cart" class="btn-squish flex-1 bg-herbal-deep text-white font-body-md text-sm font-medium py-2.5 px-5 rounded-lg shadow-sm hover:bg-herbal-deep/90 transition-colors flex items-center justify-center gap-2" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
                         <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
                         Add to Cart
                     </button>
@@ -158,11 +158,11 @@
                         @php
                             $inWishlist = auth()->user()->wishlists()->where('product_id', $product->id)->exists();
                         @endphp
-                        <button type="button" onclick="toggleWishlist({{ $product->id }})" class="btn-squish flex items-center justify-center w-12 h-12 rounded-lg border {{ $inWishlist ? 'border-primary bg-primary/10' : 'border-soft-border hover:border-primary' }} transition-colors" title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
-                            <span class="wishlist-icon-{{ $product->id }} material-symbols-outlined text-[24px] {{ $inWishlist ? 'text-primary' : 'text-on-surface-variant hover:text-primary' }}" style="font-variation-settings: 'FILL' {{ $inWishlist ? '1' : '0' }};">favorite</span>
+                        <button type="button" onclick="toggleWishlist({{ $product->id }})" class="btn-squish flex items-center justify-center w-12 h-12 rounded-lg border {{ $inWishlist ? 'border-herbal-accent bg-herbal-accent/10' : 'border-soft-border hover:border-herbal-accent' }} transition-colors" title="{{ $inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist' }}">
+                            <span class="wishlist-icon-{{ $product->id }} material-symbols-outlined text-[24px] {{ $inWishlist ? 'text-herbal-accent' : 'text-on-surface-variant hover:text-herbal-accent' }}" style="font-variation-settings: 'FILL' {{ $inWishlist ? '1' : '0' }};">favorite</span>
                         </button>
                     @else
-                        <a href="{{ route('login') }}" class="btn-squish flex items-center justify-center w-12 h-12 rounded-lg border border-soft-border text-on-surface-variant hover:border-primary hover:text-primary transition-colors" title="Log in to save">
+                        <a href="{{ route('login') }}" class="btn-squish flex items-center justify-center w-12 h-12 rounded-lg border border-soft-border text-on-surface-variant hover:border-herbal-accent hover:text-herbal-accent transition-colors" title="Log in to save">
                             <span class="material-symbols-outlined text-[24px]">favorite</span>
                         </a>
                     @endauth
@@ -171,11 +171,11 @@
 
             <div class="flex items-center gap-5 text-on-surface-variant font-body-md text-xs border-t border-soft-border pt-5">
                 <div class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-primary text-[18px]">local_shipping</span>
+                    <span class="material-symbols-outlined text-herbal-accent text-[18px]">local_shipping</span>
                     <span>Free shipping over ₹500</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+                    <span class="material-symbols-outlined text-herbal-accent text-[18px]">verified</span>
                     <span>100% Authentic</span>
                 </div>
             </div>
@@ -183,28 +183,28 @@
     </section>
 
     <!-- Product Details Section -->
-    <section class="mb-20 max-w-6xl mx-auto">
-        <h2 class="font-display-lg text-3xl font-bold text-on-surface mb-8">Product Specifications & Details</h2>
+    <section class="mb-12 max-w-6xl mx-auto">
+        <h2 class="font-display-lg text-2xl font-bold text-on-surface mb-8">Product Specifications & Details</h2>
         
         <div class="border border-soft-border rounded-xl bg-white shadow-sm flex flex-col md:flex-row overflow-hidden" x-data="{ activeTab: 'description' }">
             
             <!-- Sidebar Navigation (Desktop) / Top Scrollable (Mobile) -->
             <div class="md:w-1/4 bg-surface border-b md:border-b-0 md:border-r border-soft-border flex md:flex-col overflow-x-auto hide-scrollbar">
-                <button @click="activeTab = 'description'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'description' ? 'bg-white text-primary border-b-2 md:border-b-0 md:border-l-4 border-primary' : 'text-on-surface-variant hover:bg-white/50'">
+                <button @click="activeTab = 'description'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'description' ? 'bg-white text-herbal-accent border-b-2 md:border-b-0 md:border-l-4 border-herbal-accent' : 'text-on-surface-variant hover:bg-white/50'">
                     Product Description
                 </button>
                 @if($product->benefits)
-                <button @click="activeTab = 'benefits'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'benefits' ? 'bg-white text-primary border-b-2 md:border-b-0 md:border-l-4 border-primary' : 'text-on-surface-variant hover:bg-white/50'">
+                <button @click="activeTab = 'benefits'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'benefits' ? 'bg-white text-herbal-accent border-b-2 md:border-b-0 md:border-l-4 border-herbal-accent' : 'text-on-surface-variant hover:bg-white/50'">
                     Health Benefits
                 </button>
                 @endif
                 @if($product->ingredients)
-                <button @click="activeTab = 'ingredients'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'ingredients' ? 'bg-white text-primary border-b-2 md:border-b-0 md:border-l-4 border-primary' : 'text-on-surface-variant hover:bg-white/50'">
+                <button @click="activeTab = 'ingredients'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'ingredients' ? 'bg-white text-herbal-accent border-b-2 md:border-b-0 md:border-l-4 border-herbal-accent' : 'text-on-surface-variant hover:bg-white/50'">
                     Ingredients
                 </button>
                 @endif
                 @if($product->usage_instructions || $product->storage_instructions || $product->ayurvedic_reference || $product->suitable_for || $product->precautions)
-                <button @click="activeTab = 'usage'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'usage' ? 'bg-white text-primary border-b-2 md:border-b-0 md:border-l-4 border-primary' : 'text-on-surface-variant hover:bg-white/50'">
+                <button @click="activeTab = 'usage'" class="px-6 py-5 text-left font-bold text-sm md:text-base whitespace-nowrap transition-colors" :class="activeTab === 'usage' ? 'bg-white text-herbal-accent border-b-2 md:border-b-0 md:border-l-4 border-herbal-accent' : 'text-on-surface-variant hover:bg-white/50'">
                     Usage & Context
                 </button>
                 @endif
@@ -242,17 +242,17 @@
                         @if($product->usage_instructions || $product->storage_instructions)
                         <div class="bg-surface/50 p-6 rounded-lg border border-soft-border">
                             <h3 class="text-lg font-bold text-on-surface mb-4 border-b border-soft-border pb-2 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary text-[20px]">menu_book</span> Directions
+                                <span class="material-symbols-outlined text-herbal-accent text-[20px]">menu_book</span> Directions
                             </h3>
                             @if($product->usage_instructions)
                             <div class="mb-4">
-                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-primary">How to Use</strong>
+                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-herbal-accent">How to Use</strong>
                                 <div class="text-on-surface-variant prose max-w-none">{!! $product->usage_instructions !!}</div>
                             </div>
                             @endif
                             @if($product->storage_instructions)
                             <div>
-                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-primary">Storage</strong>
+                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-herbal-accent">Storage</strong>
                                 <div class="text-on-surface-variant prose max-w-none">{!! $product->storage_instructions !!}</div>
                             </div>
                             @endif
@@ -262,17 +262,17 @@
                         @if($product->ayurvedic_reference || $product->suitable_for)
                         <div class="bg-surface/50 p-6 rounded-lg border border-soft-border">
                             <h3 class="text-lg font-bold text-on-surface mb-4 border-b border-soft-border pb-2 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary text-[20px]">spa</span> Ayurvedic Info
+                                <span class="material-symbols-outlined text-herbal-accent text-[20px]">spa</span> Ayurvedic Info
                             </h3>
                             @if($product->ayurvedic_reference)
                             <div class="mb-4">
-                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-primary">Ayurvedic Reference</strong>
+                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-herbal-accent">Ayurvedic Reference</strong>
                                 <div class="text-on-surface-variant prose prose-sm max-w-none">{!! $product->ayurvedic_reference !!}</div>
                             </div>
                             @endif
                             @if($product->suitable_for)
                             <div>
-                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-primary">Suitable For</strong>
+                                <strong class="text-on-surface block text-sm mb-1 uppercase tracking-wider text-herbal-accent">Suitable For</strong>
                                 <div class="text-on-surface-variant prose prose-sm max-w-none prose-li:text-on-surface-variant prose-ul:list-disc prose-ul:pl-5">{!! $product->suitable_for !!}</div>
                             </div>
                             @endif
@@ -309,11 +309,11 @@
 
     <!-- Expert Notes Bento Grid -->
     {{-- 
-    <section class="mb-20">
-        <h2 class="font-display-lg text-3xl font-bold text-on-surface mb-8 text-center">Expert Validation</h2>
+    <section class="mb-12">
+        <h2 class="font-display-lg text-2xl font-bold text-on-surface mb-8 text-center">Expert Validation</h2>
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
-            <div class="md:col-span-8 bg-white border border-soft-border rounded-xl p-8 lg:p-12 hover-border-primary transition-colors flex flex-col justify-center shadow-sm">
-                <span class="material-symbols-outlined text-5xl text-primary/30 mb-6 font-serif">format_quote</span>
+            <div class="md:col-span-8 bg-white border border-soft-border rounded-xl p-8 lg:p-12 hover-border-herbal-accent transition-colors flex flex-col justify-center shadow-sm">
+                <span class="material-symbols-outlined text-5xl text-herbal-accent/30 mb-6 font-serif">format_quote</span>
                 <p class="font-body-lg text-xl lg:text-2xl text-on-surface italic mb-8 leading-relaxed">
                     "This formulation represents the pinnacle of our research-driven approach. By combining ancient Ayurvedic wisdom with modern extraction techniques, we've achieved a product that delivers consistent, measurable support for your health without compromising on purity."
                 </p>
@@ -322,15 +322,15 @@
                     <p class="font-body-md text-base text-on-surface-variant">Expert Ayurvedic Vaidya & Formulation Specialist</p>
                 </div>
             </div>
-            <div class="md:col-span-4 bg-surface border border-soft-border rounded-xl p-8 flex flex-col items-center justify-center text-center hover-border-primary transition-colors shadow-sm">
-                <div class="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-primary/20 shadow-md">
+            <div class="md:col-span-4 bg-surface border border-soft-border rounded-xl p-8 flex flex-col items-center justify-center text-center hover-border-herbal-accent transition-colors shadow-sm">
+                <div class="w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-herbal-accent/20 shadow-md">
                     <!-- Placeholder doctor image -->
                     <img class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=Dr+Rajni+Dubey&background=f2daff&color=7e00c9&size=256" alt="Dr. Rajni Dubey">
                 </div>
                 <ul class="text-left font-label-md text-sm font-medium text-on-surface-variant space-y-3 w-full">
-                    <li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-lg bg-primary/10 p-1.5 rounded-full">verified</span> Authentic Formulation</li>
-                    <li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-lg bg-primary/10 p-1.5 rounded-full">science</span> Research Based</li>
-                    <li class="flex items-center gap-3"><span class="material-symbols-outlined text-primary text-lg bg-primary/10 p-1.5 rounded-full">fact_check</span> GMP Focused</li>
+                    <li class="flex items-center gap-3"><span class="material-symbols-outlined text-herbal-accent text-lg bg-herbal-accent/10 p-1.5 rounded-full">verified</span> Authentic Formulation</li>
+                    <li class="flex items-center gap-3"><span class="material-symbols-outlined text-herbal-accent text-lg bg-herbal-accent/10 p-1.5 rounded-full">science</span> Research Based</li>
+                    <li class="flex items-center gap-3"><span class="material-symbols-outlined text-herbal-accent text-lg bg-herbal-accent/10 p-1.5 rounded-full">fact_check</span> GMP Focused</li>
                 </ul>
             </div>
         </div>
@@ -338,7 +338,7 @@
     --}}
     
     <!-- Reviews Section -->
-    <section class="mb-20 max-w-4xl mx-auto border-t border-soft-border pt-16">
+    <section class="mb-12 max-w-4xl mx-auto border-t border-soft-border pt-10">
         <div class="flex flex-col md:flex-row gap-12">
             <div class="md:w-1/3">
                 <h3 class="text-3xl font-bold mb-2">Customer Reviews</h3>
@@ -403,7 +403,7 @@
                             }
                         }
                     }">
-                        <button x-show="!successMessage" @click="openReviewForm = !openReviewForm" class="w-full border-2 border-primary text-primary font-bold py-3 rounded-lg hover:bg-primary hover:text-white transition-colors mb-4" x-text="openReviewForm ? 'Cancel' : 'Write a Review'"></button>
+                        <button x-show="!successMessage" @click="openReviewForm = !openReviewForm" class="w-full border-2 border-herbal-accent text-herbal-accent font-bold py-3 rounded-lg hover:bg-herbal-deep hover:text-white transition-colors mb-4" x-text="openReviewForm ? 'Cancel' : 'Write a Review'"></button>
                         
                         <div x-show="successMessage" class="bg-emerald-50 text-emerald-800 p-4 rounded-lg mb-4 text-sm font-medium border border-emerald-200 flex items-center gap-2" x-transition>
                             <span class="material-symbols-outlined text-emerald-600 text-[20px]">check_circle</span>
@@ -427,29 +427,29 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-on-surface mb-1">Review Title</label>
-                                <input type="text" x-model="title" required class="w-full border border-soft-border rounded-lg focus:ring-primary focus:border-primary px-4 py-2 bg-white">
+                                <input type="text" x-model="title" required class="w-full border border-soft-border rounded-lg focus:ring-herbal-accent focus:border-herbal-accent px-4 py-2 bg-white">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-on-surface mb-1">Your Review</label>
-                                <textarea x-model="comment" rows="4" minlength="10" maxlength="2000" required class="w-full border border-soft-border rounded-lg focus:ring-primary focus:border-primary px-4 py-2 bg-white"></textarea>
+                                <textarea x-model="comment" rows="4" minlength="10" maxlength="2000" required class="w-full border border-soft-border rounded-lg focus:ring-herbal-accent focus:border-herbal-accent px-4 py-2 bg-white"></textarea>
                             </div>
-                            <button type="submit" :disabled="isSubmitting" class="w-full bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-70">
+                            <button type="submit" :disabled="isSubmitting" class="w-full bg-herbal-deep text-white px-6 py-3 rounded-lg font-medium hover:bg-herbal-deep/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-70">
                                 <span x-show="isSubmitting" class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span>
                                 <span x-text="isSubmitting ? 'Submitting...' : 'Submit Review'"></span>
                             </button>
                         </form>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="block text-center w-full border-2 border-primary text-primary font-bold py-3 rounded-lg hover:bg-primary hover:text-white transition-colors">Log in to Review</a>
+                    <a href="{{ route('login') }}" class="block text-center w-full border-2 border-herbal-accent text-herbal-accent font-bold py-3 rounded-lg hover:bg-herbal-deep hover:text-white transition-colors">Log in to Review</a>
                 @endauth
             </div>
             
             <div class="md:w-2/3 space-y-6">
                 @forelse($product->reviews as $review)
-                    <div class="bg-white p-6 rounded-xl border border-soft-border shadow-sm hover-border-primary transition-colors">
+                    <div class="bg-white p-6 rounded-xl border border-soft-border shadow-sm hover-border-herbal-accent transition-colors">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary text-lg">
+                                <div class="w-12 h-12 bg-herbal-accent/10 rounded-full flex items-center justify-center font-bold text-herbal-accent text-lg">
                                     {{ substr($review->user->name, 0, 1) }}
                                 </div>
                                 <div>
@@ -483,17 +483,17 @@
 
     <!-- Related Products -->
     @if(isset($relatedProducts) && $relatedProducts->count() > 0)
-    <section class="border-t border-soft-border pt-16">
+    <section class="border-t border-soft-border pt-10">
         <div class="flex justify-between items-end mb-8">
-            <h2 class="text-3xl font-bold text-on-surface font-display">Complementary Care</h2>
-            <a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="text-primary font-medium hover:underline flex items-center gap-1 transition-colors">
+            <h2 class="text-2xl font-bold text-on-surface font-display">Complementary Care</h2>
+            <a href="{{ route('shop.index', ['category' => $product->category->slug]) }}" class="text-herbal-accent font-medium hover:underline flex items-center gap-1 transition-colors">
                 View All <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
             </a>
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($relatedProducts as $related)
-                <a href="{{ route('product.show', $related->slug) }}" class="group bg-white border border-soft-border rounded-lg overflow-hidden transition-all duration-300 hover-border-primary flex flex-col h-full relative shadow-sm">
+                <a href="{{ route('product.show', $related->slug) }}" class="group bg-white border border-soft-border rounded-lg overflow-hidden transition-all duration-300 hover-border-herbal-accent flex flex-col h-full relative shadow-sm">
                     <div class="aspect-square bg-surface-container overflow-hidden relative">
                         @if($related->main_image)
                             <img src="{{ asset('storage/' . $related->main_image) }}" alt="{{ $related->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -510,10 +510,10 @@
                         @endif
                     </div>
                     <div class="p-5 flex flex-col flex-grow">
-                        <div class="text-xs font-bold text-primary mb-2 uppercase tracking-wider">{{ $related->category->name }}</div>
-                        <h3 class="text-on-surface font-bold text-lg line-clamp-1 group-hover:text-primary transition-colors mb-2">{{ $related->name }}</h3>
+                        <div class="text-xs font-bold text-herbal-accent mb-2 uppercase tracking-wider">{{ $related->category->name }}</div>
+                        <h3 class="text-on-surface font-bold text-lg line-clamp-1 group-hover:text-herbal-accent transition-colors mb-2">{{ $related->name }}</h3>
                         
-                        <div class="mt-auto pt-4 flex items-center justify-between border-t border-soft-border group-hover:border-primary/20 transition-colors">
+                        <div class="mt-auto pt-4 flex items-center justify-between border-t border-soft-border group-hover:border-herbal-accent/20 transition-colors">
                             <div class="flex flex-col">
                                 @if($related->sale_price)
                                     <span class="font-bold text-on-surface text-lg">₹{{ number_format($related->sale_price, 2) }}</span>
@@ -522,7 +522,7 @@
                                     <span class="font-bold text-on-surface text-lg">₹{{ number_format($related->price, 2) }}</span>
                                 @endif
                             </div>
-                            <div class="w-10 h-10 rounded border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors">
+                            <div class="w-10 h-10 rounded border border-herbal-accent text-herbal-accent flex items-center justify-center hover:bg-herbal-deep hover:text-white transition-colors">
                                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
                             </div>
                         </div>

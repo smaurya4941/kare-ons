@@ -114,5 +114,24 @@ class DatabaseSeeder extends Seeder
         foreach ($blogs as $blogData) {
             \App\Models\Blog::firstOrCreate(['slug' => $blogData['slug']], $blogData);
         }
+
+        // 5. Payment methods — without these the checkout page has no options and
+        //    no purchase can be completed. COD ships enabled so the store works
+        //    out of the box.
+        $this->call(PaymentMethodSeeder::class);
+
+        // 6. Default shipping zone — nationwide, free shipping, so checkout totals
+        //    and the COD flow behave predictably before any zones are configured.
+        \App\Models\ShippingZone::firstOrCreate(
+            ['is_default' => true],
+            [
+                'name'                    => 'All India',
+                'coverage'                => '',
+                'base_charge'             => 0,
+                'free_shipping_threshold' => 0,
+                'cod_charge'              => 0,
+                'is_active'               => true,
+            ]
+        );
     }
 }

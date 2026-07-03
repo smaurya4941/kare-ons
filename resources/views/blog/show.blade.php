@@ -6,9 +6,9 @@
 @section('og_image', $blog->featured_image ? asset('storage/' . $blog->featured_image) : '')
 
 @section('content')
-<article class="max-w-4xl mx-auto px-margin-desktop py-12">
+<article class="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop py-8">
     <!-- Breadcrumbs -->
-    <nav class="flex text-sm text-secondary mb-8">
+    <nav class="flex text-sm text-on-surface-variant mb-8">
         <ol class="flex items-center space-x-2">
             <li><a href="{{ route('home') }}" class="hover:text-primary transition">Home</a></li>
             <li><span class="material-symbols-outlined text-[16px]">chevron_right</span></li>
@@ -26,9 +26,9 @@
             </a>
         @endif
         
-        <h1 class="text-4xl md:text-5xl font-display font-bold text-on-surface mb-6 leading-tight">{{ $blog->title }}</h1>
+        <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg font-bold text-herbal-deep mb-4 leading-tight">{{ $blog->title }}</h1>
         
-        <div class="flex items-center justify-center gap-6 text-secondary text-sm">
+        <div class="flex items-center justify-center gap-6 text-on-surface-variant text-sm">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">calendar_today</span>
                 {{ $blog->published_at ? $blog->published_at->format('F d, Y') : $blog->created_at->format('F d, Y') }}
@@ -74,7 +74,7 @@
 <!-- Related Articles -->
 @if($relatedBlogs->count() > 0)
 <div class="bg-surface-container-lowest py-16 border-t border-outline-variant">
-    <div class="max-w-container-max mx-auto px-margin-desktop">
+    <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
         <h2 class="text-3xl font-display font-bold text-on-surface mb-8 text-center">Related Articles</h2>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">

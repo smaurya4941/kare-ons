@@ -3,10 +3,10 @@
 @section('title', 'Checkout - Kare Ons Herbal')
 
 @section('content')
-<div class="max-w-container-max mx-auto px-margin-desktop py-12 bg-surface-container-lowest min-h-screen">
-    <h1 class="text-3xl font-display font-bold text-on-surface mb-8">Checkout</h1>
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 bg-surface-container-lowest min-h-screen">
+    <h1 class="text-2xl font-display font-bold text-herbal-deep mb-6">Checkout</h1>
 
-    <form action="{{ route('checkout.store') }}" method="POST" class="flex flex-col lg:flex-row gap-10">
+    <form action="{{ route('checkout.store') }}" method="POST" class="flex flex-col lg:flex-row gap-6">
         @csrf
         
         @if(session('error'))
@@ -36,10 +36,10 @@
             </div>
         @endif
         
-        <div class="lg:w-2/3 space-y-8">
+        <div class="lg:w-2/3 space-y-6">
             <!-- Customer Information -->
-            <div class="bg-surface rounded-2xl border border-outline-variant p-8 shadow-sm">
-                <div class="flex items-center gap-3 mb-6 border-b border-outline-variant pb-4">
+            <div class="bg-surface rounded-xl border border-outline-variant p-5 shadow-sm">
+                <div class="flex items-center gap-3 mb-4 border-b border-outline-variant pb-3">
                     <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">1</div>
                     <h2 class="text-xl font-bold text-on-surface">Delivery Details</h2>
                 </div>
@@ -71,7 +71,7 @@
                                 }
                             }
                         }" x-init="fillAddress()" class="mb-6">
-                            <label class="block text-sm font-medium text-secondary mb-2">Use a Saved Address</label>
+                            <label class="block text-sm font-medium text-on-surface-variant mb-2">Use a Saved Address</label>
                             <select x-model="selectedAddress" @change="fillAddress()" class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary bg-surface-container-lowest text-on-surface">
                                 <option value="">-- Or enter a new address below --</option>
                                 @foreach($addresses as $addr)
@@ -84,42 +84,42 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="full_name" class="block text-sm font-medium text-secondary mb-1">Full Name <span class="text-error">*</span></label>
+                        <label for="full_name" class="block text-sm font-medium text-on-surface-variant mb-1">Full Name <span class="text-error">*</span></label>
                         <input type="text" name="full_name" id="full_name" value="{{ old('full_name', Auth::user()->name ?? '') }}" required class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
                     </div>
                     <div>
-                        <label for="phone" class="block text-sm font-medium text-secondary mb-1">Phone Number <span class="text-error">*</span></label>
+                        <label for="phone" class="block text-sm font-medium text-on-surface-variant mb-1">Phone Number <span class="text-error">*</span></label>
                         <input type="tel" name="phone" id="phone" value="{{ old('phone', Auth::user()->phone ?? '') }}" required class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
                     </div>
                     <div class="md:col-span-2">
-                        <label for="address_line_1" class="block text-sm font-medium text-secondary mb-1">Street Address <span class="text-error">*</span></label>
+                        <label for="address_line_1" class="block text-sm font-medium text-on-surface-variant mb-1">Street Address <span class="text-error">*</span></label>
                         <input type="text" name="address_line_1" id="address_line_1" value="{{ old('address_line_1') }}" required placeholder="House number and street name" class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
                     </div>
                     <div>
-                        <label for="city" class="block text-sm font-medium text-secondary mb-1">Town / City <span class="text-error">*</span></label>
+                        <label for="city" class="block text-sm font-medium text-on-surface-variant mb-1">Town / City <span class="text-error">*</span></label>
                         <input type="text" name="city" id="city" value="{{ old('city') }}" required class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
                     </div>
                     <div>
-                        <label for="state" class="block text-sm font-medium text-secondary mb-1">State <span class="text-error">*</span></label>
+                        <label for="state" class="block text-sm font-medium text-on-surface-variant mb-1">State <span class="text-error">*</span></label>
                         <input type="text" name="state" id="state" value="{{ old('state') }}" required class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
                     </div>
                     <div>
-                        <label for="postal_code" class="block text-sm font-medium text-secondary mb-1">PIN Code <span class="text-error">*</span></label>
+                        <label for="postal_code" class="block text-sm font-medium text-on-surface-variant mb-1">PIN Code <span class="text-error">*</span></label>
                         <input type="text" name="postal_code" id="postal_code" value="{{ old('postal_code') }}" required class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary">
                     </div>
                 </div>
             </div>
 
             <!-- Payment Method -->
-            <div class="bg-surface rounded-2xl border border-outline-variant p-8 shadow-sm">
-                <div class="flex items-center gap-3 mb-6 border-b border-outline-variant pb-4">
+            <div class="bg-surface rounded-xl border border-outline-variant p-5 shadow-sm">
+                <div class="flex items-center gap-3 mb-4 border-b border-outline-variant pb-3">
                     <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">2</div>
                     <h2 class="text-xl font-bold text-on-surface">Payment Method</h2>
                 </div>
 
                 <div class="space-y-4">
                     @foreach($paymentMethods as $index => $pm)
-                    <label class="flex items-center justify-between p-4 border rounded-xl cursor-pointer hover:bg-surface-container transition {{ $index == 0 ? 'border-primary bg-primary-fixed' : 'border-outline-variant' }} has-[:checked]:border-primary has-[:checked]:bg-primary-fixed">
+                    <label class="flex items-center justify-between p-4 border rounded-xl cursor-pointer hover:bg-surface-container transition {{ $index == 0 ? 'border-primary bg-herbal-light' : 'border-outline-variant' }} has-[:checked]:border-primary has-[:checked]:bg-herbal-light">
                         <div class="flex items-center gap-3">
                             <input type="radio" name="payment_method" value="{{ $pm->code }}" class="w-5 h-5 text-primary focus:ring-primary border-outline-variant" {{ $index == 0 ? 'checked' : '' }}>
                             <div>
@@ -127,7 +127,7 @@
                                     {{ $pm->name }}
                                 </h3>
                                 @if($pm->instructions)
-                                <p class="text-xs text-secondary mt-1">{{ $pm->instructions }}</p>
+                                <p class="text-xs text-on-surface-variant mt-1">{{ $pm->instructions }}</p>
                                 @endif
                             </div>
                         </div>
@@ -142,8 +142,8 @@
 
         <!-- Order Summary -->
         <div class="lg:w-1/3">
-            <div class="bg-surface rounded-2xl border border-outline-variant shadow-sm p-8 sticky top-24">
-                <h2 class="text-xl font-bold text-on-surface mb-6 border-b border-outline-variant pb-4">Order Summary</h2>
+            <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-5 sticky top-20">
+                <h2 class="text-lg font-bold text-on-surface mb-4 border-b border-outline-variant pb-3">Order Summary</h2>
 
                 <div class="space-y-4 mb-6 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
                     @foreach($cartItems as $item)
@@ -163,7 +163,7 @@
                             <div class="flex-1">
                                 <h4 class="text-sm font-medium text-on-surface line-clamp-2">{{ $item->product->name }}</h4>
                                 <div class="flex justify-between mt-1">
-                                    <span class="text-xs text-secondary">Qty: {{ $item->quantity }}</span>
+                                    <span class="text-xs text-on-surface-variant">Qty: {{ $item->quantity }}</span>
                                     <span class="text-sm font-bold text-on-surface">₹{{ number_format($price * $item->quantity, 2) }}</span>
                                 </div>
                             </div>
@@ -215,7 +215,7 @@
 
                     <!-- Coupon -->
                     <div class="mb-6 border-t border-outline-variant pt-4">
-                        <label class="block text-sm font-medium text-secondary mb-2">Have a coupon code?</label>
+                        <label class="block text-sm font-medium text-on-surface-variant mb-2">Have a coupon code?</label>
                         <div x-show="!applied" class="flex gap-2">
                             <input type="text" x-model="code" @keydown.enter.prevent="apply()" placeholder="Enter code"
                                    class="flex-1 border-outline-variant rounded-lg focus:ring-primary focus:border-primary px-4 py-2 uppercase text-sm">
@@ -235,17 +235,17 @@
 
                     <!-- Totals -->
                     <div class="space-y-3 mb-6 text-sm">
-                        <div class="flex justify-between items-center text-secondary">
+                        <div class="flex justify-between items-center text-on-surface-variant">
                             <span>Subtotal</span>
                             <span class="font-medium text-on-surface">₹{{ number_format($subtotal, 2) }}</span>
                         </div>
                         @if($taxAmount > 0)
-                        <div class="flex justify-between items-center text-secondary">
+                        <div class="flex justify-between items-center text-on-surface-variant">
                             <span>Tax (GST)</span>
                             <span class="font-medium text-on-surface">₹{{ number_format($taxAmount, 2) }}</span>
                         </div>
                         @endif
-                        <div class="flex justify-between items-center text-secondary">
+                        <div class="flex justify-between items-center text-on-surface-variant">
                             <span>Shipping</span>
                             @if($shipping == 0)
                                 <span class="font-medium text-emerald-600">Free</span>
@@ -259,16 +259,16 @@
                         </div>
                     </div>
 
-                    <div class="border-t border-outline-variant pt-4 mb-8">
+                    <div class="border-t border-outline-variant pt-3 mb-5">
                         <div class="flex justify-between items-center">
                             <span class="text-lg font-bold text-on-surface">Total</span>
-                            <span class="text-2xl font-bold text-on-surface">₹<span x-text="fmt(grandTotal)"></span></span>
+                            <span class="text-xl font-bold text-herbal-deep">₹<span x-text="fmt(grandTotal)"></span></span>
                         </div>
-                        <p class="text-xs text-secondary mt-1 text-right">Shipping is finalised from your PIN code on order placement.</p>
+                        <p class="text-xs text-on-surface-variant mt-1 text-right">Shipping is finalised from your PIN code on order placement.</p>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full flex items-center justify-center gap-2 bg-primary text-white font-medium py-4 rounded-xl hover:bg-on-primary-fixed-variant transition shadow-sm">
+                <button type="submit" class="w-full flex items-center justify-center gap-2 bg-primary text-white font-medium py-3 rounded-lg hover:bg-primary/90 transition shadow-sm">
                     <span class="material-symbols-outlined text-[20px]">lock</span> Place Order
                 </button>
             </div>
