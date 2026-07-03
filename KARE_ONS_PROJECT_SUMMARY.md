@@ -148,3 +148,57 @@ Contact inquiry admin management with unread badge
 Missing products/show & coupons/show; profile phone editing
 SEO meta/OG tags, sitemap CMS pages, DB-driven SMTP transport switching
 Correctness/polish: search OR-precedence leaks, order-status color/label alignment, homepage category banner column, null-safe lookups, and the payment-method display on the success page.
+
+# FEATURES OF THIS PROJECT
+
+🛍️ Storefront & Customer Experience
+Dynamic Homepage: Features dynamic promotional banners, "Shop by Category" sections, and product rails (Trending, Best Sellers, New Arrivals).
+Intelligent Product Discovery: Fully functional search bar and dedicated category pages.
+Advanced Filtering & Sorting: Customers can filter products by price range or category, and sort by Latest, Price (Low to High/High to Low), and Alphabetical.
+Herbal-Specific Product Pages: "Flipkart-style" tabbed interface showing detailed Ayurvedic data: Ingredients, Benefits, Usage Instructions, Precautions, Storage, and Ayurvedic Reference.
+Product Image Galleries: Support for multiple images per product with zoom/carousel functionality.
+Customer Reviews & Ratings: Verified purchase reviews with star ratings (subject to admin moderation).
+Related Products: Cross-selling feature on product pages to increase average order value.
+Dynamic CMS Pages: Auto-generated pages for Privacy Policy, Terms & Conditions, FAQs, and About Us accessible directly from the root domain.
+SEO Optimized: Dynamic meta tags, Open Graph (OG) tags for social sharing, and an auto-generated sitemap.xml and robots.txt.
+🛒 Shopping Cart & Checkout Flow
+Persistent Shopping Cart: Items stay in the cart across sessions. If a guest adds items and then logs in, their guest cart is seamlessly merged into their account.
+AJAX Cart Management: Add, update quantities, or remove items without the page reloading.
+Dynamic Coupon Engine: Support for percentage-based or flat-rate discounts, minimum order requirements, usage limits, and validity dates with live validation.
+"Login to Transact" Gate: Forces users to create an account before checking out for better CRM and tracking.
+Automated Tax Calculation: Calculates GST/taxes based on the product's assigned tax slab.
+Dynamic Shipping Calculation: Free shipping thresholds and flat-rate charges pulled directly from your Global Settings.
+Razorpay Integration: Secure online payment gateway integration.
+Cash on Delivery (COD): Alternative offline payment method.
+👤 Customer Account & CRM
+Secure Authentication: Registration, login, and password reset functionalities.
+Address Book: Customers can save multiple delivery addresses. The system automatically pre-fills checkout with their "Default" address.
+Order History & Tracking: Visual timeline showing the exact status of an order (Pending → Confirmed → Packed → Shipped → Delivered).
+Return & Replacement Workflow: Customers can self-service initiate a return within a 7-day window after delivery.
+Personal Wishlist: Save out-of-stock or desired items for later purchase.
+Profile Management: Ability to update phone numbers, emails, and change passwords.
+📦 Catalog Management (Admin)
+Product CRUD: Create and manage products with extensive metadata (pricing, sale pricing, SKUs, physical dimensions).
+Nested Categories: Support for parent and child categories with custom category banners.
+Brand Management: Group and filter products by specific Ayurvedic brands.
+Tax Slabs: Create custom tax percentages (e.g., 5% GST, 12% GST) and assign them to specific products.
+🏭 Order Fulfillment & Inventory (Admin)
+Order Management Dashboard: View all orders, update statuses, and track payment states.
+Automated Document Generation: Instantly generate and print PDF Invoices, Packing Slips, and 4x6 Thermal Shipping Labels.
+Immutable Inventory Ledger: A transaction log that tracks exactly when and why stock went up or down (sales, returns, manual adjustments).
+Low Stock Alerts: Dashboard filters to quickly identify products that are running out of stock.
+Returns Queue: Dedicated admin area to approve, reject, or complete customer return/refund requests.
+📢 Marketing & Content Management (Admin)
+Global Settings CMS: Update the site logo, contact phone numbers, social media links, and footer text without needing a developer.
+Blog Engine: Publish and manage SEO-friendly blog posts and articles for inbound marketing.
+Banner Manager: Upload and swap out homepage promotional banners instantly.
+Testimonial Manager: Add and curate customer testimonials displayed on the homepage.
+Contact Inbox: Dedicated dashboard to read and reply to inquiries submitted via the "Contact Us" page.
+Review Moderation: Approve or reject customer reviews, and optionally add a public "Admin Reply".
+⚙️ Security & Performance (Technical)
+Background Email Queues: Order confirmations and shipping updates are sent in the background so the user never has to wait for an email server to respond during checkout.
+Strict Rate Limiting: Limits placed on coupon applications and review submissions to prevent spam and brute-force attacks.
+Transaction Locks: Database-level locking during checkout to prevent two people from buying the last unit of stock at the exact same millisecond.
+Dynamic SMTP Switching: Change email providers directly from the admin database settings.
+Extensive Caching: Global settings and navigation menus are cached "forever" in memory to ensure fast page load times.
+5:41 PM
