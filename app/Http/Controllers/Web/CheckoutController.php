@@ -48,9 +48,12 @@ class CheckoutController extends Controller
         }
 
         $subtotal  = $this->calculateSubtotal($cartItems);
-        // Default shipping for display purposes, will be recalculated on submission
-        $defaultZone = \App\Models\ShippingZone::where('is_default', true)->first();
-        $shipping  = $defaultZone ? ($subtotal >= $defaultZone->free_shipping_threshold ? 0 : $defaultZone->base_charge) : 0;
+        
+        // Calculate shipping from global settings
+        $shippingCharge = (float) setting('shipping_charge', 0);
+        $freeShippingThreshold = (float) setting('free_shipping_amount', 0);
+        
+        $shipping  = ($freeShippingThreshold > 0 && $subtotal >= $freeShippingThreshold) ? 0 : $shippingCharge;
         $total     = $subtotal + $shipping + $taxAmount;
         $addresses = Auth::check() ? Auth::user()->addresses : collect();
         $paymentMethods = \App\Models\PaymentMethod::where('status', true)->get();
@@ -100,25 +103,11 @@ class CheckoutController extends Controller
             $taxAmount += ($unitPrice * $item->quantity) * ($taxRate / 100);
         }
 
-        // Calculate dynamic shipping
-        $postalCode = $request->postal_code;
-        $shippingZone = \App\Models\ShippingZone::where('is_active', true)
-            ->where(function ($query) use ($postalCode) {
-                $query->where('coverage', 'like', "%{$postalCode}%")
-                      ->orWhere('is_default', true);
-            })->orderBy('is_default', 'asc')->first();
+        // Calculate shipping from global settings
+        $shippingCharge = (float) setting('shipping_charge', 0);
+        $freeShippingThreshold = (float) setting('free_shipping_amount', 0);
 
-        $shipping = 0;
-        if ($shippingZone) {
-            if ($shippingZone->free_shipping_threshold && $subtotal >= $shippingZone->free_shipping_threshold) {
-                $shipping = 0;
-            } else {
-                $shipping = $shippingZone->base_charge;
-            }
-            if ($request->payment_method === 'cod') {
-                $shipping += $shippingZone->cod_charge;
-            }
-        }
+        $shipping = ($freeShippingThreshold > 0 && $subtotal >= $freeShippingThreshold) ? 0 : $shippingCharge;
 
         $discountAmount = 0;
         $coupon         = null;

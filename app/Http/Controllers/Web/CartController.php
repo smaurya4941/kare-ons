@@ -31,7 +31,10 @@ class CartController extends Controller
         // Re-fetch after possible deletions
         $cartItems = $this->getCartItems();
 
-        $shipping = $subtotal > 500 ? 0 : 50;
+        $shippingCharge = (float) setting('shipping_charge', 0);
+        $freeShippingThreshold = (float) setting('free_shipping_amount', 0);
+
+        $shipping = ($freeShippingThreshold > 0 && $subtotal >= $freeShippingThreshold) ? 0 : $shippingCharge;
         $discount = 0;
         $total    = $subtotal + $shipping - $discount;
 
