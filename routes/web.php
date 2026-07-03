@@ -12,7 +12,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [\App\Http\Controllers\PageController::class, 'about'])->name('about');
 Route::get('/contact', [\App\Http\Controllers\PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [\App\Http\Controllers\PageController::class, 'submitContact'])->name('contact.submit');
-Route::get('/page/{slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
 Route::get('/shop', [\App\Http\Controllers\Web\ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 
@@ -140,3 +139,8 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
 });
 
 require __DIR__.'/auth.php';
+
+// ============================================================================
+// Dynamic CMS Pages (Catch-all route, MUST be at the very bottom)
+// ============================================================================
+Route::get('/{slug}', [\App\Http\Controllers\PageController::class, 'show'])->name('page.show');
