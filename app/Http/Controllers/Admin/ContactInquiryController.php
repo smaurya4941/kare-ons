@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\InquiryReply;
 use App\Models\ContactInquiry;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class ContactInquiryController extends Controller
 {
@@ -38,6 +41,26 @@ class ContactInquiryController extends Controller
         }
 
         return view('admin.inquiries.show', compact('inquiry'));
+    }
+
+    public function reply(Request $request, ContactInquiry $inquiry)
+    {
+        $validated = $request->validate([
+            'subject' => ['required', 'string', 'max:255'],
+            'message' => ['required', 'string'],
+        ]);
+
+        try {
+            Mail::to($inquiry->email)->send(
+                new InquiryReply($inquiry, $validated['subject'], $validated['message'])
+            );
+        } catch (\Throwable $e) {
+            Log::error('Inquiry reply failed: ' . $e->getMessage());
+
+            return back()->with('error', 'Could not send the email. Please check your SMTP settings. (' . $e->getMessage() . ')');
+        }
+
+        return back()->with('success', 'Reply sent to ' . $inquiry->email . '.');
     }
 
     public function destroy(ContactInquiry $inquiry)

@@ -124,6 +124,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::resource('returns', \App\Http\Controllers\Admin\ReturnRequestController::class)->only(['index', 'show', 'update']);
     Route::resource('customers', \App\Http\Controllers\Admin\CustomerController::class)->only(['index', 'show', 'update']);
     Route::resource('inquiries', \App\Http\Controllers\Admin\ContactInquiryController::class)->only(['index', 'show', 'destroy'])->parameters(['inquiries' => 'inquiry']);
+    Route::post('inquiries/{inquiry}/reply', [\App\Http\Controllers\Admin\ContactInquiryController::class, 'reply'])->name('inquiries.reply');
     Route::resource('reviews', \App\Http\Controllers\Admin\ReviewController::class)->except(['create', 'store', 'edit']);
     Route::resource('blogs', \App\Http\Controllers\Admin\BlogController::class);
     Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class);
