@@ -7,3 +7,5 @@ node_modules
 /node_modules
 KARE_ONS_PROJECT_SUMMARY.md
 KARE_ONS.sql
+databse.sqlite
+nextToDo.md

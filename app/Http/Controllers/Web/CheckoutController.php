@@ -125,9 +125,10 @@ class CheckoutController extends Controller
         try {
             $order = DB::transaction(function () use ($request, $cartItems, $subtotal, $shipping, $taxAmount, $discountAmount, $grandTotal, $coupon) {
 
-                // Save address for both authenticated and guest users
+                // Checkout requires authentication (routes are behind the `auth`
+                // middleware), so the user is always logged in here.
                 $address = Address::create([
-                    'user_id'        => Auth::id(), // Will be null for guests
+                    'user_id'        => Auth::id(),
                     'full_name'      => $request->full_name,
                     'phone'          => $request->phone,
                     'address_line_1' => $request->address_line_1,
@@ -215,6 +216,24 @@ class CheckoutController extends Controller
         } catch (\Throwable $e) {
             report($e);
             return back()->withInput()->with('error', 'An unexpected error occurred while placing your order. Please try again.');
+        }
+
+        // Notify admins of the new order and any items that fell to/below the
+        // low-stock threshold. Wrapped defensively so it can never disrupt the
+        // customer's checkout flow.
+        try {
+            \App\Models\AdminNotification::notifyNewOrder($order);
+
+            $threshold = (int) setting('low_stock_threshold', 10);
+            $order->loadMissing('items');
+            $productIds = $order->items->pluck('product_id')->filter()->unique();
+            foreach (\App\Models\Product::whereIn('id', $productIds)->get() as $product) {
+                if ((int) $product->stock_quantity <= $threshold) {
+                    \App\Models\AdminNotification::notifyLowStock($product);
+                }
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         if ($request->payment_method === 'razorpay') {

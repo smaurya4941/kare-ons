@@ -133,6 +133,19 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::get('inventory/{product}/history', [\App\Http\Controllers\Admin\InventoryController::class, 'history'])->name('inventory.history');
     Route::post('inventory/{product}/adjustment', [\App\Http\Controllers\Admin\InventoryController::class, 'storeAdjustment'])->name('inventory.adjustment');
 
+    // Notifications
+    Route::get('notifications', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('notifications/feed', [\App\Http\Controllers\Admin\NotificationController::class, 'feed'])->name('notifications.feed');
+    Route::post('notifications/read-all', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllRead'])->name('notifications.read_all');
+    Route::delete('notifications/clear-read', [\App\Http\Controllers\Admin\NotificationController::class, 'clearRead'])->name('notifications.clear_read');
+    Route::get('notifications/{notification}/read', [\App\Http\Controllers\Admin\NotificationController::class, 'read'])->name('notifications.read');
+    Route::delete('notifications/{notification}', [\App\Http\Controllers\Admin\NotificationController::class, 'destroy'])->name('notifications.destroy');
+
+    // Activity Log (audit trail)
+    Route::get('activity', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('activity.index');
+    Route::delete('activity/clear', [\App\Http\Controllers\Admin\ActivityLogController::class, 'clear'])->name('activity.clear');
+    Route::get('activity/{activity}', [\App\Http\Controllers\Admin\ActivityLogController::class, 'show'])->name('activity.show');
+
     Route::get('reports/{tab?}', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
 
     Route::get('settings/{tab?}', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');

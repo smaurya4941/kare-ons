@@ -73,6 +73,13 @@ class InventoryController extends Controller
             'notes' => $validated['notes'],
         ]);
 
+        // A downward adjustment may have pushed the product to/below the
+        // low-stock threshold — alert admins if so.
+        $threshold = (int) setting('low_stock_threshold', 10);
+        if ((int) $product->fresh()->stock_quantity <= $threshold) {
+            \App\Models\AdminNotification::notifyLowStock($product->fresh());
+        }
+
         return redirect()->back()->with('success', 'Stock updated successfully.');
     }
 }

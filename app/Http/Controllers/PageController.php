@@ -34,7 +34,8 @@ class PageController extends Controller
         ]);
 
         try {
-            ContactInquiry::create($validated);
+            $inquiry = ContactInquiry::create($validated);
+            \App\Models\AdminNotification::notifyCustomerMessage($inquiry);
             return redirect()->back()->with('success', 'Thank you! Your inquiry has been sent.');
         } catch (\Exception $e) {
             report($e);

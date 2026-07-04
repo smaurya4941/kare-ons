@@ -73,6 +73,13 @@
                 <button class="text-on-surface hover:text-brand-gold-dark transition">
                     <span class="material-symbols-outlined">search</span>
                 </button>
+                @php
+                    $wishlistCount = Auth::check() ? Auth::user()->wishlists()->count() : 0;
+                @endphp
+                <a href="{{ route('wishlist.index') }}" class="relative text-on-surface hover:text-brand-gold-dark transition" title="Wishlist" aria-label="Wishlist">
+                    <span class="material-symbols-outlined">favorite</span>
+                    <span id="wishlist-count" class="absolute -top-1 -right-1 bg-brand-gold text-brand-forest text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center {{ $wishlistCount > 0 ? '' : 'hidden' }}">{{ $wishlistCount }}</span>
+                </a>
                 <a href="{{ route('cart.index') }}" class="relative text-on-surface hover:text-brand-gold-dark transition">
                     <span class="material-symbols-outlined">shopping_cart</span>
                     @php
@@ -345,6 +352,7 @@
                         }
                     });
                 }
+                if (typeof data.wishlist_count !== 'undefined') updateWishlistCount(data.wishlist_count);
                 if (data.message) {
                     showToast(data.message, data.status === 'removed' ? 'info' : 'success');
                 }
@@ -393,7 +401,8 @@
             if (!form) return;
             e.preventDefault();
 
-            const btn = form.querySelector('[type="submit"]');
+            // Use the button that actually triggered the submit (e.g. "Add to Cart" vs "Buy Now")
+            const btn = e.submitter && form.contains(e.submitter) ? e.submitter : form.querySelector('[type="submit"]');
             if (btn?.dataset.loading === '1') return; // guard against double submit
             const originalHtml = btn ? btn.innerHTML : null;
             if (btn) {
@@ -402,14 +411,29 @@
                 btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
             }
 
+            // Passing the submitter includes its name/value (action=cart|buy) in the payload.
+            // Fall back to appending it manually for browsers lacking the FormData submitter arg.
+            let payload;
             try {
-                const response = await fetch(form.action, {
+                payload = new FormData(form, btn);
+            } catch (_) {
+                payload = new FormData(form);
+            }
+            if (btn?.name && !payload.has(btn.name)) {
+                payload.append(btn.name, btn.value);
+            }
+
+            // Use getAttribute: form.action is shadowed by the `action`-named submit buttons
+            const formAction = form.getAttribute('action');
+
+            try {
+                const response = await fetch(formAction, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                         'Accept': 'application/json',
                     },
-                    body: new FormData(form),
+                    body: payload,
                 });
 
                 const data = await response.json().catch(() => ({}));
@@ -440,6 +464,13 @@
 
         function updateCartCount(count) {
             const badge = document.getElementById('cart-count');
+            if (!badge) return;
+            badge.textContent = count;
+            badge.classList.toggle('hidden', !(count > 0));
+        }
+
+        function updateWishlistCount(count) {
+            const badge = document.getElementById('wishlist-count');
             if (!badge) return;
             badge.textContent = count;
             badge.classList.toggle('hidden', !(count > 0));

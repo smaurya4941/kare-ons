@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,8 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Product extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $guarded = ['id'];
+
+    /** Noisy/large columns to keep out of the audit diff. */
+    protected array $activityLogIgnore = ['description', 'short_description', 'meta_description'];
 
     protected static function booted()
     {

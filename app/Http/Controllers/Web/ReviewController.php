@@ -32,7 +32,7 @@ class ReviewController extends Controller
 
         try {
             // The DB column is named `review`, not `comment`
-            Review::create([
+            $review = Review::create([
                 'user_id'    => Auth::id(),
                 'product_id' => $product->id,
                 'rating'     => $request->rating,
@@ -40,6 +40,9 @@ class ReviewController extends Controller
                 'review'     => $request->comment,
                 'status'     => false, // default pending moderation
             ]);
+
+            $review->setRelation('product', $product);
+            \App\Models\AdminNotification::notifyReviewPending($review);
 
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Thank you! Your review has been submitted and is pending moderation.'], 200);

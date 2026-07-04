@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Blog extends Model
 {
     use HasFactory;
+    use LogsActivity;
+
+    /** Long-form fields excluded from the audit diff. */
+    protected array $activityLogIgnore = ['content', 'excerpt'];
 
     protected $fillable = [
         'author_id',

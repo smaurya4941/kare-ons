@@ -121,7 +121,7 @@
             </div>
 
             <!-- Add to Cart Form -->
-            <form action="{{ route('cart.add') }}" method="POST" class="bg-white p-5 rounded-xl border border-soft-border shadow-sm mb-5">
+            <form action="{{ route('cart.add') }}" method="POST" class="js-cart-form bg-white p-5 rounded-xl border border-soft-border shadow-sm mb-5">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 
@@ -149,11 +149,16 @@
                         </button>
                     </div>
 
-                    <button type="submit" name="action" value="cart" class="btn-squish flex-1 bg-herbal-deep text-white font-body-md text-sm font-medium py-2.5 px-5 rounded-lg shadow-sm hover:bg-herbal-deep/90 transition-colors flex items-center justify-center gap-2" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
+                    <button type="submit" name="action" value="cart" class="btn-squish flex-1 border border-herbal-deep text-herbal-deep font-body-md text-sm font-medium py-2.5 px-5 rounded-lg shadow-sm hover:bg-herbal-deep hover:text-white transition-colors flex items-center justify-center gap-2" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
                         <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
                         Add to Cart
                     </button>
-                    
+
+                    <button type="submit" name="action" value="buy" class="btn-squish flex-1 bg-herbal-deep text-white font-body-md text-sm font-medium py-2.5 px-5 rounded-lg shadow-sm hover:bg-herbal-deep/90 transition-colors flex items-center justify-center gap-2" {{ $product->stock_quantity == 0 ? 'disabled' : '' }}>
+                        <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                        Buy Now
+                    </button>
+
                     @auth
                         @php
                             $inWishlist = auth()->user()->wishlists()->where('product_id', $product->id)->exists();

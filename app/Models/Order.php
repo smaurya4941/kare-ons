@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,8 +12,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Order extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     protected $guarded = ['id'];
+
+    /** Orders are only created customer-side; audit the admin edits/deletes. */
+    protected array $activityLogEvents = ['updated', 'deleted'];
+
+    public function activityLabel(): string
+    {
+        return '#' . $this->order_number;
+    }
 
     public function user(): BelongsTo
     {

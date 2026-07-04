@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
     <style>
         body { font-family: 'Inter', sans-serif; }
+        [x-cloak] { display: none !important; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
@@ -32,7 +33,15 @@
                 <span class="material-symbols-outlined text-[20px]">dashboard</span>
                 Dashboard
             </a>
-            
+            <a href="{{ route('admin.notifications.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.notifications.*') ? 'bg-brand-gold text-brand-forest' : 'text-white/70 hover:bg-white/10 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">notifications</span>
+                Notifications
+                @php $unreadNotifications = \App\Models\AdminNotification::unreadCount(); @endphp
+                @if($unreadNotifications > 0)
+                    <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $unreadNotifications }}</span>
+                @endif
+            </a>
+
             <div class="pt-4 pb-1">
                 <p class="px-3 text-xs font-semibold text-brand-gold/70 uppercase tracking-wider">Catalog</p>
             </div>
@@ -95,6 +104,10 @@
             <a href="{{ route('admin.reports.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.reports.*') ? 'bg-brand-gold text-brand-forest' : 'text-white/70 hover:bg-white/10 hover:text-white transition' }}">
                 <span class="material-symbols-outlined text-[20px]">bar_chart</span>
                 Reports
+            </a>
+            <a href="{{ route('admin.activity.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.activity.*') ? 'bg-brand-gold text-brand-forest' : 'text-white/70 hover:bg-white/10 hover:text-white transition' }}">
+                <span class="material-symbols-outlined text-[20px]">history</span>
+                Activity Log
             </a>
 
             <div class="pt-4 pb-1">
@@ -175,9 +188,7 @@
                     <span class="material-symbols-outlined text-[18px]">open_in_new</span> View Store
                 </a>
                 <div class="h-6 w-px bg-gray-200"></div>
-                <button class="text-gray-500 hover:text-gray-700 focus:outline-none flex items-center">
-                    <span class="material-symbols-outlined">notifications</span>
-                </button>
+                @include('admin.partials.notification-bell')
             </div>
         </header>
 
