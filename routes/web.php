@@ -15,6 +15,11 @@ Route::post('/contact', [\App\Http\Controllers\PageController::class, 'submitCon
 Route::get('/shop', [\App\Http\Controllers\Web\ShopController::class, 'index'])->name('shop.index');
 Route::get('/product/{slug}', [ProductController::class, 'show'])->name('product.show');
 
+// Live search autocomplete (AJAX) — public, rate-limited
+Route::get('/search/suggest', [\App\Http\Controllers\Web\SearchController::class, 'suggest'])
+    ->name('search.suggest')
+    ->middleware('throttle:search');
+
 // Cart Routes
 Route::get('/cart', [\App\Http\Controllers\Web\CartController::class, 'index'])->name('cart.index');
 Route::post('/cart', [\App\Http\Controllers\Web\CartController::class, 'store'])->name('cart.add');
@@ -64,6 +69,8 @@ Route::middleware('auth')->group(function () {
 
     // Dashboard Redirect — keep only admin dashboard, redirect normal users to orders
     Route::get('/dashboard', function () {
+        // Preserve any flashed toast (e.g. "Login Successful") across this bounce.
+        session()->reflash();
         if (auth()->user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }

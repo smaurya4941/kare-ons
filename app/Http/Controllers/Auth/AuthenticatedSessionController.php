@@ -44,11 +44,13 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
+        $welcome = toast_payload('Welcome back, ' . $request->user()->name . '!', 'success', 'Login Successful');
+
         if ($request->user()->role === 'admin') {
-            return redirect()->intended(route('admin.dashboard', absolute: false));
+            return redirect()->intended(route('admin.dashboard', absolute: false))->with('toast', $welcome);
         }
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('dashboard', absolute: false))->with('toast', $welcome);
     }
 
     /**

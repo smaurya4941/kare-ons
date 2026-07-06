@@ -46,7 +46,8 @@ class AddressController extends Controller
 
         Address::create($validated);
 
-        return redirect()->route('addresses.index')->with('success', 'Address added successfully.');
+        return redirect()->route('addresses.index')
+            ->with('toast', toast_payload('Your new address has been saved.', 'success', 'Address Saved'));
     }
 
     public function edit(Address $address)
@@ -82,7 +83,8 @@ class AddressController extends Controller
         $validated['is_default'] = $isDefault;
         $address->update($validated);
 
-        return redirect()->route('addresses.index')->with('success', 'Address updated successfully.');
+        return redirect()->route('addresses.index')
+            ->with('toast', toast_payload('Your address has been updated.', 'success', 'Address Updated'));
     }
 
     public function destroy(Address $address)
@@ -101,6 +103,7 @@ class AddressController extends Controller
             }
         }
 
-        return redirect()->route('addresses.index')->with('success', 'Address deleted successfully.');
+        return redirect()->route('addresses.index')
+            ->with('toast', toast_payload('The address has been removed.', 'info', 'Address Deleted'));
     }
 }

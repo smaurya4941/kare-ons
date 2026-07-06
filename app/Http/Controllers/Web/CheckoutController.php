@@ -273,7 +273,12 @@ class CheckoutController extends Controller
         return redirect()->route('checkout.success')
             ->with('order_number', $order->order_number)
             ->with('payment_method', $order->payment_method)
-            ->with('success', "Your order #{$order->order_number} has been placed successfully!");
+            ->with('toast', toast_payload(
+                "Your order #{$order->order_number} has been placed successfully!",
+                'success',
+                'Order Placed',
+                ['label' => 'View My Orders', 'url' => route('orders.index')]
+            ));
     }
 
     public function payment()
@@ -313,7 +318,12 @@ class CheckoutController extends Controller
             return redirect()->route('checkout.success')
                 ->with('order_number', $order->order_number)
                 ->with('payment_method', 'razorpay')
-                ->with('success', "Payment successful! Your order #{$order->order_number} has been placed.");
+                ->with('toast', toast_payload(
+                    "Payment successful! Your order #{$order->order_number} has been placed.",
+                    'success',
+                    'Order Placed',
+                    ['label' => 'View My Orders', 'url' => route('orders.index')]
+                ));
 
         } catch (\Exception $e) {
             report($e);

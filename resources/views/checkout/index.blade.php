@@ -197,17 +197,23 @@
                                     this.discount = parseFloat(data.discount) || 0;
                                     this.applied = data.code;
                                     this.message = data.message;
+                                    window.showToast?.(data.message || 'Discount applied to your order.', 'success', { title: 'Coupon Applied' });
                                 } else {
                                     this.discount = 0; this.applied = '';
                                     this.error = data.message || 'Invalid coupon code.';
+                                    window.showToast?.(this.error, 'error');
                                 }
                             } catch (e) {
                                 this.discount = 0; this.applied = '';
                                 this.error = 'Something went wrong. Please try again.';
+                                window.showToast?.(this.error, 'error');
                             }
                             this.loading = false;
                         },
-                        remove() { this.discount = 0; this.applied = ''; this.code = ''; this.error = ''; this.message = ''; }
+                        remove() {
+                            this.discount = 0; this.applied = ''; this.code = ''; this.error = ''; this.message = '';
+                            window.showToast?.('The coupon has been removed from your order.', 'info', { title: 'Coupon Removed' });
+                        }
                      }">
 
                     {{-- Hidden field submitted with the checkout form; server re-validates the coupon --}}

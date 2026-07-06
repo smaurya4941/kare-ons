@@ -70,9 +70,58 @@
                 <a class="{{ request()->routeIs('contact') ? 'nav-link-active' : 'text-on-surface hover:text-brand-gold-dark transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('contact') }}">Contact</a>
             </div>
             <div class="flex items-center gap-4">
-                <button class="text-on-surface hover:text-brand-gold-dark transition">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
+                {{-- Live search autocomplete --}}
+                <div
+                    class="relative"
+                    x-data="productSearch({ endpoint: '{{ route('search.suggest') }}', shopUrl: '{{ route('shop.index') }}' })"
+                    @keydown.escape.window="closeSearch()"
+                    @click.outside="closeSearch()"
+                >
+                    <button
+                        type="button"
+                        class="text-on-surface hover:text-brand-gold-dark transition flex items-center"
+                        aria-label="Search products"
+                        x-show="!open"
+                        @click="openSearch()"
+                    >
+                        <span class="material-symbols-outlined">search</span>
+                    </button>
+
+                    {{-- Expanding search field --}}
+                    <div
+                        x-show="open"
+                        x-cloak
+                        x-transition.opacity
+                        class="absolute right-0 top-1/2 -translate-y-1/2 z-50"
+                    >
+                        <div class="flex items-center bg-white border border-outline-variant rounded-full shadow-lg overflow-hidden w-[78vw] max-w-sm md:w-80">
+                            <span class="material-symbols-outlined text-on-surface-variant pl-3 text-[20px]">search</span>
+                            <input
+                                x-ref="input"
+                                type="text"
+                                x-model="query"
+                                @input="onInput()"
+                                @keydown.arrow-down.prevent="highlightNext()"
+                                @keydown.arrow-up.prevent="highlightPrev()"
+                                @keydown.enter.prevent="onEnter()"
+                                placeholder="Search herbal products..."
+                                autocomplete="off"
+                                class="flex-1 border-0 focus:ring-0 text-sm py-2.5 px-3 bg-transparent"
+                            >
+                            <button
+                                type="button"
+                                class="pr-3 text-on-surface-variant hover:text-error transition"
+                                aria-label="Close search"
+                                @click="closeSearch()"
+                            >
+                                <span class="material-symbols-outlined text-[20px]">close</span>
+                            </button>
+                        </div>
+
+                        {{-- Results dropdown --}}
+                        @include('partials.search-results', ['panelClass' => 'right-0 mt-2 w-[78vw] max-w-sm md:w-80'])
+                    </div>
+                </div>
                 @php
                     $wishlistCount = Auth::check() ? Auth::user()->wishlists()->count() : 0;
                 @endphp
@@ -353,8 +402,15 @@
                     });
                 }
                 if (typeof data.wishlist_count !== 'undefined') updateWishlistCount(data.wishlist_count);
-                if (data.message) {
-                    showToast(data.message, data.status === 'removed' ? 'info' : 'success');
+                if (data.status === 'added') {
+                    showToast(data.message || 'Saved to your wishlist.', 'success', {
+                        title: 'Added to Wishlist',
+                        action: { label: 'View Wishlist', url: '{{ route('wishlist.index') }}' },
+                    });
+                } else if (data.status === 'removed') {
+                    showToast(data.message || 'Removed from your wishlist.', 'info', {
+                        title: 'Removed from Wishlist',
+                    });
                 }
             } catch (error) {
                 console.error('Error toggling wishlist:', error);
@@ -365,9 +421,21 @@
         // -------------------------------------------------------------------------
         // Toast notifications
         // -------------------------------------------------------------------------
-        function showToast(message, type = 'success') {
+        /**
+         * Show a toast notification (top-right, auto-dismissing).
+         *
+         * @param {string} message  Body text.
+         * @param {string} type     'success' | 'error' | 'info'
+         * @param {object} [options]
+         * @param {string} [options.title]     Bold heading, e.g. "Added to Cart".
+         * @param {{label:string,url:string}} [options.action]  Optional link button.
+         * @param {number} [options.duration]  Auto-dismiss ms (default 3500).
+         */
+        function showToast(message, type = 'success', options = {}) {
             const container = document.getElementById('toast-container');
             if (!container) return;
+
+            const { title = null, action = null, duration = 3500 } = options || {};
 
             const palette = {
                 success: { bg: 'bg-secondary', icon: 'check_circle' },
@@ -375,10 +443,32 @@
                 info:    { bg: 'bg-on-surface', icon: 'info' },
             }[type] || { bg: 'bg-on-surface', icon: 'info' };
 
+            // Escape any user/server-supplied text before injecting as HTML.
+            const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+            }[c]));
+
             const toast = document.createElement('div');
-            toast.className = `pointer-events-auto ${palette.bg} text-white rounded-lg shadow-lg px-4 py-3 flex items-center gap-3 text-sm font-medium translate-x-4 opacity-0 transition-all duration-300`;
-            toast.setAttribute('role', 'status');
-            toast.innerHTML = `<span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">${palette.icon}</span><span class="flex-1">${message}</span>`;
+            toast.className = `pointer-events-auto ${palette.bg} text-white rounded-lg shadow-lg px-4 py-3 flex items-start gap-3 text-sm translate-x-4 opacity-0 transition-all duration-300`;
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+            const titleHtml = title
+                ? `<p class="font-semibold leading-tight">${esc(title)}</p>`
+                : '';
+            const messageHtml = message
+                ? `<p class="${title ? 'text-white/90 mt-0.5' : 'font-medium'} leading-snug">${esc(message)}</p>`
+                : '';
+            const actionHtml = (action && action.url && action.label)
+                ? `<a href="${esc(action.url)}" class="inline-flex items-center gap-1 mt-1.5 text-white font-semibold underline underline-offset-2 hover:text-white/80 transition">${esc(action.label)}<span class="material-symbols-outlined text-[16px]">chevron_right</span></a>`
+                : '';
+
+            toast.innerHTML = `
+                <span class="material-symbols-outlined text-[20px] mt-px flex-shrink-0" style="font-variation-settings:'FILL' 1;">${palette.icon}</span>
+                <div class="flex-1 min-w-0">${titleHtml}${messageHtml}${actionHtml}</div>
+                <button type="button" class="flex-shrink-0 -mr-1 -mt-0.5 text-white/70 hover:text-white transition" aria-label="Dismiss">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>`;
+
             container.appendChild(toast);
 
             // Animate in
@@ -386,12 +476,16 @@
                 toast.classList.remove('translate-x-4', 'opacity-0');
             });
 
-            // Auto dismiss
-            setTimeout(() => {
+            const dismiss = () => {
                 toast.classList.add('translate-x-4', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
-            }, 3500);
+            };
+
+            toast.querySelector('button[aria-label="Dismiss"]')?.addEventListener('click', dismiss);
+            setTimeout(dismiss, duration);
         }
+        // Expose globally so Alpine components / other scripts can trigger toasts.
+        window.showToast = showToast;
 
         // -------------------------------------------------------------------------
         // AJAX add-to-cart (progressive enhancement of any form.js-cart-form)
@@ -446,7 +540,10 @@
                 }
 
                 if (response.ok && data.status === 'success') {
-                    showToast(data.message || 'Added to your cart.', 'success');
+                    showToast(data.message || 'Added to your cart.', 'success', {
+                        title: 'Added to Cart',
+                        action: { label: 'View Cart', url: '{{ route('cart.index') }}' },
+                    });
                 } else {
                     showToast(data.message || 'Could not add to cart.', 'error');
                 }
@@ -478,6 +575,15 @@
 
         // Surface server-side flash messages as toasts
         document.addEventListener('DOMContentLoaded', () => {
+            // Structured toast (preferred): supports title + action link.
+            @if(session('toast'))
+                showToast(
+                    @json(session('toast')['message'] ?? ''),
+                    @json(session('toast')['type'] ?? 'success'),
+                    @json(['title' => session('toast')['title'] ?? null, 'action' => session('toast')['action'] ?? null])
+                );
+            @endif
+            // Legacy plain flash messages.
             @if(session('success')) showToast(@json(session('success')), 'success'); @endif
             @if(session('error'))   showToast(@json(session('error')), 'error');     @endif
         });

@@ -30,3 +30,43 @@ if (!function_exists('setting')) {
         return $default;
     }
 }
+
+if (!function_exists('toast_payload')) {
+    /**
+     * Build a structured toast payload for flashing to the session.
+     *
+     * The customer layout reads `session('toast')` and renders a titled toast
+     * (optionally with an action link) via the global showToast() helper.
+     *
+     * Usage:
+     *   return redirect()->route('orders.index')
+     *       ->with('toast', toast_payload('Your order was placed.', 'success', 'Order Placed', [
+     *           'label' => 'View Orders', 'url' => route('orders.index'),
+     *       ]));
+     *
+     * @param  string       $message  Body text of the toast.
+     * @param  string       $type     success | error | info
+     * @param  string|null  $title    Optional bold heading (e.g. "Added to Cart").
+     * @param  array|null   $action   Optional link: ['label' => ..., 'url' => ...].
+     */
+    function toast_payload(string $message, string $type = 'success', ?string $title = null, ?array $action = null): array
+    {
+        $payload = [
+            'message' => $message,
+            'type'    => $type,
+        ];
+
+        if ($title !== null) {
+            $payload['title'] = $title;
+        }
+
+        if ($action !== null && !empty($action['label']) && !empty($action['url'])) {
+            $payload['action'] = [
+                'label' => $action['label'],
+                'url'   => $action['url'],
+            ];
+        }
+
+        return $payload;
+    }
+}

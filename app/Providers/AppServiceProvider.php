@@ -79,6 +79,12 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perHour(5)->by($request->user()?->id ?: $request->ip());
         });
 
+        // Live search autocomplete: fires on keystroke, so allow a generous
+        // per-minute budget while still capping abusive scraping.
+        RateLimiter::for('search', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
         // -----------------------------------------------------------------------
         // View Composers
         // -----------------------------------------------------------------------

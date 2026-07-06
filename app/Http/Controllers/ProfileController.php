@@ -34,7 +34,9 @@ class ProfileController extends Controller
 
         try {
             $request->user()->save();
-            return Redirect::route('profile.edit')->with('status', 'profile-updated');
+            return Redirect::route('profile.edit')
+                ->with('status', 'profile-updated')
+                ->with('toast', toast_payload('Your profile information has been saved.', 'success', 'Profile Updated'));
         } catch (\Exception $e) {
             report($e);
             return Redirect::route('profile.edit')->with('error', 'Failed to update profile due to an unexpected error.');

@@ -278,6 +278,39 @@
 
         <!-- Page Content -->
         <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+            {{-- Structured toast (e.g. "Login Successful") — shares the session('toast') payload with the storefront --}}
+            @if(session('toast'))
+                @php
+                    $toast = session('toast');
+                    $toastScheme = [
+                        'success' => ['bg' => 'bg-emerald-50', 'border' => 'border-emerald-500', 'icon' => 'text-emerald-500', 'text' => 'text-emerald-800', 'iconName' => 'check_circle'],
+                        'error'   => ['bg' => 'bg-red-50',     'border' => 'border-red-500',     'icon' => 'text-red-500',     'text' => 'text-red-800',     'iconName' => 'error'],
+                        'info'    => ['bg' => 'bg-blue-50',    'border' => 'border-blue-500',    'icon' => 'text-blue-500',    'text' => 'text-blue-800',    'iconName' => 'info'],
+                    ][$toast['type'] ?? 'success'] ?? null;
+                    $toastScheme ??= ['bg' => 'bg-blue-50', 'border' => 'border-blue-500', 'icon' => 'text-blue-500', 'text' => 'text-blue-800', 'iconName' => 'info'];
+                @endphp
+                <div class="mb-6 {{ $toastScheme['bg'] }} border-l-4 {{ $toastScheme['border'] }} p-4 rounded shadow-sm flex items-start" x-data="{ show: true }" x-show="show">
+                    <span class="material-symbols-outlined {{ $toastScheme['icon'] }} mr-3">{{ $toastScheme['iconName'] }}</span>
+                    <div class="flex-1">
+                        @if(!empty($toast['title']))
+                            <p class="text-sm {{ $toastScheme['text'] }} font-semibold">{{ $toast['title'] }}</p>
+                        @endif
+                        @if(!empty($toast['message']))
+                            <p class="text-sm {{ $toastScheme['text'] }} {{ !empty($toast['title']) ? 'opacity-80' : 'font-medium' }}">{{ $toast['message'] }}</p>
+                        @endif
+                        @if(!empty($toast['action']['url']) && !empty($toast['action']['label']))
+                            <a href="{{ $toast['action']['url'] }}" class="inline-flex items-center gap-1 mt-1.5 text-sm font-semibold {{ $toastScheme['text'] }} underline underline-offset-2 hover:opacity-70">
+                                {{ $toast['action']['label'] }}
+                                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                            </a>
+                        @endif
+                    </div>
+                    <button @click="show = false" class="{{ $toastScheme['icon'] }} hover:opacity-70">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                </div>
+            @endif
+
             @if(session('success'))
                 <div class="mb-6 bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded shadow-sm flex items-start" x-data="{ show: true }" x-show="show">
                     <span class="material-symbols-outlined text-emerald-500 mr-3">check_circle</span>

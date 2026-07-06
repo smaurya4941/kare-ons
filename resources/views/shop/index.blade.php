@@ -60,9 +60,28 @@
 
                     <div class="px-4 py-4 border-b border-soft-border">
                         <span class="font-semibold text-sm text-on-surface">Search</span>
-                        <div class="pt-3 relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..." class="w-full border border-soft-border rounded py-2 pl-10 pr-3 text-sm focus:border-herbal-accent focus:ring-0">
+                        <div
+                            class="pt-3 relative"
+                            x-data="productSearch({ endpoint: '{{ route('search.suggest') }}', shopUrl: '{{ route('shop.index') }}', initial: @js(request('search', '')) })"
+                            @keydown.escape="closeSearch()"
+                            @click.outside="closeSearch()"
+                        >
+                            <span class="material-symbols-outlined absolute left-3 top-[calc(50%+0.375rem)] -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+                            <input
+                                type="text"
+                                name="search"
+                                x-model="query"
+                                @input="onInput()"
+                                @focus="onFocus()"
+                                @keydown.arrow-down.prevent="highlightNext()"
+                                @keydown.arrow-up.prevent="highlightPrev()"
+                                @keydown.enter="onEnterInline($event)"
+                                value="{{ request('search') }}"
+                                placeholder="Search products..."
+                                autocomplete="off"
+                                class="w-full border border-soft-border rounded py-2 pl-10 pr-3 text-sm focus:border-herbal-accent focus:ring-0"
+                            >
+                            @include('partials.search-results', ['panelClass' => 'left-0 right-0 mt-2'])
                         </div>
                     </div>
 
@@ -99,9 +118,28 @@
                     <!-- Search -->
                     <div>
                         <h3 class="font-label-md text-xs font-semibold uppercase tracking-wider text-on-surface mb-3">Search Products</h3>
-                        <div class="relative">
+                        <div
+                            class="relative"
+                            x-data="productSearch({ endpoint: '{{ route('search.suggest') }}', shopUrl: '{{ route('shop.index') }}', initial: @js(request('search', '')) })"
+                            @keydown.escape="closeSearch()"
+                            @click.outside="closeSearch()"
+                        >
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
-                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search Kare Ons..." class="w-full border border-soft-border rounded py-2 pl-10 pr-3 text-sm focus:border-herbal-accent focus:ring-0">
+                            <input
+                                type="text"
+                                name="search"
+                                x-model="query"
+                                @input="onInput()"
+                                @focus="onFocus()"
+                                @keydown.arrow-down.prevent="highlightNext()"
+                                @keydown.arrow-up.prevent="highlightPrev()"
+                                @keydown.enter="onEnterInline($event)"
+                                value="{{ request('search') }}"
+                                placeholder="Search Kare Ons..."
+                                autocomplete="off"
+                                class="w-full border border-soft-border rounded py-2 pl-10 pr-3 text-sm focus:border-herbal-accent focus:ring-0"
+                            >
+                            @include('partials.search-results', ['panelClass' => 'left-0 right-0 mt-2'])
                         </div>
                     </div>
                     <hr class="border-soft-border"/>
