@@ -208,7 +208,7 @@
                             <div class="flex flex-col items-center justify-center pt-4 pb-4" x-show="!imageUrl">
                                 <span class="material-symbols-outlined text-gray-400 mb-1 text-2xl">cloud_upload</span>
                                 <p class="mb-1 text-[11px] text-gray-500"><span class="font-semibold">Click to upload</span></p>
-                                <p class="text-[9px] text-gray-400">PNG, JPG or WEBP (MAX. 2MB)</p>
+                                <p class="text-[9px] text-gray-400">PNG, JPG or WEBP (MAX. 10MB)</p>
                             </div>
                             <img :src="imageUrl" x-show="imageUrl" class="absolute inset-0 w-full h-full object-cover">
                             <input id="main_image" name="main_image" type="file" class="hidden" accept="image/*" @change="fileChosen">
@@ -237,7 +237,7 @@
                 <div class="mt-2">
                     <label class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Upload more images</label>
                     <input type="file" name="gallery[]" multiple accept="image/*" class="w-full border border-gray-200 rounded-md px-2 py-1.5 text-[10px] focus:outline-none focus:ring-1 focus:ring-indigo-500 file:mr-3 file:py-1 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 shadow-sm bg-white">
-                    <p class="text-[9px] text-gray-400 mt-1.5">You can select multiple files. Max 2MB per image.</p>
+                    <p class="text-[9px] text-gray-400 mt-1.5">You can select multiple files. Max 10MB per image.</p>
                 </div>
             </div>
             

@@ -80,8 +80,8 @@ class ProductController extends Controller
             'meta_description'     => 'nullable|string|max:500',
 
             // Images
-            'main_image'           => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'gallery.*'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'main_image'           => 'required|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'gallery.*'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ]);
 
         try {
@@ -172,8 +172,8 @@ class ProductController extends Controller
             'meta_description'     => 'nullable|string|max:500',
 
             // Images
-            'main_image'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'gallery.*'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'main_image'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'gallery.*'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ]);
 
         try {
