@@ -1,6 +1,9 @@
 # Kare Ons Customer API (v1)
 
-REST API for the Next.js customer frontend. The **admin panel stays on
+A standalone REST API for customer-facing features, for any future headless
+frontend to consume. This app is not currently wired to any separate
+frontend — the Blade storefront below is the live customer experience. The
+**admin panel stays on
 Laravel Blade** (`routes/web.php`, `App\Http\Controllers\Admin\*`) and is not
 part of this API. The existing Blade storefront (`routes/web.php`,
 `App\Http\Controllers\Web\*`) also keeps working unchanged; this API is an
@@ -188,18 +191,22 @@ GET /api/v1/orders/{id}
 Authorization: Bearer 1|xxxx
 ```
 
-## Notes for the Next.js integration
+## Notes for a future headless frontend integration
 
-- Store the token in an httpOnly cookie set by your own Next.js API route,
+No frontend is wired to this API today; `FRONTEND_URL` is unset by default,
+so CORS is open (`*`) and the links below fall back to `APP_URL`. When a
+frontend is actually deployed against this API:
+
+- Store the token in an httpOnly cookie set by your own frontend's API route,
   or in memory + refreshed from a secure store — **not** `localStorage` if
   you can avoid it (XSS risk), though `localStorage` is the pragmatic
   default for a first pass.
-- CORS is restricted to `FRONTEND_URL` (see `config/cors.php`); update the
-  `.env` value (and redeploy) for every environment (local, staging, prod).
+- Set `FRONTEND_URL` (see `config/cors.php`) to that frontend's origin(s) to
+  restrict CORS, per environment (local, staging, prod).
 - Image URLs returned by resources (`main_image`, `logo`, `desktop_image`,
   etc.) are absolute (`asset('storage/...')`) — use them directly, no need
   to prefix with the API host separately... they already include it.
 - The email-verification and password-reset links in customer emails open
-  in a browser, not the app — they redirect to `{FRONTEND_URL}/email-verified`
-  and `{FRONTEND_URL}/reset-password` respectively. Build those two pages
-  in the Next.js app.
+  in a browser, not the app — once `FRONTEND_URL` is set they redirect to
+  `{FRONTEND_URL}/email-verified` and `{FRONTEND_URL}/reset-password`
+  respectively. Build those two pages in that frontend.

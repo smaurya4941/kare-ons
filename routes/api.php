@@ -25,9 +25,13 @@ use Illuminate\Support\Facades\Route;
 | Kare Ons Customer API (v1)
 |--------------------------------------------------------------------------
 |
-| Consumed by the Next.js customer frontend. Auth is Sanctum Bearer tokens
-| (no cookies/sessions) — see docs/API.md for the full reference. The admin
-| panel stays on the Blade routes in routes/web.php and is out of scope here.
+| A standalone, versioned REST API for customer-facing features (auth,
+| catalog, cart, checkout, orders, etc.) for any future headless client.
+| Auth is Sanctum Bearer tokens (no cookies/sessions) — see docs/API.md for
+| the full reference. This app is not currently wired to any separate
+| frontend — the Blade storefront in routes/web.php remains the live,
+| fully-functional customer + admin experience. The admin panel is Blade
+| only and intentionally out of scope for this API.
 |
 */
 

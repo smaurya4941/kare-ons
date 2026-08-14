@@ -56,15 +56,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Customer Frontend URL (Next.js)
+    | Headless Frontend URL
     |--------------------------------------------------------------------------
     |
-    | Base URL of the Next.js customer app. Used to build password-reset and
-    | email-verification links that customers open from their inbox.
+    | Base URL used to build password-reset and email-verification links for
+    | API (api/*) requests. This app is not currently wired to any separate
+    | frontend, so it defaults to this app's own URL. Only set FRONTEND_URL
+    | in .env once a standalone frontend consuming routes/api.php is actually
+    | deployed and should own those pages instead.
     |
     */
 
-    'frontend_url' => rtrim(env('FRONTEND_URL', 'http://localhost:3000'), '/'),
+    'frontend_url' => rtrim(env('FRONTEND_URL', env('APP_URL', 'http://localhost')), '/'),
 
     /*
     |--------------------------------------------------------------------------

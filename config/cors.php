@@ -20,8 +20,9 @@ return [
     'allowed_methods' => ['*'],
 
     // Bearer-token auth (no cookies) means a wildcard origin carries no CSRF
-    // risk, but we still restrict to the known Next.js frontend(s) by default.
-    // Set FRONTEND_URL to a comma-separated list of allowed origins.
+    // risk, so this defaults open. No frontend is wired to this API right
+    // now; once one is, set FRONTEND_URL to a comma-separated allowlist of
+    // its origin(s) to restrict this.
     'allowed_origins' => array_filter(explode(',', env('FRONTEND_URL', '*'))),
 
     'allowed_origins_patterns' => [],
