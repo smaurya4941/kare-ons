@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -60,6 +63,41 @@ class AppServiceProvider extends ServiceProvider
         // -----------------------------------------------------------------------
         Password::defaults(function () {
             return Password::min(6);
+        });
+
+        // -----------------------------------------------------------------------
+        // Password reset / email verification links branch on which surface
+        // triggered them: a request made through the API (Next.js frontend)
+        // links back to the frontend; the Blade storefront/admin keep their
+        // original Blade routes. Both notifications are sent synchronously
+        // within the request that triggers them, so request()->is('api/*')
+        // reliably reflects the origin.
+        // -----------------------------------------------------------------------
+        VerifyEmail::createUrlUsing(function ($notifiable) {
+            if (request()?->is('api/*')) {
+                return URL::temporarySignedRoute(
+                    'api.v1.auth.verify-email',
+                    now()->addMinutes(60),
+                    ['id' => $notifiable->getKey(), 'hash' => sha1($notifiable->getEmailForVerification())]
+                );
+            }
+
+            return URL::temporarySignedRoute(
+                'verification.verify',
+                now()->addMinutes(60),
+                ['id' => $notifiable->getKey(), 'hash' => sha1($notifiable->getEmailForVerification())]
+            );
+        });
+
+        ResetPassword::createUrlUsing(function ($notifiable, string $token) {
+            if (request()?->is('api/*')) {
+                return config('app.frontend_url').'/reset-password?token='.$token.'&email='.urlencode($notifiable->getEmailForPasswordReset());
+            }
+
+            return url(route('password.reset', [
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ], false));
         });
 
         // -----------------------------------------------------------------------

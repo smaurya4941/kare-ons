@@ -56,6 +56,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Customer Frontend URL (Next.js)
+    |--------------------------------------------------------------------------
+    |
+    | Base URL of the Next.js customer app. Used to build password-reset and
+    | email-verification links that customers open from their inbox.
+    |
+    */
+
+    'frontend_url' => rtrim(env('FRONTEND_URL', 'http://localhost:3000'), '/'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
