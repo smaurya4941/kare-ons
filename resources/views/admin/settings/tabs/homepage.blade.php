@@ -17,7 +17,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">Hero Background Image</label>
             @if($settings->home_hero_bg)
                 <div class="mb-2">
-                    <img src="{{ asset('storage/' . $settings->home_hero_bg) }}" alt="Current Hero BG" class="h-20 object-cover bg-gray-100 p-1 rounded">
+                    <img src="{{ image_url($settings->home_hero_bg) }}" alt="Current Hero BG" class="h-20 object-cover bg-gray-100 p-1 rounded">
                 </div>
             @endif
             <input type="file" name="home_hero_bg" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">

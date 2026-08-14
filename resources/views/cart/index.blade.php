@@ -40,7 +40,7 @@
                                 <div class="col-span-6 flex items-center gap-3 w-full">
                                     <div class="w-20 h-20 bg-surface-container rounded-lg overflow-hidden flex-shrink-0 border border-soft-border">
                                         @if($item->product->main_image)
-                                            <img src="{{ asset('storage/' . $item->product->main_image) }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover">
+                                            <img src="{{ image_url($item->product->main_image) }}" alt="{{ $item->product->name }}" class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center">
                                                 <span class="material-symbols-outlined text-outline">image</span>

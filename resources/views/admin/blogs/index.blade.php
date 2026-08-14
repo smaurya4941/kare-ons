@@ -47,7 +47,7 @@
                 <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
                         @if($blog->featured_image)
-                            <img src="{{ asset('storage/' . $blog->featured_image) }}" alt="" class="w-12 h-12 rounded object-cover flex-shrink-0">
+                            <img src="{{ image_url($blog->featured_image) }}" alt="" class="w-12 h-12 rounded object-cover flex-shrink-0">
                         @else
                             <div class="w-12 h-12 rounded bg-gray-100 flex items-center justify-center flex-shrink-0">
                                 <span class="material-symbols-outlined text-gray-300 text-[20px]">article</span>

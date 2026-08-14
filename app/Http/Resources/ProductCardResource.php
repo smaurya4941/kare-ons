@@ -29,7 +29,7 @@ class ProductCardResource extends JsonResource
             'discount_percent' => $this->sale_price !== null && (float) $this->price > 0
                 ? (int) round((($this->price - $this->sale_price) / $this->price) * 100)
                 : null,
-            'main_image' => $this->main_image ? asset('storage/'.$this->main_image) : null,
+            'main_image' => image_url($this->main_image),
             'in_stock' => (int) $this->stock_quantity > 0,
             'stock_quantity' => (int) $this->stock_quantity,
             'is_featured' => (bool) $this->is_featured,

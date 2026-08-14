@@ -19,7 +19,7 @@ class OrderItemResource extends JsonResource
             'total' => (float) $this->total,
             'product' => $this->whenLoaded('product', fn () => $this->product ? [
                 'slug' => $this->product->slug,
-                'main_image' => $this->product->main_image ? asset('storage/'.$this->product->main_image) : null,
+                'main_image' => image_url($this->product->main_image),
             ] : null),
         ];
     }

@@ -49,7 +49,7 @@
         <div>
             <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1">Customer Avatar (Optional)</label>
             @if($testimonial->avatar)
-                <img src="{{ asset('storage/' . $testimonial->avatar) }}" class="w-16 h-16 rounded-full object-cover mb-2 border border-gray-200">
+                <img src="{{ image_url($testimonial->avatar) }}" class="w-16 h-16 rounded-full object-cover mb-2 border border-gray-200">
             @endif
             <input type="file" name="avatar" accept="image/*" class="w-full text-[11px] file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-[11px] file:bg-indigo-50 file:text-indigo-700">
         </div>

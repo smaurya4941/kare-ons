@@ -21,7 +21,7 @@
             </div>
 
             <a href="{{ route('home') }}" class="mb-5">
-                <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare Ons Herbal') }}" class="h-11 w-auto object-contain">
+                <img src="{{ setting('logo') ? image_url(setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare Ons Herbal') }}" class="h-11 w-auto object-contain">
             </a>
 
             <div class="w-full sm:max-w-md px-6 py-7 bg-white/80 backdrop-blur-md border border-soft-border shadow-sm rounded-xl">

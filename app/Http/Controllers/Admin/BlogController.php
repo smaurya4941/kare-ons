@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class BlogController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary)
+    {
+    }
+
     public function index(Request $request)
     {
         $query = Blog::with('author')->latest();
@@ -54,7 +58,7 @@ class BlogController extends Controller
             : null;
 
         if ($request->hasFile('featured_image')) {
-            $validated['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
+            $validated['featured_image'] = $this->cloudinary->upload($request->file('featured_image'), 'blogs');
         }
 
         try {
@@ -62,7 +66,7 @@ class BlogController extends Controller
             return redirect()->route('admin.blogs.index')->with('success', 'Blog post created successfully.');
         } catch (\Exception $e) {
             if (isset($validated['featured_image'])) {
-                Storage::disk('public')->delete($validated['featured_image']);
+                $this->cloudinary->destroy($validated['featured_image']);
             }
             report($e);
             return back()->withInput()->with('error', 'Failed to create blog post due to an unexpected error.');
@@ -106,9 +110,9 @@ class BlogController extends Controller
 
         if ($request->hasFile('featured_image')) {
             if ($blog->featured_image) {
-                Storage::disk('public')->delete($blog->featured_image);
+                $this->cloudinary->destroy($blog->featured_image);
             }
-            $validated['featured_image'] = $request->file('featured_image')->store('blogs', 'public');
+            $validated['featured_image'] = $this->cloudinary->upload($request->file('featured_image'), 'blogs');
         }
 
         try {
@@ -124,7 +128,7 @@ class BlogController extends Controller
     {
         try {
             if ($blog->featured_image) {
-                Storage::disk('public')->delete($blog->featured_image);
+                $this->cloudinary->destroy($blog->featured_image);
             }
             $blog->delete();
 

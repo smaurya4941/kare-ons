@@ -91,7 +91,7 @@
                 <tr class="hover:bg-gray-50 transition">
                     <td class="px-4 py-3">
                         <div class="flex items-center gap-3">
-                            <img src="{{ $product->main_image ? asset('storage/'.$product->main_image) : 'https://placehold.co/100x100' }}" class="w-8 h-8 rounded object-cover bg-gray-100 border border-gray-200">
+                            <img src="{{ $product->main_image ? image_url($product->main_image) : 'https://placehold.co/100x100' }}" class="w-8 h-8 rounded object-cover bg-gray-100 border border-gray-200">
                             <div>
                                 <p class="text-[11px] font-semibold text-gray-800">{{ $product->name }}</p>
                                 <p class="text-[9px] text-gray-500 font-mono">SKU: {{ $product->sku }}</p>

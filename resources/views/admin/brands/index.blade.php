@@ -41,7 +41,7 @@
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 rounded border border-gray-200 overflow-hidden flex-shrink-0 bg-gray-50 flex items-center justify-center">
                                 @if($brand->logo)
-                                    <img src="{{ asset('storage/' . $brand->logo) }}" alt="{{ $brand->name }}" class="w-full h-full object-cover">
+                                    <img src="{{ image_url($brand->logo) }}" alt="{{ $brand->name }}" class="w-full h-full object-cover">
                                 @else
                                     <span class="material-symbols-outlined text-gray-400 text-[16px]">branding_watermark</span>
                                 @endif

@@ -7,7 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>@yield('title', setting('site_name', 'Kare ONS Herbals') . ' | Clinical Excellence in Botanical Medicine')</title>
     @if(setting('favicon'))
-    <link rel="icon" type="image/png" href="{{ asset('storage/' . setting('favicon')) }}">
+    <link rel="icon" type="image/png" href="{{ image_url(setting('favicon')) }}">
     @else
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     @endif
@@ -19,7 +19,7 @@
     $metaDescription = \Illuminate\Support\Str::limit(trim(strip_tags($__env->yieldContent('meta_description', $defaultDesc))), 160);
     $metaKeywords = trim($__env->yieldContent('meta_keywords', setting('seo_meta_keywords', '')));
     $pageTitle = trim($__env->yieldContent('title', $siteName));
-    $ogImage = trim($__env->yieldContent('og_image', setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png')));
+    $ogImage = trim($__env->yieldContent('og_image', setting('logo') ? image_url(setting('logo')) : asset('images/logo.png')));
     @endphp
     <meta name="description" content="{{ $metaDescription }}">
     @if($metaKeywords)
@@ -52,7 +52,7 @@
     <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-outline-variant transition-all duration-300" id="navbar">
         <div class="flex justify-between items-center max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop h-14">
             <a href="{{ route('home') }}" class="flex items-center">
-                <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-9 w-auto object-contain">
+                <img src="{{ setting('logo') ? image_url(setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-9 w-auto object-contain">
             </a>
             <div class="hidden md:flex items-center gap-6 h-full">
                 <a class="{{ request()->routeIs('home') ? 'nav-link-active' : 'text-on-surface hover:text-brand-gold-dark transition-colors' }} flex items-center h-full px-1 text-sm font-medium" href="{{ route('home') }}">Home</a>
@@ -209,7 +209,7 @@
             {{-- Brand column --}}
             <div class="col-span-2 md:col-span-4 lg:col-span-4">
                 <a class="inline-block mb-4" href="{{ route('home') }}">
-                    <img src="{{ setting('logo') ? asset('storage/' . setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-12 w-auto object-contain bg-white rounded-lg p-1.5">
+                    <img src="{{ setting('logo') ? image_url(setting('logo')) : asset('images/logo.png') }}" alt="{{ setting('site_name', 'Kare ONS Herbals') }} Logo" class="h-12 w-auto object-contain bg-white rounded-lg p-1.5">
                 </a>
                 <p class="text-on-primary/70 font-body-md text-label-md leading-relaxed max-w-xs mb-5">
                     {{ \Illuminate\Support\Str::limit(strip_tags(setting('about_text', 'Pure, potent Ayurvedic wellness — 5,000 years of Vedic wisdom, made for modern life.')), 130) }}

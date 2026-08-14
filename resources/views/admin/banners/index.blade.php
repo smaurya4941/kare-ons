@@ -30,7 +30,7 @@
                 <tr class="hover:bg-gray-50 transition">
                     <td class="px-6 py-4">
                         <div class="w-16 h-10 rounded border border-gray-200 overflow-hidden bg-gray-100">
-                            <img src="{{ asset('storage/' . $banner->desktop_image) }}" class="w-full h-full object-cover">
+                            <img src="{{ image_url($banner->desktop_image) }}" class="w-full h-full object-cover">
                         </div>
                     </td>
                     <td class="px-6 py-4">

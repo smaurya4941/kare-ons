@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 
 class BannerController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary)
+    {
+    }
+
     public function index()
     {
         $banners = Banner::orderBy('type')->orderBy('sort_order')->get();
@@ -32,10 +37,10 @@ class BannerController extends Controller
         ]);
 
         if ($request->hasFile('desktop_image')) {
-            $validated['desktop_image'] = $request->file('desktop_image')->store('banners', 'public');
+            $validated['desktop_image'] = $this->cloudinary->upload($request->file('desktop_image'), 'banners');
         }
         if ($request->hasFile('mobile_image')) {
-            $validated['mobile_image'] = $request->file('mobile_image')->store('banners', 'public');
+            $validated['mobile_image'] = $this->cloudinary->upload($request->file('mobile_image'), 'banners');
         }
 
         Banner::create($validated);
@@ -66,13 +71,13 @@ class BannerController extends Controller
         ]);
 
         if ($request->hasFile('desktop_image')) {
-            if ($banner->desktop_image) \Illuminate\Support\Facades\Storage::disk('public')->delete($banner->desktop_image);
-            $validated['desktop_image'] = $request->file('desktop_image')->store('banners', 'public');
+            if ($banner->desktop_image) $this->cloudinary->destroy($banner->desktop_image);
+            $validated['desktop_image'] = $this->cloudinary->upload($request->file('desktop_image'), 'banners');
         }
-        
+
         if ($request->hasFile('mobile_image')) {
-            if ($banner->mobile_image) \Illuminate\Support\Facades\Storage::disk('public')->delete($banner->mobile_image);
-            $validated['mobile_image'] = $request->file('mobile_image')->store('banners', 'public');
+            if ($banner->mobile_image) $this->cloudinary->destroy($banner->mobile_image);
+            $validated['mobile_image'] = $this->cloudinary->upload($request->file('mobile_image'), 'banners');
         }
 
         $banner->update($validated);
@@ -82,8 +87,8 @@ class BannerController extends Controller
 
     public function destroy(Banner $banner)
     {
-        if ($banner->desktop_image) \Illuminate\Support\Facades\Storage::disk('public')->delete($banner->desktop_image);
-        if ($banner->mobile_image) \Illuminate\Support\Facades\Storage::disk('public')->delete($banner->mobile_image);
+        if ($banner->desktop_image) $this->cloudinary->destroy($banner->desktop_image);
+        if ($banner->mobile_image) $this->cloudinary->destroy($banner->mobile_image);
         $banner->delete();
 
         return redirect()->route('admin.banners.index')->with('success', 'Banner deleted successfully.');

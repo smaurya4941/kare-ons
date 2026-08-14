@@ -28,7 +28,7 @@
             <article class="bg-surface rounded-xl border border-outline-variant overflow-hidden group hover:border-primary transition-colors shadow-sm flex flex-col">
                 <a href="{{ route('blog.show', $blog->slug) }}" class="block aspect-[16/10] bg-surface-container overflow-hidden relative">
                     @if($blog->featured_image)
-                        <img src="{{ asset('storage/' . $blog->featured_image) }}" alt="{{ $blog->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ image_url($blog->featured_image) }}" alt="{{ $blog->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-outline">
                             <span class="material-symbols-outlined text-[48px]">article</span>

@@ -15,7 +15,7 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">Site Logo</label>
         @if($settings->logo)
             <div class="mb-2">
-                <img src="{{ asset('storage/' . $settings->logo) }}" alt="Current Logo" class="h-12 bg-gray-100 p-2 rounded">
+                <img src="{{ image_url($settings->logo) }}" alt="Current Logo" class="h-12 bg-gray-100 p-2 rounded">
             </div>
         @endif
         <input type="file" name="logo" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
@@ -25,7 +25,7 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">Browser Favicon</label>
         @if($settings->favicon)
             <div class="mb-2">
-                <img src="{{ asset('storage/'.$settings->favicon) }}" alt="Favicon" class="h-8 w-8 object-contain border rounded p-1 bg-gray-50">
+                <img src="{{ image_url($settings->favicon) }}" alt="Favicon" class="h-8 w-8 object-contain border rounded p-1 bg-gray-50">
             </div>
         @endif
         <input type="file" name="favicon" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">

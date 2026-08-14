@@ -58,7 +58,7 @@
                 <h3 class="text-xs font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 uppercase tracking-wide">Media</h3>
                 
                 <div class="space-y-4">
-                    <div x-data="imageViewer('{{ $brand->logo ? asset('storage/' . $brand->logo) : '' }}')">
+                    <div x-data="imageViewer('{{ $brand->logo ? image_url($brand->logo) : '' }}')">
                         <label class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Brand Logo</label>
                         <div class="flex items-center justify-center w-full">
                             <label for="logo" class="flex flex-col items-center justify-center w-full h-32 border border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden relative transition">

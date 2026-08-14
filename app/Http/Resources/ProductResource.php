@@ -26,10 +26,10 @@ class ProductResource extends JsonResource
             'in_stock' => (int) $this->stock_quantity > 0,
             'weight' => $this->weight !== null ? (float) $this->weight : null,
             'pack_size' => $this->pack_size,
-            'main_image' => $this->main_image ? asset('storage/'.$this->main_image) : null,
+            'main_image' => image_url($this->main_image),
             'images' => $this->whenLoaded('images', fn () => $this->images->map(fn ($image) => [
                 'id' => $image->id,
-                'url' => asset('storage/'.$image->image_path),
+                'url' => image_url($image->image_path),
                 'sort_order' => $image->sort_order,
             ])),
 

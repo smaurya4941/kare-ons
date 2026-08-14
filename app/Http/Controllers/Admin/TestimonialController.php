@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 
 class TestimonialController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary)
+    {
+    }
+
     public function index()
     {
         $testimonials = Testimonial::orderBy('sort_order')->get();
@@ -32,7 +37,7 @@ class TestimonialController extends Controller
         ]);
 
         if ($request->hasFile('avatar')) {
-            $validated['avatar'] = $request->file('avatar')->store('testimonials', 'public');
+            $validated['avatar'] = $this->cloudinary->upload($request->file('avatar'), 'testimonials');
         }
 
         Testimonial::create($validated);
@@ -57,8 +62,8 @@ class TestimonialController extends Controller
         ]);
 
         if ($request->hasFile('avatar')) {
-            if ($testimonial->avatar) \Illuminate\Support\Facades\Storage::disk('public')->delete($testimonial->avatar);
-            $validated['avatar'] = $request->file('avatar')->store('testimonials', 'public');
+            if ($testimonial->avatar) $this->cloudinary->destroy($testimonial->avatar);
+            $validated['avatar'] = $this->cloudinary->upload($request->file('avatar'), 'testimonials');
         }
 
         $testimonial->update($validated);
@@ -67,7 +72,7 @@ class TestimonialController extends Controller
 
     public function destroy(Testimonial $testimonial)
     {
-        if ($testimonial->avatar) \Illuminate\Support\Facades\Storage::disk('public')->delete($testimonial->avatar);
+        if ($testimonial->avatar) $this->cloudinary->destroy($testimonial->avatar);
         $testimonial->delete();
         return redirect()->route('admin.testimonials.index')->with('success', 'Testimonial deleted.');
     }

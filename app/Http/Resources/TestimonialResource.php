@@ -13,7 +13,7 @@ class TestimonialResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'role' => $this->role,
-            'avatar' => $this->avatar ? asset('storage/'.$this->avatar) : null,
+            'avatar' => image_url($this->avatar),
             'content' => $this->content,
             'rating' => (int) $this->rating,
         ];

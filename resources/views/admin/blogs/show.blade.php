@@ -19,7 +19,7 @@
 
 <div class="max-w-4xl bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
     @if($blog->featured_image)
-        <img src="{{ asset('storage/' . $blog->featured_image) }}" alt="" class="w-full h-64 object-cover">
+        <img src="{{ image_url($blog->featured_image) }}" alt="" class="w-full h-64 object-cover">
     @endif
     <div class="p-8">
         <div class="flex items-center gap-3 mb-4 text-xs">

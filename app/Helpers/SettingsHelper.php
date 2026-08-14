@@ -31,6 +31,29 @@ if (!function_exists('setting')) {
     }
 }
 
+if (!function_exists('image_url')) {
+    /**
+     * Build a display URL for a stored image field.
+     *
+     * New uploads go through Cloudinary and are stored as full secure URLs,
+     * so those are returned as-is. Records created before the Cloudinary
+     * migration still hold a relative "public" disk path, so those fall back
+     * to the local storage URL.
+     */
+    function image_url(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'http')) {
+            return $path;
+        }
+
+        return asset('storage/'.$path);
+    }
+}
+
 if (!function_exists('toast_payload')) {
     /**
      * Build a structured toast payload for flashing to the session.

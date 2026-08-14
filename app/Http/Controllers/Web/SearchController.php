@@ -73,9 +73,7 @@ class SearchController extends Controller
                 'id'             => $product->id,
                 'name'           => $product->name,
                 'url'            => route('product.show', $product->slug),
-                'image'          => $product->main_image
-                    ? asset('storage/' . $product->main_image)
-                    : null,
+                'image'          => image_url($product->main_image),
                 'category'       => $product->category?->name,
                 'price'          => '₹' . number_format((float) $effectivePrice, 2),
                 'original_price' => $product->sale_price

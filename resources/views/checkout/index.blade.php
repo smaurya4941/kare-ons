@@ -153,7 +153,7 @@
                         <div class="flex gap-4">
                             <div class="w-16 h-16 bg-surface-container rounded border border-outline-variant overflow-hidden flex-shrink-0">
                                 @if($item->product->main_image)
-                                    <img src="{{ asset('storage/' . $item->product->main_image) }}" class="w-full h-full object-cover">
+                                    <img src="{{ image_url($item->product->main_image) }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center">
                                         <span class="material-symbols-outlined text-outline text-[16px]">image</span>

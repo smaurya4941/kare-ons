@@ -60,7 +60,7 @@ class SearchController extends Controller
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
-                'image' => $product->main_image ? asset('storage/'.$product->main_image) : null,
+                'image' => image_url($product->main_image),
                 'category' => $product->category?->name,
                 'price' => (float) $effectivePrice,
                 'original_price' => $product->sale_price !== null ? (float) $product->price : null,

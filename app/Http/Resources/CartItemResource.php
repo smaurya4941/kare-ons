@@ -21,7 +21,7 @@ class CartItemResource extends JsonResource
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
-                'main_image' => $product->main_image ? asset('storage/'.$product->main_image) : null,
+                'main_image' => image_url($product->main_image),
                 'price' => (float) $product->price,
                 'sale_price' => $product->sale_price !== null ? (float) $product->sale_price : null,
                 'stock_quantity' => (int) $product->stock_quantity,

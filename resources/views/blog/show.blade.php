@@ -3,7 +3,7 @@
 @section('title', $blog->meta_title ?? $blog->title . ' - Kare Ons Herbal')
 @section('meta_description', \Illuminate\Support\Str::limit(strip_tags($blog->meta_description ?: $blog->excerpt), 160))
 @section('og_type', 'article')
-@section('og_image', $blog->featured_image ? asset('storage/' . $blog->featured_image) : '')
+@section('og_image', $blog->featured_image ? image_url($blog->featured_image) : '')
 
 @section('content')
 <article class="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop py-8">
@@ -45,7 +45,7 @@
     <!-- Featured Image -->
     @if($blog->featured_image)
         <div class="rounded-2xl overflow-hidden aspect-[21/9] mb-12 shadow-md">
-            <img src="{{ asset('storage/' . $blog->featured_image) }}" alt="{{ $blog->title }}" class="w-full h-full object-cover">
+            <img src="{{ image_url($blog->featured_image) }}" alt="{{ $blog->title }}" class="w-full h-full object-cover">
         </div>
     @endif
 
@@ -82,7 +82,7 @@
                 <article class="bg-surface rounded-2xl border border-outline-variant overflow-hidden group hover:border-primary transition-colors shadow-sm flex flex-col">
                     <a href="{{ route('blog.show', $related->slug) }}" class="block aspect-[16/10] bg-surface-container overflow-hidden relative">
                         @if($related->featured_image)
-                            <img src="{{ asset('storage/' . $related->featured_image) }}" alt="{{ $related->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ image_url($related->featured_image) }}" alt="{{ $related->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @endif
                     </a>
                     <div class="p-6 flex flex-col flex-1">

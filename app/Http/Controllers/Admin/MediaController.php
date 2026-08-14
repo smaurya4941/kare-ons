@@ -4,10 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Media;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 
 class MediaController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary)
+    {
+    }
+
     public function index()
     {
         $media = Media::latest()->paginate(24);
@@ -21,7 +26,7 @@ class MediaController extends Controller
         ]);
 
         $file = $request->file('file');
-        $path = $file->store('media', 'public');
+        $path = $this->cloudinary->upload($file, 'media', 'auto');
 
         Media::create([
             'file_name' => $file->getClientOriginalName(),
@@ -35,7 +40,7 @@ class MediaController extends Controller
 
     public function destroy(Media $medium)
     {
-        \Illuminate\Support\Facades\Storage::disk('public')->delete($medium->file_path);
+        $this->cloudinary->destroy($medium->file_path, str_starts_with($medium->mime_type, 'video') ? 'video' : (str_starts_with($medium->mime_type, 'image') ? 'image' : 'raw'));
         $medium->delete();
         return back()->with('success', 'File deleted from media library.');
     }

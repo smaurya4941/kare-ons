@@ -22,7 +22,7 @@
     <div class="space-y-4">
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
             @if($product->main_image)
-                <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" class="w-full h-64 object-cover rounded-lg">
+                <img src="{{ image_url($product->main_image) }}" alt="{{ $product->name }}" class="w-full h-64 object-cover rounded-lg">
             @else
                 <div class="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
                     <span class="material-symbols-outlined text-gray-300 text-5xl">image</span>
@@ -31,7 +31,7 @@
             @if($product->images->count())
                 <div class="grid grid-cols-4 gap-2 mt-3">
                     @foreach($product->images as $img)
-                        <img src="{{ asset('storage/' . $img->image_path) }}" alt="" class="w-full h-16 object-cover rounded border border-gray-100">
+                        <img src="{{ image_url($img->image_path) }}" alt="" class="w-full h-16 object-cover rounded border border-gray-100">
                     @endforeach
                 </div>
             @endif

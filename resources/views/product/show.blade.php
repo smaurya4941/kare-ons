@@ -3,7 +3,7 @@
 @section('title', ($product->meta_title ?? $product->name) . ' - Kare Ons Herbal')
 @section('meta_description', \Illuminate\Support\Str::limit(strip_tags($product->meta_description ?: ($product->short_description ?: $product->description)), 160))
 @section('og_type', 'product')
-@section('og_image', $product->main_image ? asset('storage/' . $product->main_image) : '')
+@section('og_image', $product->main_image ? image_url($product->main_image) : '')
 
 @section('content')
 <style>
@@ -37,11 +37,11 @@
         
         <!-- Left: Image Gallery -->
         <div class="md:col-span-5 flex flex-col gap-3" x-data="{ 
-            activeImage: '{{ asset('storage/' . $product->main_image) }}',
+            activeImage: '{{ image_url($product->main_image) }}',
             images: [
-                '{{ asset('storage/' . $product->main_image) }}',
+                '{{ image_url($product->main_image) }}',
                 @foreach($product->images as $image)
-                    '{{ asset('storage/' . $image->image_path) }}',
+                    '{{ image_url($image->image_path) }}',
                 @endforeach
             ]
         }">
@@ -59,11 +59,11 @@
             <!-- Thumbnails -->
             <div class="grid grid-cols-5 gap-2">
                 <button @click="activeImage = images[0]" class="aspect-square rounded-lg border-2 overflow-hidden bg-white hover:border-herbal-accent transition-colors" :class="activeImage === images[0] ? 'border-herbal-accent' : 'border-soft-border'">
-                    <img src="{{ asset('storage/' . $product->main_image) }}" alt="Main Image" class="w-full h-full object-cover">
+                    <img src="{{ image_url($product->main_image) }}" alt="Main Image" class="w-full h-full object-cover">
                 </button>
                 @foreach($product->images as $index => $image)
                     <button @click="activeImage = images[{{ $index + 1 }}]" class="aspect-square rounded-lg border-2 overflow-hidden bg-white hover:border-herbal-accent transition-colors" :class="activeImage === images[{{ $index + 1 }}] ? 'border-herbal-accent' : 'border-soft-border'">
-                        <img src="{{ asset('storage/' . $image->image_path) }}" alt="Gallery Image {{ $index + 1 }}" class="w-full h-full object-cover">
+                        <img src="{{ image_url($image->image_path) }}" alt="Gallery Image {{ $index + 1 }}" class="w-full h-full object-cover">
                     </button>
                 @endforeach
             </div>
@@ -501,7 +501,7 @@
                 <a href="{{ route('product.show', $related->slug) }}" class="group bg-white border border-soft-border rounded-lg overflow-hidden transition-all duration-300 hover-border-herbal-accent flex flex-col h-full relative shadow-sm">
                     <div class="aspect-square bg-surface-container overflow-hidden relative">
                         @if($related->main_image)
-                            <img src="{{ asset('storage/' . $related->main_image) }}" alt="{{ $related->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ image_url($related->main_image) }}" alt="{{ $related->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @else
                             <div class="w-full h-full flex items-center justify-center">
                                 <span class="material-symbols-outlined text-4xl text-outline">image</span>

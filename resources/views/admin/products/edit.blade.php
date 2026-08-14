@@ -202,7 +202,7 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <h3 class="text-xs font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 uppercase tracking-wide">Product Image</h3>
                 
-                <div class="mt-2" x-data="imageViewer('{{ $product->main_image ? asset('storage/' . $product->main_image) : '' }}')">
+                <div class="mt-2" x-data="imageViewer('{{ $product->main_image ? image_url($product->main_image) : '' }}')">
                     <div class="flex items-center justify-center w-full">
                         <label for="main_image" class="flex flex-col items-center justify-center w-full h-40 border border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden relative transition">
                             <div class="flex flex-col items-center justify-center pt-4 pb-4" x-show="!imageUrl">
@@ -225,7 +225,7 @@
                 <div class="grid grid-cols-3 gap-2 mb-3">
                     @foreach($product->images as $image)
                     <div class="relative group aspect-square rounded-md border border-gray-200 overflow-hidden bg-gray-50">
-                        <img src="{{ asset('storage/' . $image->image_path) }}" class="w-full h-full object-cover">
+                        <img src="{{ image_url($image->image_path) }}" class="w-full h-full object-cover">
                         <button type="submit" form="delete-image-{{ $image->id }}" onclick="return confirm('Are you sure you want to delete this image?')" class="absolute top-1 right-1 bg-red-500 text-white rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-600 shadow-sm" title="Delete Image">
                             <span class="material-symbols-outlined text-[14px]">delete</span>
                         </button>

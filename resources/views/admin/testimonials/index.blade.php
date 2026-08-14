@@ -27,7 +27,7 @@
             <tr class="hover:bg-gray-50">
                 <td class="px-6 py-4 flex items-center gap-3">
                     @if($test->avatar)
-                        <img src="{{ asset('storage/' . $test->avatar) }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
+                        <img src="{{ image_url($test->avatar) }}" class="w-10 h-10 rounded-full object-cover border border-gray-200">
                     @else
                         <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">
                             {{ substr($test->name, 0, 1) }}

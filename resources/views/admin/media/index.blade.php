@@ -27,7 +27,7 @@
         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm group relative">
             <div class="aspect-square bg-gray-50 flex items-center justify-center p-2">
                 @if(str_starts_with($item->mime_type, 'image/'))
-                    <img src="{{ asset('storage/' . $item->file_path) }}" alt="{{ $item->file_name }}" class="max-w-full max-h-full object-contain">
+                    <img src="{{ image_url($item->file_path) }}" alt="{{ $item->file_name }}" class="max-w-full max-h-full object-contain">
                 @elseif($item->mime_type === 'application/pdf')
                     <span class="material-symbols-outlined text-4xl text-red-500">picture_as_pdf</span>
                 @elseif(str_starts_with($item->mime_type, 'video/'))
@@ -44,7 +44,7 @@
             
             <!-- Overlay Actions -->
             <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
-                <button onclick="copyToClipboard('{{ asset('storage/' . $item->file_path) }}')" class="bg-white text-indigo-600 hover:bg-indigo-50 px-3 py-1 rounded text-[10px] font-bold flex items-center gap-1 shadow">
+                <button onclick="copyToClipboard('{{ image_url($item->file_path) }}')" class="bg-white text-indigo-600 hover:bg-indigo-50 px-3 py-1 rounded text-[10px] font-bold flex items-center gap-1 shadow">
                     <span class="material-symbols-outlined text-[14px]">content_copy</span> Copy URL
                 </button>
                 <form action="{{ route('admin.media.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Delete this file permanently?');">

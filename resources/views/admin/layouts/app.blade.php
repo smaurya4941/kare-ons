@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Dashboard') | {{ setting('site_name', 'Kare Ons Herbal') }}</title>
     @if(setting('favicon'))
-        <link rel="icon" type="image/png" href="{{ asset('storage/' . setting('favicon')) }}">
+        <link rel="icon" type="image/png" href="{{ image_url(setting('favicon')) }}">
     @else
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     @endif

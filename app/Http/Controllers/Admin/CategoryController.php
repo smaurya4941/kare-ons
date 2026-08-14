@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary)
+    {
+    }
+
     public function index(Request $request)
     {
         $query = Category::with('parent')->latest();
@@ -47,11 +51,11 @@ class CategoryController extends Controller
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('categories/images', 'public');
+            $validated['image'] = $this->cloudinary->upload($request->file('image'), 'categories/images');
         }
-        
+
         if ($request->hasFile('banner_image')) {
-            $validated['banner_image'] = $request->file('banner_image')->store('categories/banners', 'public');
+            $validated['banner_image'] = $this->cloudinary->upload($request->file('banner_image'), 'categories/banners');
         }
 
         try {
@@ -60,10 +64,10 @@ class CategoryController extends Controller
             return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
         } catch (\Exception $e) {
             if (isset($validated['image'])) {
-                Storage::disk('public')->delete($validated['image']);
+                $this->cloudinary->destroy($validated['image']);
             }
             if (isset($validated['banner_image'])) {
-                Storage::disk('public')->delete($validated['banner_image']);
+                $this->cloudinary->destroy($validated['banner_image']);
             }
             report($e);
             return back()->withInput()->with('error', 'Failed to create category due to an unexpected error.');
@@ -104,16 +108,16 @@ class CategoryController extends Controller
 
         if ($request->hasFile('image')) {
             if ($category->image) {
-                Storage::disk('public')->delete($category->image);
+                $this->cloudinary->destroy($category->image);
             }
-            $validated['image'] = $request->file('image')->store('categories/images', 'public');
+            $validated['image'] = $this->cloudinary->upload($request->file('image'), 'categories/images');
         }
-        
+
         if ($request->hasFile('banner_image')) {
             if ($category->banner_image) {
-                Storage::disk('public')->delete($category->banner_image);
+                $this->cloudinary->destroy($category->banner_image);
             }
-            $validated['banner_image'] = $request->file('banner_image')->store('categories/banners', 'public');
+            $validated['banner_image'] = $this->cloudinary->upload($request->file('banner_image'), 'categories/banners');
         }
 
         try {
@@ -138,10 +142,10 @@ class CategoryController extends Controller
 
         try {
             if ($category->image) {
-                Storage::disk('public')->delete($category->image);
+                $this->cloudinary->destroy($category->image);
             }
             if ($category->banner_image) {
-                Storage::disk('public')->delete($category->banner_image);
+                $this->cloudinary->destroy($category->banner_image);
             }
             $category->delete();
             \Illuminate\Support\Facades\Cache::forget('header_categories');

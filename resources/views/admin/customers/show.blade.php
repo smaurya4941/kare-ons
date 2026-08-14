@@ -119,7 +119,7 @@
                     <div class="px-5 py-3 flex items-center gap-3">
                         <div class="w-10 h-10 rounded bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0">
                             @if($wishlist->product && $wishlist->product->main_image)
-                                <img src="{{ asset('storage/' . $wishlist->product->main_image) }}" class="w-full h-full object-cover">
+                                <img src="{{ image_url($wishlist->product->main_image) }}" class="w-full h-full object-cover">
                             @else
                                 <span class="material-symbols-outlined text-gray-400 w-full h-full flex items-center justify-center text-[16px]">image</span>
                             @endif

@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 
 class BrandController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary)
+    {
+    }
+
     public function index(Request $request)
     {
         $query = Brand::latest();
@@ -40,7 +44,7 @@ class BrandController extends Controller
         $validated['slug'] = $this->uniqueSlug($validated['name']);
 
         if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('brands', 'public');
+            $validated['logo'] = $this->cloudinary->upload($request->file('logo'), 'brands');
         }
 
         try {
@@ -48,7 +52,7 @@ class BrandController extends Controller
             return redirect()->route('admin.brands.index')->with('success', 'Brand created successfully.');
         } catch (\Exception $e) {
             if (isset($validated['logo'])) {
-                Storage::disk('public')->delete($validated['logo']);
+                $this->cloudinary->destroy($validated['logo']);
             }
             report($e);
             return back()->withInput()->with('error', 'Failed to create brand due to an unexpected error.');
@@ -75,9 +79,9 @@ class BrandController extends Controller
 
         if ($request->hasFile('logo')) {
             if ($brand->logo) {
-                Storage::disk('public')->delete($brand->logo);
+                $this->cloudinary->destroy($brand->logo);
             }
-            $validated['logo'] = $request->file('logo')->store('brands', 'public');
+            $validated['logo'] = $this->cloudinary->upload($request->file('logo'), 'brands');
         }
 
         try {
@@ -97,7 +101,7 @@ class BrandController extends Controller
         
         try {
             if ($brand->logo) {
-                Storage::disk('public')->delete($brand->logo);
+                $this->cloudinary->destroy($brand->logo);
             }
             $brand->delete();
 

@@ -45,8 +45,8 @@
                     <h4 class="text-[11px] font-bold text-gray-800 uppercase tracking-wider mb-3">Attached Images</h4>
                     <div class="flex flex-wrap gap-3">
                         @foreach($review->images as $img)
-                            <a href="{{ asset('storage/' . $img) }}" target="_blank" class="block w-24 h-24 rounded border border-gray-200 overflow-hidden hover:border-indigo-400 transition">
-                                <img src="{{ asset('storage/' . $img) }}" class="w-full h-full object-cover">
+                            <a href="{{ image_url($img) }}" target="_blank" class="block w-24 h-24 rounded border border-gray-200 overflow-hidden hover:border-indigo-400 transition">
+                                <img src="{{ image_url($img) }}" class="w-full h-full object-cover">
                             </a>
                         @endforeach
                     </div>
@@ -115,7 +115,7 @@
             <div class="p-4 flex gap-3">
                 <div class="w-16 h-16 rounded bg-gray-100 border border-gray-200 flex-shrink-0 overflow-hidden">
                     @if($review->product && $review->product->main_image)
-                        <img src="{{ asset('storage/' . $review->product->main_image) }}" class="w-full h-full object-cover">
+                        <img src="{{ image_url($review->product->main_image) }}" class="w-full h-full object-cover">
                     @endif
                 </div>
                 <div>

@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary)
+    {
+    }
+
     public function index($tab = 'general')
     {
         $settings = Setting::firstOrCreate([]);
@@ -110,26 +114,26 @@ class SettingController extends Controller
 
         // Handle File Upload for Logo
         if ($request->hasFile('logo')) {
-            if ($settings->logo && Storage::disk('public')->exists($settings->logo)) {
-                Storage::disk('public')->delete($settings->logo);
+            if ($settings->logo) {
+                $this->cloudinary->destroy($settings->logo);
             }
-            $validated['logo'] = $request->file('logo')->store('settings', 'public');
+            $validated['logo'] = $this->cloudinary->upload($request->file('logo'), 'settings');
         }
 
         // Handle File Upload for Favicon
         if ($request->hasFile('favicon')) {
-            if ($settings->favicon && Storage::disk('public')->exists($settings->favicon)) {
-                Storage::disk('public')->delete($settings->favicon);
+            if ($settings->favicon) {
+                $this->cloudinary->destroy($settings->favicon);
             }
-            $validated['favicon'] = $request->file('favicon')->store('settings', 'public');
+            $validated['favicon'] = $this->cloudinary->upload($request->file('favicon'), 'settings');
         }
 
         // Handle File Upload for Home Hero BG
         if ($request->hasFile('home_hero_bg')) {
-            if ($settings->home_hero_bg && Storage::disk('public')->exists($settings->home_hero_bg)) {
-                Storage::disk('public')->delete($settings->home_hero_bg);
+            if ($settings->home_hero_bg) {
+                $this->cloudinary->destroy($settings->home_hero_bg);
             }
-            $validated['home_hero_bg'] = $request->file('home_hero_bg')->store('settings', 'public');
+            $validated['home_hero_bg'] = $this->cloudinary->upload($request->file('home_hero_bg'), 'settings');
         }
 
         $settings->fill($validated);

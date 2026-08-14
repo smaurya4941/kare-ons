@@ -8,14 +8,18 @@ use App\Models\Category;
 use App\Models\ProductImage;
 use App\Models\Brand;
 use App\Models\Tax;
+use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    public function __construct(protected CloudinaryService $cloudinary)
+    {
+    }
+
     public function index(Request $request)
     {
         $query = Product::with('category')->latest();
@@ -92,13 +96,13 @@ class ProductController extends Controller
             $validated['is_featured'] = $request->boolean('is_featured');
             $validated['is_best_seller'] = $request->boolean('is_best_seller');
             $validated['is_trending'] = $request->boolean('is_trending');
-            $validated['main_image'] = $request->file('main_image')->store('products', 'public');
+            $validated['main_image'] = $this->cloudinary->upload($request->file('main_image'), 'products');
 
             $product = Product::create(Arr::except($validated, ['gallery']));
 
             if ($request->hasFile('gallery')) {
                 foreach ($request->file('gallery') as $index => $image) {
-                    $path = $image->store('products/gallery', 'public');
+                    $path = $this->cloudinary->upload($image, 'products/gallery');
                     $product->images()->create([
                         'image_path'  => $path,
                         'sort_order'  => $index,
@@ -113,7 +117,7 @@ class ProductController extends Controller
             DB::rollBack();
             // Delete uploaded files if DB insertion failed
             if (isset($validated['main_image'])) {
-                Storage::disk('public')->delete($validated['main_image']);
+                $this->cloudinary->destroy($validated['main_image']);
             }
             if ($request->hasFile('gallery')) {
                 // We'd have to track uploaded paths, but for simplicity we rely on local garbage collection or storage cleanup later
@@ -190,9 +194,9 @@ class ProductController extends Controller
 
             if ($request->hasFile('main_image')) {
                 if ($product->main_image) {
-                    Storage::disk('public')->delete($product->main_image);
+                    $this->cloudinary->destroy($product->main_image);
                 }
-                $validated['main_image'] = $request->file('main_image')->store('products', 'public');
+                $validated['main_image'] = $this->cloudinary->upload($request->file('main_image'), 'products');
             }
 
             $product->update(Arr::except($validated, ['gallery']));
@@ -200,7 +204,7 @@ class ProductController extends Controller
             if ($request->hasFile('gallery')) {
                 $maxSort = $product->images()->max('sort_order') ?? -1;
                 foreach ($request->file('gallery') as $index => $image) {
-                    $path = $image->store('products/gallery', 'public');
+                    $path = $this->cloudinary->upload($image, 'products/gallery');
                     $product->images()->create([
                         'image_path' => $path,
                         'sort_order' => $maxSort + 1 + $index,
@@ -220,7 +224,7 @@ class ProductController extends Controller
 
     public function destroyImage(ProductImage $image)
     {
-        Storage::disk('public')->delete($image->image_path);
+        $this->cloudinary->destroy($image->image_path);
         $image->delete();
         return back()->with('success', 'Gallery image removed.');
     }
@@ -231,10 +235,10 @@ class ProductController extends Controller
             DB::beginTransaction();
 
             if ($product->main_image) {
-                Storage::disk('public')->delete($product->main_image);
+                $this->cloudinary->destroy($product->main_image);
             }
             foreach ($product->images as $img) {
-                Storage::disk('public')->delete($img->image_path);
+                $this->cloudinary->destroy($img->image_path);
             }
             $product->delete();
 

@@ -258,7 +258,7 @@
 
                         <a href="{{ route('product.show', $product->slug) }}" class="block aspect-square bg-surface-container overflow-hidden relative">
                             @if($product->main_image)
-                                <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async">
+                                <img src="{{ image_url($product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gray-50 text-gray-300">
                                     <span class="material-symbols-outlined text-5xl">image</span>

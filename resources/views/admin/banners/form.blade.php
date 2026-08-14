@@ -64,7 +64,7 @@
                 
                 @if($banner->desktop_image)
                     <div class="mb-3 rounded border border-gray-200 overflow-hidden bg-white">
-                        <img src="{{ asset('storage/' . $banner->desktop_image) }}" class="w-full h-auto object-cover max-h-32">
+                        <img src="{{ image_url($banner->desktop_image) }}" class="w-full h-auto object-cover max-h-32">
                     </div>
                 @endif
                 
@@ -78,7 +78,7 @@
                 
                 @if($banner->mobile_image)
                     <div class="mb-3 rounded border border-gray-200 overflow-hidden bg-white w-24">
-                        <img src="{{ asset('storage/' . $banner->mobile_image) }}" class="w-full h-auto object-cover">
+                        <img src="{{ image_url($banner->mobile_image) }}" class="w-full h-auto object-cover">
                     </div>
                 @endif
                 

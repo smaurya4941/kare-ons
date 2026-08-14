@@ -23,10 +23,10 @@
     // ---------------------------------------------------------------------
     $heroBanner  = $banners->firstWhere('type', 'hero');
     $heroDesktop = $heroBanner
-        ? asset('storage/' . $heroBanner->desktop_image)
-        : (setting('home_hero_bg') ? asset('storage/' . setting('home_hero_bg')) : asset('images/home/hero.jpg'));
+        ? image_url($heroBanner->desktop_image)
+        : (setting('home_hero_bg') ? image_url(setting('home_hero_bg')) : asset('images/home/hero.jpg'));
     $heroMobile  = ($heroBanner && $heroBanner->mobile_image)
-        ? asset('storage/' . $heroBanner->mobile_image)
+        ? image_url($heroBanner->mobile_image)
         : $heroDesktop;
 @endphp
 
@@ -128,7 +128,7 @@
                 @php
                     $categoryImage = $category->banner_image ?? $category->image;
                     $categorySrc   = $categoryImage
-                        ? asset('storage/'.$categoryImage)
+                        ? image_url($categoryImage)
                         : asset($categoryPlaceholders[$i % count($categoryPlaceholders)]);
                 @endphp
                 <a href="{{ route('shop.index', ['category' => $category->slug]) }}" class="group relative block overflow-hidden rounded-xl aspect-[4/5] bg-brand-forest shadow-sm hover:shadow-xl transition-all">
@@ -193,7 +193,7 @@
 
                     <a href="{{ route('product.show', $product->slug) }}" class="block aspect-square bg-brand-cream overflow-hidden relative">
                         @if($product->main_image)
-                            <img src="{{ asset('storage/' . $product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async">
+                            <img src="{{ image_url($product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-brand-beige text-brand-sage">
                                 <span class="material-symbols-outlined text-5xl" aria-hidden="true">image</span>

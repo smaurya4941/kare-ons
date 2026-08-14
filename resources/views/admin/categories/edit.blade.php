@@ -93,7 +93,7 @@
                 <h3 class="text-xs font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 uppercase tracking-wide">Media</h3>
                 
                 <div class="space-y-4">
-                    <div x-data="imageViewer('{{ $category->image ? asset('storage/' . $category->image) : '' }}')">
+                    <div x-data="imageViewer('{{ $category->image ? image_url($category->image) : '' }}')">
                         <label class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Category Image</label>
                         <div class="flex items-center justify-center w-full">
                             <label for="image" class="flex flex-col items-center justify-center w-full h-32 border border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden relative transition">
@@ -109,7 +109,7 @@
                         @error('image') <p class="text-[9px] text-red-500 mt-1">{{ $message }}</p> @enderror
                     </div>
 
-                    <div x-data="imageViewer('{{ $category->banner_image ? asset('storage/' . $category->banner_image) : '' }}')">
+                    <div x-data="imageViewer('{{ $category->banner_image ? image_url($category->banner_image) : '' }}')">
                         <label class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Banner Image</label>
                         <div class="flex items-center justify-center w-full">
                             <label for="banner_image" class="flex flex-col items-center justify-center w-full h-24 border border-gray-300 border-dashed rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100 overflow-hidden relative transition">

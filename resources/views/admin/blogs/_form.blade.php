@@ -92,7 +92,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-4">
                 <h3 class="text-sm font-semibold text-gray-800">Featured Image</h3>
                 @if($blog->featured_image)
-                    <img src="{{ asset('storage/' . $blog->featured_image) }}" alt="" class="w-full h-40 object-cover rounded-lg border border-gray-100">
+                    <img src="{{ image_url($blog->featured_image) }}" alt="" class="w-full h-40 object-cover rounded-lg border border-gray-100">
                 @endif
                 <input type="file" name="featured_image" accept="image/*"
                        class="w-full text-sm text-gray-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
