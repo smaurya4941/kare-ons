@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Cache;
 if (!function_exists('setting')) {
     function setting($key, $default = null)
     {
-        // Cache the settings row forever. Clear this cache when settings are updated.
-        $settings = Cache::rememberForever('global_settings', function () {
+        // Cache the settings row forever. Setting::booted() clears this on any write.
+        $settings = Cache::rememberForever(\App\Support\Cache\CacheKeys::GLOBAL_SETTINGS, function () {
             // Get the first settings row, or create an empty one if it doesn't exist
             return Setting::firstOrCreate([], [
                 'site_name' => 'Kare ONS Herbals',

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Services\CloudinaryService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class SettingController extends Controller
 {
@@ -138,10 +137,8 @@ class SettingController extends Controller
 
         $settings->fill($validated);
         $settings->save();
-
-        // Clear the cached settings so the site updates instantly
-        Cache::forget('global_settings');
-        Cache::forget('homepage_data');
+        // Cache invalidation (global_settings + homepage_data) happens in
+        // Setting::booted() so every write path — here, tinker, seeders — stays covered.
 
         return redirect()->back()->with('success', 'Settings updated successfully.');
     }

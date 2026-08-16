@@ -7,7 +7,16 @@ Your order **{{ $order->order_number }}** from **{{ setting('site_name') }}** ha
 
 <x-mail::panel>
 **Order Date:** {{ $order->created_at->format('M d, Y - h:i A') }}<br>
-**Status:** Shipped
+**Status:** Shipped<br>
+@if($order->courier_name)
+**Courier:** {{ $order->courier_name }}<br>
+@endif
+@if($order->tracking_number)
+**Tracking Number:** {{ $order->tracking_number }}<br>
+@endif
+@if($order->expected_delivery_date)
+**Expected Delivery:** {{ \Illuminate\Support\Carbon::parse($order->expected_delivery_date)->format('M d, Y') }}
+@endif
 </x-mail::panel>
 
 ### Delivery Address:
@@ -16,7 +25,11 @@ Your order **{{ $order->order_number }}** from **{{ setting('site_name') }}** ha
 @if($order->address->address_line_2) {{ $order->address->address_line_2 }}<br> @endif
 {{ $order->address->city }}, {{ $order->address->state }} - {{ $order->address->postal_code }}
 
-@if($order->user_id)
+@if($order->tracking_url)
+<x-mail::button :url="$order->tracking_url">
+Track Your Package
+</x-mail::button>
+@elseif($order->user_id)
 <x-mail::button :url="route('orders.show', $order->id)">
 Track Your Order
 </x-mail::button>

@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Exceptions\InsufficientStockException;
+use App\Mail\AdminLowStockNotification;
+use App\Mail\AdminNewOrderNotification;
 use App\Models\AdminNotification;
 use App\Models\Address;
 use App\Models\CartItem;
@@ -143,17 +145,25 @@ class CheckoutService
         $grandTotal = max(0, $subtotal + $shipping + $taxAmount - $discountAmount);
 
         $order = DB::transaction(function () use ($user, $data, $cartItems, $subtotal, $shipping, $taxAmount, $discountAmount, $grandTotal, $coupon) {
-            $address = Address::create([
-                'user_id' => $user->id,
-                'full_name' => $data['full_name'],
-                'phone' => $data['phone'],
-                'address_line_1' => $data['address_line_1'],
-                'address_line_2' => $data['address_line_2'] ?? null,
-                'city' => $data['city'],
-                'state' => $data['state'],
-                'country' => 'India',
-                'postal_code' => $data['postal_code'],
-            ]);
+            // Reuse an existing saved address if the user selected one from the dropdown;
+            // otherwise create a new address record and save it to their address book.
+            if (! empty($data['address_id'])) {
+                $address = Address::where('id', $data['address_id'])
+                    ->where('user_id', $user->id)
+                    ->firstOrFail();
+            } else {
+                $address = Address::create([
+                    'user_id'        => $user->id,
+                    'full_name'      => $data['full_name'],
+                    'phone'          => $data['phone'],
+                    'address_line_1' => $data['address_line_1'],
+                    'address_line_2' => $data['address_line_2'] ?? null,
+                    'city'           => $data['city'],
+                    'state'          => $data['state'],
+                    'country'        => 'India',
+                    'postal_code'    => $data['postal_code'],
+                ]);
+            }
 
             $order = Order::create([
                 'order_number' => $this->generateOrderNumber(),
@@ -239,12 +249,22 @@ class CheckoutService
         try {
             AdminNotification::notifyNewOrder($order);
 
+            $adminEmail = setting('site_email');
+            if ($adminEmail) {
+                Mail::to($adminEmail)->send(new AdminNewOrderNotification($order));
+            }
+
             $threshold = (int) setting('low_stock_threshold', 10);
             $order->loadMissing('items');
             $productIds = $order->items->pluck('product_id')->filter()->unique();
             foreach (Product::whereIn('id', $productIds)->get() as $product) {
                 if ((int) $product->stock_quantity <= $threshold) {
-                    AdminNotification::notifyLowStock($product);
+                    // notifyLowStock() de-dupes against existing unread alerts and
+                    // returns null when it skipped — only email on a genuinely new alert.
+                    $notification = AdminNotification::notifyLowStock($product);
+                    if ($notification && $adminEmail) {
+                        Mail::to($adminEmail)->send(new AdminLowStockNotification($product, $threshold));
+                    }
                 }
             }
         } catch (\Throwable $e) {

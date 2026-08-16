@@ -13,6 +13,12 @@ class Brand extends Model
 
     protected $guarded = ['id'];
 
+    protected static function booted()
+    {
+        static::saved(fn () => \App\Services\CacheService::flushBrands());
+        static::deleted(fn () => \App\Services\CacheService::flushBrands());
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);

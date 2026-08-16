@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
+use App\Support\Cache\CacheKeys;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ShopController extends Controller
 {
@@ -64,8 +66,14 @@ class ShopController extends Controller
         [$column, $direction] = self::SORT_OPTIONS[$request->get('sort', 'latest')] ?? ['created_at', 'desc'];
         $query->orderBy($column, $direction);
 
-        $products   = $query->paginate(12)->withQueryString();
-        $categories = Category::where('status', 1)->get();
+        $products = $query->paginate(12)->withQueryString();
+
+        // Filter dropdown data — same active categories on every page of every
+        // search/sort combo, so it's cached separately from the (uncacheable,
+        // per-query) paginated product list itself.
+        $categories = Cache::remember(CacheKeys::SHOP_CATEGORIES, CacheKeys::TTL_STANDARD, function () {
+            return Category::where('status', 1)->orderBy('name')->get();
+        });
 
         // Per-user wishlist product IDs — resolved once to avoid an N+1 per card.
         $wishlistIds = \Illuminate\Support\Facades\Auth::check()

@@ -29,6 +29,17 @@ class PageController extends Controller
         $inquiry = ContactInquiry::create($validated);
         \App\Models\AdminNotification::notifyCustomerMessage($inquiry);
 
+        // Best-effort: the inquiry is already saved, so a mail failure must
+        // not turn into an error response for the caller.
+        try {
+            $adminEmail = setting('site_email');
+            if ($adminEmail) {
+                \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\AdminContactInquiryNotification($inquiry));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         return response()->json(['message' => 'Thank you! Your inquiry has been sent.'], 201);
     }
 }

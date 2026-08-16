@@ -13,12 +13,7 @@ class Banner extends Model
 
     protected static function booted()
     {
-        static::saved(function ($model) {
-            \Illuminate\Support\Facades\Cache::forget('homepage_data');
-        });
-
-        static::deleted(function ($model) {
-            \Illuminate\Support\Facades\Cache::forget('homepage_data');
-        });
+        static::saved(fn () => \App\Services\CacheService::flushBanners());
+        static::deleted(fn () => \App\Services\CacheService::flushBanners());
     }
 }

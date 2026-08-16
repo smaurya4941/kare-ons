@@ -1,5 +1,6 @@
 <x-customer-layout>
-    <x-slot name="title">Order #{{ $order->order_number }}</x-slot>
+    <x-slot name="title">Order Details</x-slot>
+    <x-slot name="hideTitle">true</x-slot>
 
     <div class="flex-1 space-y-6">
         {{-- Back Button & Header --}}
@@ -20,68 +21,67 @@
             <div class="lg:col-span-2 space-y-6">
                 
                 {{-- Delivery Address --}}
-                <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-6">
-                    <h2 class="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-on-surface-variant text-[22px]">location_on</span>
+                <div class="bg-surface rounded-lg border border-outline-variant shadow-sm p-5">
+                    <h2 class="text-base font-bold text-on-surface mb-3 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-on-surface-variant text-[18px]">location_on</span>
                         Delivery Address
                     </h2>
                     @if($order->address)
                         <div class="text-on-surface">
-                            <p class="font-semibold text-lg">{{ $order->address->full_name }}</p>
-                            <p class="text-on-surface-variant mt-1 leading-relaxed">
+                            <p class="font-semibold text-sm">{{ $order->address->full_name }}</p>
+                            <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
                                 {{ $order->address->address_line_1 }}<br>
                                 @if($order->address->address_line_2) {{ $order->address->address_line_2 }}<br> @endif
                                 {{ $order->address->city }}, {{ $order->address->state }} - <span class="font-medium text-on-surface">{{ $order->address->postal_code }}</span><br>
                                 {{ $order->address->country }}
                             </p>
-                            <p class="font-medium mt-3 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px] text-on-surface-variant">call</span>
+                            <p class="text-xs font-medium mt-2 flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px] text-on-surface-variant">call</span>
                                 {{ $order->address->phone }}
                             </p>
                         </div>
                     @else
-                        <p class="text-on-surface-variant italic">No address recorded for this order.</p>
+                        <p class="text-sm text-on-surface-variant italic">No address recorded for this order.</p>
                     @endif
                 </div>
 
                 {{-- Order Items --}}
-                <div class="bg-surface rounded-xl border border-outline-variant shadow-sm overflow-hidden">
-                    <div class="px-6 py-4 border-b border-outline-variant bg-surface-container/40">
-                        <h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
-                            <span class="material-symbols-outlined text-on-surface-variant text-[22px]">inventory_2</span>
+                <div class="bg-surface rounded-lg border border-outline-variant shadow-sm overflow-hidden">
+                    <div class="px-5 py-3 border-b border-outline-variant bg-surface-container-lowest">
+                        <h2 class="text-base font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-on-surface-variant text-[18px]">inventory_2</span>
                             Products
                         </h2>
                     </div>
                     <div class="divide-y divide-outline-variant">
                         @foreach($order->items as $item)
-                            <div class="p-6 flex flex-col sm:flex-row gap-6">
-                                <div class="w-24 h-24 bg-surface-container rounded-lg border border-outline-variant overflow-hidden flex-shrink-0">
+                            <div class="p-4 flex flex-row items-center gap-4">
+                                <div class="w-12 h-12 bg-surface-container rounded-md border border-outline-variant overflow-hidden flex-shrink-0">
                                     @if($item->product && $item->product->main_image)
                                         <img src="{{ image_url($item->product->main_image) }}" alt="{{ $item->product_name }}" class="w-full h-full object-cover">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center">
-                                            <span class="material-symbols-outlined text-outline text-[32px]">image</span>
+                                            <span class="material-symbols-outlined text-outline text-[20px]">image</span>
                                         </div>
                                     @endif
                                 </div>
-                                <div class="flex-1">
-                                    <a href="{{ $item->product ? route('product.show', $item->product->slug) : '#' }}" class="text-lg font-bold text-on-surface hover:text-primary transition-colors line-clamp-2 mb-1">
-                                        {{ $item->product_name }}
-                                    </a>
-                                    <p class="text-sm text-on-surface-variant mb-3">Seller: Kare Ons Herbal</p>
-                                    
-                                    <div class="flex items-end justify-between">
-                                        <div>
-                                            <p class="text-xs text-on-surface-variant mb-1">Price Details</p>
-                                            <div class="flex items-center gap-3">
-                                                <p class="text-xl font-bold text-on-surface">₹{{ number_format($item->price, 2) }}</p>
-                                                <span class="text-sm text-on-surface-variant font-medium">Qty: {{ $item->quantity }}</span>
-                                            </div>
+                                <div class="flex-1 flex items-center justify-between">
+                                    <div>
+                                        <a href="{{ $item->product ? route('product.show', $item->product->slug) : '#' }}" class="text-sm font-semibold text-on-surface hover:text-primary transition-colors line-clamp-1 mb-0.5">
+                                            {{ $item->product_name }}
+                                        </a>
+                                        <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                                            <span>₹{{ number_format($item->price, 2) }}</span>
+                                            <span>&times;</span>
+                                            <span>{{ $item->quantity }}</span>
                                         </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-bold text-on-surface mb-1">₹{{ number_format($item->total, 2) }}</p>
                                         @if($order->order_status === 'delivered' && $item->product)
-                                            <a href="{{ route('product.show', $item->product->slug) }}#reviews" class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
-                                                <span class="material-symbols-outlined text-[18px]">rate_review</span>
-                                                Rate & Review
+                                            <a href="{{ route('product.show', $item->product->slug) }}#reviews" class="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline">
+                                                <span class="material-symbols-outlined text-[14px]">rate_review</span>
+                                                Review
                                             </a>
                                         @endif
                                     </div>
@@ -96,9 +96,9 @@
             <div class="space-y-6">
                 
                 {{-- Track Order --}}
-                <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-6">
-                    <h2 class="text-lg font-bold text-on-surface mb-6 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-on-surface-variant text-[22px]">local_shipping</span>
+                <div class="bg-surface rounded-lg border border-outline-variant shadow-sm p-5">
+                    <h2 class="text-base font-bold text-on-surface mb-5 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-on-surface-variant text-[18px]">local_shipping</span>
                         Track Order
                     </h2>
                     
@@ -112,25 +112,25 @@
                     @endphp
 
                     @if($isCancelled)
-                        <div class="p-4 bg-red-50 text-red-800 rounded-lg border border-red-100 flex items-start gap-3">
-                            <span class="material-symbols-outlined text-red-500">cancel</span>
+                        <div class="p-3 bg-red-50 text-red-800 rounded-md border border-red-100 flex items-start gap-2">
+                            <span class="material-symbols-outlined text-red-500 text-[18px]">cancel</span>
                             <div>
-                                <h3 class="font-bold">Order Cancelled</h3>
-                                <p class="text-sm mt-1">This order has been cancelled. If you already paid, the refund will be processed within 5-7 business days.</p>
+                                <h3 class="font-bold text-sm">Order Cancelled</h3>
+                                <p class="text-xs mt-0.5">This order has been cancelled. If you already paid, the refund will be processed within 5-7 business days.</p>
                             </div>
                         </div>
                     @elseif($isReturned)
-                        <div class="p-4 bg-amber-50 text-amber-800 rounded-lg border border-amber-100 flex items-start gap-3">
-                            <span class="material-symbols-outlined text-amber-500">assignment_return</span>
+                        <div class="p-3 bg-amber-50 text-amber-800 rounded-md border border-amber-100 flex items-start gap-2">
+                            <span class="material-symbols-outlined text-amber-500 text-[18px]">assignment_return</span>
                             <div>
-                                <h3 class="font-bold">Order Returned</h3>
-                                <p class="text-sm mt-1">This order has been marked as returned. Refund status: {{ ucfirst($order->refund_status ?? 'pending') }}.</p>
+                                <h3 class="font-bold text-sm">Order Returned</h3>
+                                <p class="text-xs mt-0.5">This order has been marked as returned. Refund status: {{ ucfirst($order->refund_status ?? 'pending') }}.</p>
                             </div>
                         </div>
                     @else
-                        <div class="relative pl-6 space-y-8">
+                        <div class="relative space-y-6">
                             <!-- Vertical Line -->
-                            <div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-outline-variant"></div>
+                            <div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-outline-variant z-0"></div>
 
                             @foreach($statuses as $index => $status)
                                 @php
@@ -140,7 +140,7 @@
                                     // Find timeline entry if exists
                                     $timeline = $order->timelines->firstWhere('status', $status);
                                     
-                                    $iconColors = $isCompleted ? 'bg-primary text-white ring-4 ring-white' : 'bg-surface-container text-outline ring-4 ring-white border border-outline-variant';
+                                    $iconColors = $isCompleted ? 'bg-primary text-white ring-2 ring-white' : 'bg-surface-container text-outline ring-2 ring-white border border-outline-variant';
                                     $icons = [
                                         'pending' => 'pending_actions',
                                         'confirmed' => 'thumb_up',
@@ -149,16 +149,16 @@
                                         'delivered' => 'check_circle'
                                     ];
                                 @endphp
-                                <div class="relative">
-                                    <div class="absolute -left-[35px] top-0 w-8 h-8 rounded-full flex items-center justify-center {{ $iconColors }} transition-colors z-10">
-                                        <span class="material-symbols-outlined text-[16px]">{{ $icons[$status] }}</span>
+                                <div class="relative flex items-start gap-3 z-10">
+                                    <div class="w-6 h-6 rounded-full flex items-center justify-center {{ $iconColors }} transition-colors shrink-0">
+                                        <span class="material-symbols-outlined text-[12px]">{{ $icons[$status] }}</span>
                                     </div>
                                     <div>
-                                        <p class="font-bold {{ $isCompleted ? 'text-on-surface' : 'text-on-surface-variant' }} capitalize">{{ $status }}</p>
+                                        <p class="text-sm font-bold {{ $isCompleted ? 'text-on-surface' : 'text-on-surface-variant' }} capitalize">{{ $status }}</p>
                                         @if($timeline)
-                                            <p class="text-xs text-on-surface-variant mt-1">{{ $timeline->created_at->format('D, M d Y - h:i A') }}</p>
+                                            <p class="text-[11px] text-on-surface-variant mt-0.5">{{ $timeline->created_at->format('M d, Y • h:i A') }}</p>
                                         @elseif($isCurrent)
-                                            <p class="text-xs text-primary font-medium mt-1">In Progress...</p>
+                                            <p class="text-[11px] text-primary font-medium mt-0.5">In Progress...</p>
                                         @endif
                                     </div>
                                 </div>
@@ -168,10 +168,10 @@
                 </div>
 
                 {{-- Price Details --}}
-                <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-6">
-                    <h2 class="text-lg font-bold text-on-surface mb-4">Price Details</h2>
+                <div class="bg-surface rounded-lg border border-outline-variant shadow-sm p-5">
+                    <h2 class="text-base font-bold text-on-surface mb-3">Price Details</h2>
                     
-                    <div class="space-y-3 text-sm border-b border-outline-variant pb-4 mb-4">
+                    <div class="space-y-2 text-xs border-b border-outline-variant pb-3 mb-3">
                         <div class="flex justify-between text-on-surface-variant">
                             <span>List Price ({{ $order->items->count() }} items)</span>
                             <span>₹{{ number_format($order->subtotal ?? $order->grand_total, 2) }}</span>
@@ -190,20 +190,18 @@
                         </div>
                     </div>
                     
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="font-bold text-on-surface text-lg">Total Amount</span>
-                        <span class="font-bold text-primary text-xl">₹{{ number_format($order->grand_total, 2) }}</span>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="font-bold text-on-surface text-sm">Total Amount</span>
+                        <span class="font-bold text-primary text-base">₹{{ number_format($order->grand_total, 2) }}</span>
                     </div>
 
-                    <div class="p-4 bg-surface-container rounded-lg">
-                        <p class="text-sm font-medium text-on-surface mb-2 border-b border-outline-variant pb-2">Payment Information</p>
-                        <div class="space-y-1 text-sm text-on-surface-variant">
-                            <p>Method: <strong class="text-on-surface">{{ strtoupper($order->payment_method) }}</strong></p>
-                            <p>Status: 
-                                <strong class="{{ $order->payment_status === 'paid' ? 'text-emerald-600' : 'text-amber-600' }}">
-                                    {{ ucfirst($order->payment_status) }}
-                                </strong>
-                            </p>
+                    <div class="p-3 bg-surface-container rounded-md">
+                        <p class="text-[11px] font-bold uppercase tracking-wide text-on-surface-variant mb-1.5 border-b border-outline-variant pb-1.5">Payment</p>
+                        <div class="flex justify-between text-xs text-on-surface">
+                            <span class="font-semibold">{{ strtoupper($order->payment_method) }}</span>
+                            <span class="font-semibold {{ $order->payment_status === 'paid' ? 'text-emerald-600' : 'text-amber-600' }}">
+                                {{ ucfirst($order->payment_status) }}
+                            </span>
                         </div>
                     </div>
                 </div>

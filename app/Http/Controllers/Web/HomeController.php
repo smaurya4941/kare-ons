@@ -27,7 +27,10 @@ class HomeController extends Controller
 
         // Cache the entire homepage data payload for 1 hour to prevent heavy queries on every load.
         // NOTE: this payload is user-agnostic, so it never contains per-user state (e.g. wishlist).
-        $data = \Illuminate\Support\Facades\Cache::remember('homepage_data', 3600, function () use ($productCard) {
+        $data = \Illuminate\Support\Facades\Cache::remember(
+            \App\Support\Cache\CacheKeys::HOMEPAGE_DATA,
+            \App\Support\Cache\CacheKeys::TTL_STANDARD,
+            function () use ($productCard) {
             return [
                 'banners' => \App\Models\Banner::where('status', true)->orderBy('sort_order')->get(),
                 // Prefer admin-curated homepage categories; otherwise fall back to the

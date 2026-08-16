@@ -2,13 +2,17 @@
 
 namespace App\Providers;
 
+use App\Listeners\SendWelcomeEmail;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
@@ -100,6 +104,20 @@ class AppServiceProvider extends ServiceProvider
             ], false));
         });
 
+        // Brand the password-reset email with the same markdown theme/copy
+        // style used by the rest of the transactional emails, instead of the
+        // generic default Laravel notification template.
+        ResetPassword::toMailUsing(function ($notifiable, string $url) {
+            return (new \Illuminate\Notifications\Messages\MailMessage())
+                ->subject('Reset Your '.setting('site_name').' Password')
+                ->markdown('emails.users.reset_password', ['url' => $url, 'notifiable' => $notifiable]);
+        });
+
+        // -----------------------------------------------------------------------
+        // Transactional emails triggered by domain events
+        // -----------------------------------------------------------------------
+        Event::listen(Registered::class, SendWelcomeEmail::class);
+
         // -----------------------------------------------------------------------
         // Rate Limiting
         // -----------------------------------------------------------------------
@@ -123,21 +141,49 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        // Registration: 5 accounts per 10 minutes per IP — blocks scripted
+        // bulk account creation without affecting a real signup burst.
+        RateLimiter::for('register', function (Request $request) {
+            return Limit::perMinutes(10, 5)->by($request->ip());
+        });
+
+        // Forgot-password / reset-password: 5 attempts per 10 minutes, keyed
+        // by IP + the submitted email so one bad actor can't either spam a
+        // single victim's inbox with reset emails or brute-force many
+        // accounts from one IP.
+        RateLimiter::for('password-reset', function (Request $request) {
+            $email = Str::lower((string) $request->input('email'));
+
+            return Limit::perMinutes(10, 5)->by($request->ip().'|'.$email);
+        });
+
+        // Contact form: 5 submissions per 10 minutes per IP — keeps the
+        // admin inbox usable without blocking a legitimate follow-up message.
+        RateLimiter::for('contact', function (Request $request) {
+            return Limit::perMinutes(10, 5)->by($request->ip());
+        });
+
         // -----------------------------------------------------------------------
         // View Composers
         // -----------------------------------------------------------------------
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
             try {
                 if (!$view->offsetExists('headerCategories')) {
-                    $headerCategories = \Illuminate\Support\Facades\Cache::rememberForever('header_categories', function () {
-                        return \App\Models\Category::where('status', true)->whereNull('parent_id')->with('children')->orderBy('sort_order')->take(5)->get();
-                    });
+                    $headerCategories = \Illuminate\Support\Facades\Cache::rememberForever(
+                        \App\Support\Cache\CacheKeys::HEADER_CATEGORIES,
+                        function () {
+                            return \App\Models\Category::where('status', true)->whereNull('parent_id')->with('children')->orderBy('sort_order')->take(5)->get();
+                        }
+                    );
                     $view->with('headerCategories', $headerCategories);
                 }
                 if (!$view->offsetExists('footerPages')) {
-                    $footerPages = \Illuminate\Support\Facades\Cache::rememberForever('footer_pages', function () {
-                        return \App\Models\Page::where('status', true)->orderBy('title')->get();
-                    });
+                    $footerPages = \Illuminate\Support\Facades\Cache::rememberForever(
+                        \App\Support\Cache\CacheKeys::FOOTER_PAGES,
+                        function () {
+                            return \App\Models\Page::where('status', true)->orderBy('title')->get();
+                        }
+                    );
                     $view->with('footerPages', $footerPages);
                 }
             } catch (\Exception $e) {}

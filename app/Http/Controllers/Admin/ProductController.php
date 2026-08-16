@@ -9,9 +9,11 @@ use App\Models\ProductImage;
 use App\Models\Brand;
 use App\Models\Tax;
 use App\Services\CloudinaryService;
+use App\Support\Cache\CacheKeys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -44,9 +46,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::where('status', true)->get();
-        $brands = Brand::where('status', true)->get();
-        $taxes = Tax::where('status', true)->get();
+        ['categories' => $categories, 'brands' => $brands, 'taxes' => $taxes] = $this->catalogFilterOptions();
         return view('admin.products.create', compact('categories', 'brands', 'taxes'));
     }
 
@@ -136,11 +136,30 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $categories = Category::where('status', true)->get();
-        $brands = Brand::where('status', true)->get();
-        $taxes = Tax::where('status', true)->get();
+        ['categories' => $categories, 'brands' => $brands, 'taxes' => $taxes] = $this->catalogFilterOptions();
         $product->load('images');
         return view('admin.products.edit', compact('product', 'categories', 'brands', 'taxes'));
+    }
+
+    /**
+     * Active categories/brands/taxes for the product create/edit dropdowns.
+     * Cached — admins hit these forms repeatedly while managing a catalog,
+     * and the underlying tables are invalidated on write via each model's
+     * booted() hook (see CacheService).
+     */
+    private function catalogFilterOptions(): array
+    {
+        return [
+            'categories' => Cache::remember(CacheKeys::SHOP_CATEGORIES, CacheKeys::TTL_STANDARD, function () {
+                return Category::where('status', true)->orderBy('name')->get();
+            }),
+            'brands' => Cache::remember(CacheKeys::ACTIVE_BRANDS, CacheKeys::TTL_STANDARD, function () {
+                return Brand::where('status', true)->orderBy('name')->get();
+            }),
+            'taxes' => Cache::remember(CacheKeys::ACTIVE_TAXES, CacheKeys::TTL_STANDARD, function () {
+                return Tax::where('status', true)->orderBy('rate')->get();
+            }),
+        ];
     }
 
     public function update(Request $request, Product $product)

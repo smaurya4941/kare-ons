@@ -166,10 +166,13 @@ class CartController extends Controller
 
     protected function getCartItems()
     {
+        // product.category is eager-loaded because cart.index reads
+        // $item->product->category->name per row — without it, an N-item
+        // cart fires one extra query per distinct product.
         if (Auth::check()) {
-            return CartItem::with('product')->where('user_id', Auth::id())->get();
+            return CartItem::with('product.category')->where('user_id', Auth::id())->get();
         }
-        return CartItem::with('product')->where('session_id', Session::getId())->get();
+        return CartItem::with('product.category')->where('session_id', Session::getId())->get();
     }
 
     protected function ownsCartItem(CartItem $cartItem): bool

@@ -17,15 +17,8 @@ class Category extends Model
 
     protected static function booted()
     {
-        static::saved(function ($model) {
-            \Illuminate\Support\Facades\Cache::forget('homepage_data');
-            \Illuminate\Support\Facades\Cache::forget('header_categories');
-        });
-
-        static::deleted(function ($model) {
-            \Illuminate\Support\Facades\Cache::forget('homepage_data');
-            \Illuminate\Support\Facades\Cache::forget('header_categories');
-        });
+        static::saved(fn () => \App\Services\CacheService::flushCategories());
+        static::deleted(fn () => \App\Services\CacheService::flushCategories());
     }
 
     public function products(): HasMany

@@ -13,4 +13,10 @@ class Page extends Model
     protected array $activityLogIgnore = ['content'];
 
     protected $guarded = ['id'];
+
+    protected static function booted()
+    {
+        static::saved(fn () => \App\Services\CacheService::flushPages());
+        static::deleted(fn () => \App\Services\CacheService::flushPages());
+    }
 }

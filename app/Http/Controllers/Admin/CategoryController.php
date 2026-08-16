@@ -60,7 +60,6 @@ class CategoryController extends Controller
 
         try {
             Category::create($validated);
-            \Illuminate\Support\Facades\Cache::forget('header_categories');
             return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
         } catch (\Exception $e) {
             if (isset($validated['image'])) {
@@ -122,7 +121,6 @@ class CategoryController extends Controller
 
         try {
             $category->update($validated);
-            \Illuminate\Support\Facades\Cache::forget('header_categories');
             return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
         } catch (\Exception $e) {
             report($e);
@@ -148,7 +146,6 @@ class CategoryController extends Controller
                 $this->cloudinary->destroy($category->banner_image);
             }
             $category->delete();
-            \Illuminate\Support\Facades\Cache::forget('header_categories');
 
             return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
         } catch (\Exception $e) {

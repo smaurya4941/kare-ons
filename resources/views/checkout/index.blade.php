@@ -57,7 +57,7 @@
                 @auth
                     @if($addresses->isNotEmpty())
                         <div x-data="{
-                            selectedAddress: '{{ $addresses->where('is_default', true)->first()?->id ?? '' }}',
+                            selectedAddress: '{{ $addresses->where('is_default', true)->first()?->id ?? $addresses->first()?->id ?? '' }}',
                             addresses: {{ Js::from($addresses->keyBy('id')) }},
                             fillAddress() {
                                 if(this.selectedAddress && this.addresses[this.selectedAddress]) {
@@ -65,15 +65,23 @@
                                     document.getElementById('full_name').value = addr.full_name;
                                     document.getElementById('phone').value = addr.phone;
                                     document.getElementById('address_line_1').value = addr.address_line_1;
+                                    document.getElementById('address_line_2').value = addr.address_line_2 ?? '';
                                     document.getElementById('city').value = addr.city;
                                     document.getElementById('state').value = addr.state;
                                     document.getElementById('postal_code').value = addr.postal_code;
+                                    document.getElementById('address_id').value = addr.id;
+                                } else {
+                                    // New address — clear fields and the hidden id
+                                    ['full_name','phone','address_line_1','address_line_2','city','state','postal_code'].forEach(id => {
+                                        document.getElementById(id).value = '';
+                                    });
+                                    document.getElementById('address_id').value = '';
                                 }
                             }
                         }" x-init="fillAddress()" class="mb-6">
                             <label class="block text-sm font-medium text-on-surface-variant mb-2">Use a Saved Address</label>
                             <select x-model="selectedAddress" @change="fillAddress()" class="w-full border-outline-variant rounded-lg focus:ring-primary focus:border-primary bg-surface-container-lowest text-on-surface">
-                                <option value="">-- Or enter a new address below --</option>
+                                <option value="">-- Enter a new address below --</option>
                                 @foreach($addresses as $addr)
                                     <option value="{{ $addr->id }}">{{ $addr->full_name }} ({{ $addr->postal_code }}) - {{ $addr->address_line_1 }}</option>
                                 @endforeach
@@ -81,6 +89,9 @@
                         </div>
                     @endif
                 @endauth
+
+                {{-- Hidden field to pass back the selected existing address ID --}}
+                <input type="hidden" name="address_id" id="address_id" value="">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>

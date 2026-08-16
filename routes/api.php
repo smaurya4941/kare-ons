@@ -59,7 +59,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
     Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
-    Route::post('/contact', [PageController::class, 'submitContact'])->name('contact.store');
+    Route::post('/contact', [PageController::class, 'submitContact'])->middleware('throttle:contact')->name('contact.store');
 
     Route::post('/coupons/validate', [CouponController::class, 'validateCoupon'])
         ->middleware('throttle:coupon')
@@ -69,10 +69,13 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // Auth
     // ---------------------------------------------------------------------
     Route::prefix('auth')->name('auth.')->group(function () {
-        Route::post('/register', [AuthController::class, 'register'])->name('register');
+        Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:register')->name('register');
+        // No extra throttle on /login — AuthController@login uses
+        // App\Http\Requests\Api\LoginRequest, which mirrors the web login's
+        // 5-attempts-then-lockout (keyed by email + IP).
         Route::post('/login', [AuthController::class, 'login'])->name('login');
-        Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
-        Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset-password');
+        Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:password-reset')->name('forgot-password');
+        Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:password-reset')->name('reset-password');
 
         // Opened directly from the verification email — signed URL is the
         // auth, no Sanctum token required (the browser has no session/token

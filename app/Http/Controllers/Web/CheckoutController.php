@@ -49,13 +49,14 @@ class CheckoutController extends Controller
         $validPaymentMethods = \App\Models\PaymentMethod::where('status', true)->pluck('code')->toArray();
 
         $validated = $request->validate([
-            'full_name'      => 'required|string|max:255',
-            'phone'          => 'required|string|max:20',
-            'address_line_1' => 'required|string|max:255',
+            'address_id'     => 'nullable|integer|exists:addresses,id',
+            'full_name'      => 'required_without:address_id|string|max:255',
+            'phone'          => 'required_without:address_id|string|max:20',
+            'address_line_1' => 'required_without:address_id|string|max:255',
             'address_line_2' => 'nullable|string|max:255',
-            'city'           => 'required|string|max:100',
-            'state'          => 'required|string|max:100',
-            'postal_code'    => 'required|string|max:20',
+            'city'           => 'required_without:address_id|string|max:100',
+            'state'          => 'required_without:address_id|string|max:100',
+            'postal_code'    => 'required_without:address_id|string|max:20',
             'payment_method' => 'required|in:' . implode(',', $validPaymentMethods),
             'coupon_code'    => 'nullable|string|max:50',
         ]);

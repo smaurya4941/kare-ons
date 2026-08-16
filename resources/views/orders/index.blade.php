@@ -36,59 +36,60 @@
                                     ];
                                     $color = $statusColors[$order->order_status] ?? 'bg-gray-100 text-gray-800';
                                 @endphp
-                                <div class="bg-surface rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+                                <div class="bg-surface rounded-lg border border-outline-variant shadow-sm overflow-hidden mb-4">
                                     {{-- Order Header --}}
-                                    <div class="px-6 py-4 border-b border-outline-variant bg-surface-container/40 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div class="px-4 py-3 border-b border-outline-variant bg-surface-container-lowest flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                                         <div>
-                                            <div class="flex items-center gap-3 mb-1">
-                                                <span class="font-bold text-on-surface text-lg">#{{ $order->order_number }}</span>
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $color }}">
+                                            <div class="flex items-center gap-2 mb-0.5">
+                                                <span class="font-bold text-on-surface text-base tracking-tight">#{{ $order->order_number }}</span>
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium {{ $color }}">
                                                     {{ ucfirst($order->order_status) }}
                                                 </span>
                                             </div>
-                                            <p class="text-sm text-on-surface-variant">Placed on {{ $order->created_at->format('M d, Y \a\t h:i A') }}</p>
+                                            <p class="text-xs text-on-surface-variant">Placed on {{ $order->created_at->format('M d, Y') }}</p>
                                         </div>
                                         <div class="flex items-center gap-4">
                                             <div class="text-right">
-                                                <p class="text-xs text-on-surface-variant">Total</p>
-                                                <p class="font-bold text-on-surface text-lg">₹{{ number_format($order->grand_total, 2) }}</p>
+                                                <p class="font-bold text-on-surface text-base">₹{{ number_format($order->grand_total, 2) }}</p>
+                                                <p class="text-[11px] text-on-surface-variant">Total</p>
                                             </div>
-                                            <a href="{{ route('orders.show', $order->id) }}" class="inline-flex items-center justify-center border border-outline-variant hover:bg-surface-container transition-colors rounded-lg px-4 py-2 text-sm font-medium text-on-surface">
+                                            <a href="{{ route('orders.show', $order->id) }}" class="inline-flex items-center justify-center border border-outline-variant hover:bg-surface-container transition-colors rounded-md px-3 py-1.5 text-xs font-medium text-on-surface">
                                                 View Details
                                             </a>
                                         </div>
                                     </div>
 
                                     {{-- Order Items --}}
-                                    <div class="px-6 py-4">
-                                        <div class="space-y-3">
-                                            @foreach($order->items->take(3) as $item)
-                                                <div class="flex items-center gap-4">
-                                                    <div class="w-14 h-14 bg-surface-container rounded-lg border border-outline-variant overflow-hidden flex-shrink-0">
-                                                        @if($item->product && $item->product->main_image)
-                                                            <img src="{{ image_url($item->product->main_image) }}" alt="{{ $item->product_name }}" class="w-full h-full object-cover">
-                                                        @else
-                                                            <div class="w-full h-full flex items-center justify-center">
-                                                                <span class="material-symbols-outlined text-outline text-[20px]">image</span>
-                                                            </div>
-                                                        @endif
+                                    <div class="px-4 py-3">
+                                        <div class="flex items-center gap-3">
+                                            @php $firstItem = $order->items->first(); @endphp
+                                            <div class="w-10 h-10 bg-surface-container rounded-md border border-outline-variant overflow-hidden flex-shrink-0">
+                                                @if($firstItem && $firstItem->product && $firstItem->product->main_image)
+                                                    <img src="{{ image_url($firstItem->product->main_image) }}" alt="{{ $firstItem->product_name }}" class="w-full h-full object-cover">
+                                                @else
+                                                    <div class="w-full h-full flex items-center justify-center">
+                                                        <span class="material-symbols-outlined text-outline text-[16px]">image</span>
                                                     </div>
-                                                    <div class="flex-1">
-                                                        <p class="text-sm font-medium text-on-surface line-clamp-1">{{ $item->product_name }}</p>
-                                                        <p class="text-xs text-on-surface-variant">Qty: {{ $item->quantity }} × ₹{{ number_format($item->price, 2) }}</p>
-                                                    </div>
-                                                    <p class="text-sm font-bold text-on-surface">₹{{ number_format($item->total, 2) }}</p>
-                                                </div>
-                                            @endforeach
-                                            @if($order->items->count() > 3)
-                                                <p class="text-xs text-on-surface-variant mt-2">+ {{ $order->items->count() - 3 }} more item(s)</p>
-                                            @endif
+                                                @endif
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="text-sm font-medium text-on-surface line-clamp-1">
+                                                    {{ $firstItem ? $firstItem->product_name : 'Unknown Product' }}
+                                                </p>
+                                                <p class="text-xs text-on-surface-variant">
+                                                    @if($order->items->count() > 1)
+                                                        + {{ $order->items->count() - 1 }} other item(s)
+                                                    @else
+                                                        Qty: {{ $firstItem ? $firstItem->quantity : 0 }}
+                                                    @endif
+                                                </p>
+                                            </div>
                                         </div>
 
                                         {{-- Payment & Delivery Info --}}
-                                        <div class="mt-4 pt-4 border-t border-outline-variant flex flex-wrap gap-4 text-sm text-on-surface-variant">
+                                        <div class="mt-3 pt-3 border-t border-outline-variant flex flex-wrap gap-4 text-xs text-on-surface-variant">
                                             <div class="flex items-center gap-1.5">
-                                                <span class="material-symbols-outlined text-[16px]">payments</span>
+                                                <span class="material-symbols-outlined text-[14px]">payments</span>
                                                 {{ strtoupper($order->payment_method) }}
                                                 <span class="font-medium {{ $order->payment_status === 'paid' ? 'text-emerald-600' : 'text-amber-600' }}">
                                                     ({{ ucfirst($order->payment_status) }})
@@ -96,7 +97,7 @@
                                             </div>
                                             @if($order->address)
                                                 <div class="flex items-center gap-1.5">
-                                                    <span class="material-symbols-outlined text-[16px]">location_on</span>
+                                                    <span class="material-symbols-outlined text-[14px]">location_on</span>
                                                     {{ $order->address->city }}, {{ $order->address->state }}
                                                 </div>
                                             @endif
@@ -105,9 +106,9 @@
 
                                     {{-- Actions --}}
                                     @if($order->order_status === 'delivered')
-                                        <div class="px-6 pb-4">
-                                            <a href="{{ route('shop.index') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">
-                                                <span class="material-symbols-outlined text-[16px]">repeat</span>
+                                        <div class="px-4 pb-3">
+                                            <a href="{{ route('shop.index') }}" class="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline">
+                                                <span class="material-symbols-outlined text-[14px]">repeat</span>
                                                 Buy Again
                                             </a>
                                         </div>

@@ -9,7 +9,9 @@ use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Wishlist;
+use App\Support\Cache\CacheKeys;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Mirrors Web\ShopController@index (listing) and
@@ -61,11 +63,13 @@ class ProductController extends Controller
 
         $this->attachWishlistFlags($request, $products->getCollection());
 
+        $filterCategories = Cache::remember(CacheKeys::SHOP_CATEGORIES, CacheKeys::TTL_STANDARD, function () {
+            return Category::where('status', 1)->orderBy('name')->get();
+        });
+
         return ProductCardResource::collection($products)->additional([
             'meta' => [
-                'categories' => \App\Http\Resources\CategoryResource::collection(
-                    Category::where('status', 1)->orderBy('name')->get()
-                ),
+                'categories' => \App\Http\Resources\CategoryResource::collection($filterCategories),
             ],
         ]);
     }

@@ -35,7 +35,6 @@ class PageController extends Controller
         }
 
         Page::create($validated);
-        \Illuminate\Support\Facades\Cache::forget('footer_pages');
         return redirect()->route('admin.pages.index')->with('success', 'Page created successfully.');
     }
 
@@ -60,14 +59,12 @@ class PageController extends Controller
         }
 
         $page->update($validated);
-        \Illuminate\Support\Facades\Cache::forget('footer_pages');
         return redirect()->route('admin.pages.index')->with('success', 'Page updated successfully.');
     }
 
     public function destroy(Page $page)
     {
         $page->delete();
-        \Illuminate\Support\Facades\Cache::forget('footer_pages');
         return redirect()->route('admin.pages.index')->with('success', 'Page deleted successfully.');
     }
 }

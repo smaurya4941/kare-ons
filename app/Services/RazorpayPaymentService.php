@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Mail\OrderPlaced;
+use App\Mail\PaymentConfirmation;
 use App\Models\InventoryTransaction;
 use App\Models\Payment;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 /**
@@ -27,7 +29,7 @@ class RazorpayPaymentService
      */
     public function markPaid(Payment $payment, ?string $razorpayPaymentId = null): bool
     {
-        $order = DB::transaction(function () use ($payment, $razorpayPaymentId) {
+        $result = DB::transaction(function () use ($payment, $razorpayPaymentId) {
             /** @var Payment|null $locked */
             $locked = Payment::whereKey($payment->id)->lockForUpdate()->first();
 
@@ -51,17 +53,25 @@ class RazorpayPaymentService
                 ]);
             }
 
-            return $order;
+            return ['order' => $order, 'payment' => $locked];
         });
 
-        if (! $order) {
+        if (! $result || ! $result['order']) {
             return false;
         }
 
-        // Dispatch the confirmation email outside the transaction so the queued
-        // job never races ahead of the commit.
+        [$order, $confirmedPayment] = [$result['order'], $result['payment']];
+
+        // Dispatch confirmation emails outside the transaction so the queued
+        // job never races ahead of the commit. Best-effort: a mail failure
+        // must never make an already-successful payment look unprocessed.
         if ($order->user) {
-            Mail::to($order->user->email)->send(new OrderPlaced($order));
+            try {
+                Mail::to($order->user->email)->send(new OrderPlaced($order));
+                Mail::to($order->user->email)->send(new PaymentConfirmation($order, $confirmedPayment));
+            } catch (\Throwable $e) {
+                Log::error('Order/payment confirmation email failed: ' . $e->getMessage(), ['order_id' => $order->id]);
+            }
         }
 
         return true;
@@ -78,20 +88,20 @@ class RazorpayPaymentService
      */
     public function markFailed(Payment $payment): void
     {
-        DB::transaction(function () use ($payment) {
+        $order = DB::transaction(function () use ($payment) {
             /** @var Payment|null $locked */
             $locked = Payment::whereKey($payment->id)->lockForUpdate()->first();
 
             // Idempotent: only the first pending -> failed transition does work.
             if (! $locked || in_array($locked->status, ['success', 'refunded', 'failed'], true)) {
-                return;
+                return null;
             }
 
             $locked->update(['status' => 'failed']);
 
             $order = $locked->order;
             if (! $order) {
-                return;
+                return null;
             }
 
             // Restore stock for each line and log the reversal, mirroring the
@@ -115,9 +125,21 @@ class RazorpayPaymentService
             }
 
             $order->update([
-                'payment_status' => 'failed',
-                'order_status'   => 'cancelled',
+                'payment_status'       => 'failed',
+                'order_status'         => 'cancelled',
+                'cancellation_reason'  => $order->cancellation_reason ?? 'Payment failed or was not completed.',
             ]);
+
+            return $order;
         });
+
+        // Best-effort: never let a mail failure surface as a payment-processing error.
+        if ($order && $order->user) {
+            try {
+                Mail::to($order->user->email)->send(new \App\Mail\OrderCancelled($order));
+            } catch (\Throwable $e) {
+                Log::error('Order cancellation email failed: ' . $e->getMessage(), ['order_id' => $order->id]);
+            }
+        }
     }
 }

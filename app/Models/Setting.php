@@ -16,6 +16,12 @@ class Setting extends Model
     /** Only the update event is meaningful for the single settings row. */
     protected array $activityLogEvents = ['updated'];
 
+    protected static function booted()
+    {
+        static::saved(fn () => \App\Services\CacheService::flushSettings());
+        static::deleted(fn () => \App\Services\CacheService::flushSettings());
+    }
+
     public function activityLabel(): string
     {
         return 'store settings';

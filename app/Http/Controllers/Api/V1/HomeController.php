@@ -14,6 +14,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Testimonial;
 use App\Models\Wishlist;
+use App\Support\Cache\CacheKeys;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
@@ -32,7 +33,7 @@ class HomeController extends Controller
             ->withAvg('reviews', 'rating')
             ->withCount('reviews');
 
-        $data = Cache::remember('homepage_data', 3600, function () use ($productCard) {
+        $data = Cache::remember(CacheKeys::HOMEPAGE_DATA, CacheKeys::TTL_STANDARD, function () use ($productCard) {
             return [
                 'banners' => Banner::where('status', true)->orderBy('sort_order')->get(),
                 'homepageCategories' => (function () {

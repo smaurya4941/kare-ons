@@ -40,9 +40,14 @@ class OrderController extends Controller
     public function update(Request $request, Order $order)
     {
         $validated = $request->validate([
-            'order_status'  => 'required|in:pending,confirmed,packed,shipped,delivered,returned,cancelled',
-            'refund_status' => 'required|in:none,pending,partial,refunded',
-            'notes'         => 'nullable|string|max:1000',
+            'order_status'            => 'required|in:pending,confirmed,packed,shipped,delivered,returned,cancelled',
+            'refund_status'           => 'required|in:none,pending,partial,refunded',
+            'notes'                   => 'nullable|string|max:1000',
+            'courier_name'            => 'nullable|string|max:100',
+            'tracking_number'         => 'nullable|string|max:100',
+            'tracking_url'            => 'nullable|url|max:500',
+            'expected_delivery_date'  => 'nullable|date',
+            'cancellation_reason'     => 'nullable|string|max:500',
         ]);
 
         try {
@@ -52,8 +57,15 @@ class OrderController extends Controller
             $newStatus = $validated['order_status'];
 
             $order->update([
-                'order_status' => $newStatus,
-                'refund_status' => $validated['refund_status'],
+                'order_status'           => $newStatus,
+                'refund_status'          => $validated['refund_status'],
+                'courier_name'           => $validated['courier_name'] ?? $order->courier_name,
+                'tracking_number'        => $validated['tracking_number'] ?? $order->tracking_number,
+                'tracking_url'           => $validated['tracking_url'] ?? $order->tracking_url,
+                'expected_delivery_date' => $validated['expected_delivery_date'] ?? $order->expected_delivery_date,
+                'cancellation_reason'    => $newStatus === 'cancelled'
+                    ? ($validated['cancellation_reason'] ?? $order->cancellation_reason)
+                    : $order->cancellation_reason,
             ]);
 
             // Handle inventory restocking on cancellation or return
@@ -83,9 +95,19 @@ class OrderController extends Controller
                 ]);
             }
 
-            // Send Shipped Email Notification
-            if ($newStatus === 'shipped' && $oldStatus !== 'shipped' && $order->user) {
-                \Illuminate\Support\Facades\Mail::to($order->user->email)->send(new \App\Mail\OrderShipped($order));
+            // Status-change transactional emails — best-effort: a mail failure
+            // must never roll back the order status update itself.
+            if ($oldStatus !== $newStatus && $order->user) {
+                try {
+                    match ($newStatus) {
+                        'shipped' => \Illuminate\Support\Facades\Mail::to($order->user->email)->send(new \App\Mail\OrderShipped($order)),
+                        'delivered' => \Illuminate\Support\Facades\Mail::to($order->user->email)->send(new \App\Mail\OrderDelivered($order)),
+                        'cancelled' => \Illuminate\Support\Facades\Mail::to($order->user->email)->send(new \App\Mail\OrderCancelled($order)),
+                        default => null,
+                    };
+                } catch (\Throwable $e) {
+                    report($e);
+                }
             }
 
             DB::commit();

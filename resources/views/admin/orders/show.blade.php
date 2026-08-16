@@ -106,12 +106,12 @@
         {{-- Update Status --}}
         <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-5">
             <h2 class="font-semibold text-gray-800 text-sm mb-4">Update Status</h2>
-            <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" class="space-y-4">
+            <form action="{{ route('admin.orders.update', $order->id) }}" method="POST" class="space-y-4" x-data="{ status: '{{ $order->order_status }}' }">
                 @csrf @method('PUT')
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-1">Order Status</label>
-                        <select name="order_status" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500">
+                        <select name="order_status" x-model="status" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500">
                             @foreach(['pending','confirmed','packed','shipped','delivered','returned','cancelled'] as $status)
                             <option value="{{ $status }}" {{ $order->order_status === $status ? 'selected' : '' }}>
                                 {{ ucfirst($status) }}
@@ -130,6 +130,36 @@
                         </select>
                     </div>
                 </div>
+
+                {{-- Shown when marking as Shipped: included in the shipment email --}}
+                <div x-show="status === 'shipped'" x-cloak class="space-y-3 border border-gray-100 rounded-md p-3 bg-gray-50/50">
+                    <p class="text-[10px] font-medium text-gray-500 uppercase tracking-wider">Shipment Details (optional, included in the shipped email)</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] text-gray-500 mb-1">Courier</label>
+                            <input type="text" name="courier_name" value="{{ old('courier_name', $order->courier_name) }}" placeholder="e.g. Delhivery" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-gray-500 mb-1">Tracking Number</label>
+                            <input type="text" name="tracking_number" value="{{ old('tracking_number', $order->tracking_number) }}" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-gray-500 mb-1">Tracking URL</label>
+                            <input type="url" name="tracking_url" value="{{ old('tracking_url', $order->tracking_url) }}" placeholder="https://..." class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] text-gray-500 mb-1">Expected Delivery</label>
+                            <input type="date" name="expected_delivery_date" value="{{ old('expected_delivery_date', optional($order->expected_delivery_date)->format('Y-m-d')) }}" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Shown when cancelling: included in the cancellation email --}}
+                <div x-show="status === 'cancelled'" x-cloak>
+                    <label class="block text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-1">Cancellation Reason (included in the cancellation email)</label>
+                    <input type="text" name="cancellation_reason" value="{{ old('cancellation_reason', $order->cancellation_reason) }}" placeholder="e.g. Customer requested cancellation" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+
                 <div>
                     <label for="notes" class="block text-[10px] font-medium text-gray-500 uppercase tracking-wider mb-1">Internal Notes</label>
                     <textarea name="notes" id="notes" rows="2"
