@@ -38,5 +38,30 @@
             <input type="text" name="home_cta_link" value="{{ old('home_cta_link', $settings->home_cta_link) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., /shop">
         </div>
     </div>
+
+    <div class="mt-8">
+        <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-6">Ingredient Spotlight Section</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Spotlight Title</label>
+                <input type="text" name="home_ingredient_spotlight_title" value="{{ old('home_ingredient_spotlight_title', $settings->home_ingredient_spotlight_title) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Spotlight Background Image</label>
+                @if($settings->home_ingredient_spotlight_bg)
+                    <div class="mb-2">
+                        <img src="{{ image_url($settings->home_ingredient_spotlight_bg) }}" alt="Current Spotlight BG" class="h-20 object-cover bg-gray-100 p-1 rounded">
+                    </div>
+                @endif
+                <input type="file" name="home_ingredient_spotlight_bg" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Ingredients (Comma-separated)</label>
+                <input type="text" name="home_ingredient_spotlight_ingredients" value="{{ old('home_ingredient_spotlight_ingredients', $settings->home_ingredient_spotlight_ingredients) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Neem, Tulsi, Ashwagandha, Amla">
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

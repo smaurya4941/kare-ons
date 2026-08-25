@@ -19,6 +19,8 @@ if (!function_exists('setting')) {
                 'home_hero_subtitle' => 'Pioneering clinical-grade Ayurvedic medicine through rigorous scientific validation. Our state-of-the-art manufacturing facilities deliver holistic wellness solutions that honor ancient traditions while meeting modern pharmaceutical standards.',
                 'home_cta_text' => 'Start Your Inquiry',
                 'home_cta_link' => '/shop',
+                'home_ingredient_spotlight_title' => 'The Essence of Vedic Wisdom',
+                'home_ingredient_spotlight_ingredients' => 'Neem,Tulsi,Ashwagandha,Amla',
             ]);
         });
 

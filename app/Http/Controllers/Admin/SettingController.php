@@ -69,6 +69,9 @@ class SettingController extends Controller
                 'home_cta_text' => 'nullable|string|max:100',
                 'home_cta_link' => 'nullable|string|max:255',
                 'home_hero_bg' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+                'home_ingredient_spotlight_title' => 'nullable|string',
+                'home_ingredient_spotlight_ingredients' => 'nullable|string',
+                'home_ingredient_spotlight_bg' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             ];
         } elseif ($tab === 'payment') {
             $rules = [
@@ -133,6 +136,14 @@ class SettingController extends Controller
                 $this->cloudinary->destroy($settings->home_hero_bg);
             }
             $validated['home_hero_bg'] = $this->cloudinary->upload($request->file('home_hero_bg'), 'settings');
+        }
+
+        // Handle File Upload for Ingredient Spotlight BG
+        if ($request->hasFile('home_ingredient_spotlight_bg')) {
+            if ($settings->home_ingredient_spotlight_bg) {
+                $this->cloudinary->destroy($settings->home_ingredient_spotlight_bg);
+            }
+            $validated['home_ingredient_spotlight_bg'] = $this->cloudinary->upload($request->file('home_ingredient_spotlight_bg'), 'settings');
         }
 
         $settings->fill($validated);
