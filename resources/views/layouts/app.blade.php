@@ -41,10 +41,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
 
+    <style>
+        @keyframes logoPulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        .animate-logo-pulse {
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+        #global-preloader {
+            position: fixed;
+            inset: 0;
+            z-index: 999999;
+            background-color: #fcf9f4; /* Sand Canvas */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+    </style>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="bg-background text-on-background font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+    <!-- Global Page Preloader -->
+    <div id="global-preloader">
+        <img src="{{ asset('images/page-loader.png') }}" alt="Loading Kareons..." class="w-64 md:w-80 h-auto animate-logo-pulse">
+    </div>
+
     <!-- Toast notifications -->
     <div id="toast-container" class="fixed top-16 right-4 z-[100] flex flex-col gap-2 w-[calc(100%-2rem)] max-w-sm pointer-events-none" aria-live="polite" aria-atomic="true"></div>
 
@@ -317,6 +343,33 @@
     </footer>
 
     <script>
+        // Global Preloader Logic
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('global-preloader');
+            if (preloader) {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.visibility = 'hidden';
+                    preloader.style.display = 'none';
+                }, 500);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const target = e.target.closest('a');
+            if (target && target.href && !target.hasAttribute('download') && target.hostname === window.location.hostname && !target.href.includes('#') && target.target !== '_blank') {
+                const preloader = document.getElementById('global-preloader');
+                if (preloader) {
+                    preloader.style.display = 'flex';
+                    // Small delay to allow browser to calculate layout before fading in
+                    setTimeout(() => {
+                        preloader.style.visibility = 'visible';
+                        preloader.style.opacity = '1';
+                    }, 10);
+                }
+            }
+        });
+
         // Micro-interactions and scroll effects
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.clinical-card');

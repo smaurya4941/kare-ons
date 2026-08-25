@@ -132,7 +132,7 @@
                         : asset($categoryPlaceholders[$i % count($categoryPlaceholders)]);
                 @endphp
                 <a href="{{ route('shop.index', ['category' => $category->slug]) }}" class="group relative block overflow-hidden rounded-xl aspect-[4/5] bg-brand-forest shadow-sm hover:shadow-xl transition-all">
-                    <img class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500" src="{{ $categorySrc }}" alt="{{ $category->name }}" loading="lazy" decoding="async"/>
+                    <img class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500" src="{{ $categorySrc }}" alt="{{ $category->name }}" decoding="async"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-brand-forest via-brand-forest/40 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-4 md:p-5">
                         <h3 class="font-headline-sm text-lg md:text-headline-sm text-brand-cream mb-1 leading-tight">{{ $category->name }}</h3>
@@ -193,7 +193,7 @@
 
                     <a href="{{ route('product.show', $product->slug) }}" class="block aspect-square bg-brand-cream overflow-hidden relative">
                         @if($product->main_image)
-                            <img src="{{ image_url($product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async">
+                            <img src="{{ image_url($product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" decoding="async">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-brand-beige text-brand-sage">
                                 <span class="material-symbols-outlined text-5xl" aria-hidden="true">image</span>
@@ -381,7 +381,7 @@
 
                     <a href="{{ route('product.show', $product->slug) }}" class="block aspect-square bg-brand-cream overflow-hidden relative">
                         @if($product->main_image)
-                            <img src="{{ image_url($product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async">
+                            <img src="{{ image_url($product->main_image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" decoding="async">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-brand-beige text-brand-sage">
                                 <span class="material-symbols-outlined text-5xl" aria-hidden="true">image</span>
