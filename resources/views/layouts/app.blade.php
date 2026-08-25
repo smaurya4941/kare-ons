@@ -395,13 +395,21 @@
         });
 
         const navbar = document.getElementById('navbar');
+        let isScrolling = false;
+        
         window.addEventListener('scroll', () => {
-            if (navbar && window.scrollY > 50) {
-                navbar.classList.add('shadow-md');
-            } else if (navbar) {
-                navbar.classList.remove('shadow-md');
+            if (!isScrolling) {
+                window.requestAnimationFrame(() => {
+                    if (navbar && window.scrollY > 50) {
+                        navbar.classList.add('shadow-md');
+                    } else if (navbar) {
+                        navbar.classList.remove('shadow-md');
+                    }
+                    isScrolling = false;
+                });
+                isScrolling = true;
             }
-        });
+        }, { passive: true });
 
         // Mobile menu toggle
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
