@@ -72,6 +72,11 @@ class SettingController extends Controller
                 'home_ingredient_spotlight_title' => 'nullable|string',
                 'home_ingredient_spotlight_ingredients' => 'nullable|string',
                 'home_ingredient_spotlight_bg' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+                'home_expert_name' => 'nullable|string|max:100',
+                'home_expert_designation' => 'nullable|string|max:100',
+                'home_expert_description' => 'nullable|string|max:255',
+                'home_expert_quote' => 'nullable|string',
+                'home_expert_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             ];
         } elseif ($tab === 'payment') {
             $rules = [
@@ -144,6 +149,14 @@ class SettingController extends Controller
                 $this->cloudinary->destroy($settings->home_ingredient_spotlight_bg);
             }
             $validated['home_ingredient_spotlight_bg'] = $this->cloudinary->upload($request->file('home_ingredient_spotlight_bg'), 'settings');
+        }
+
+        // Handle File Upload for Expert Image
+        if ($request->hasFile('home_expert_image')) {
+            if ($settings->home_expert_image) {
+                $this->cloudinary->destroy($settings->home_expert_image);
+            }
+            $validated['home_expert_image'] = $this->cloudinary->upload($request->file('home_expert_image'), 'settings');
         }
 
         $settings->fill($validated);

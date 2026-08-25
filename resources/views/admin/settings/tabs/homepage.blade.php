@@ -63,5 +63,40 @@
             </div>
         </div>
     </div>
+
+    <div class="mt-8">
+        <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-6">Expert Quote Section</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Expert Name</label>
+                <input type="text" name="home_expert_name" value="{{ old('home_expert_name', $settings->home_expert_name) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Dr. Rajni Dubey">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Designation</label>
+                <input type="text" name="home_expert_designation" value="{{ old('home_expert_designation', $settings->home_expert_designation) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., Expert Ayurvedic Vaidya (B.A.M.S)">
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description / Subtext</label>
+                <input type="text" name="home_expert_description" value="{{ old('home_expert_description', $settings->home_expert_description) }}" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="e.g., 20+ Years Clinical Practice & Formulation Research">
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Quote</label>
+                <textarea name="home_expert_quote" rows="3" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Quote text...">{{ old('home_expert_quote', $settings->home_expert_quote) }}</textarea>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Expert Image</label>
+                @if($settings->home_expert_image)
+                    <div class="mb-2">
+                        <img src="{{ image_url($settings->home_expert_image) }}" alt="Current Expert Image" class="h-20 object-cover bg-gray-100 p-1 rounded">
+                    </div>
+                @endif
+                <input type="file" name="home_expert_image" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

@@ -558,14 +558,15 @@
     </div>
 </section>
 
-<!-- Expert Quote Section (driven by real testimonials) -->
-@php
-    $quote = $testimonials->firstWhere('rating', 5) ?? $testimonials->first();
-@endphp
+<!-- Expert Quote Section (driven by settings) -->
 <section class="bg-brand-forest text-brand-cream relative overflow-hidden">
     <div class="relative z-10 flex flex-col md:flex-row w-full h-full md:min-h-[400px]">
         <div class="w-full md:w-1/3 bg-brand-forest-dark flex items-center justify-center overflow-hidden relative min-h-[300px]">
-            <img src="https://images.unsplash.com/photo-1594824436998-df40959e1927?q=80&w=1000&auto=format&fit=crop" alt="Expert Ayurvedic Doctor" class="w-full h-full object-cover">
+            @if(setting('home_expert_image'))
+                <img src="{{ image_url(setting('home_expert_image')) }}" alt="{{ setting('home_expert_name', 'Expert') }}" class="w-full h-full object-cover">
+            @else
+                <img src="https://images.unsplash.com/photo-1594824436998-df40959e1927?q=80&w=1000&auto=format&fit=crop" alt="Expert Ayurvedic Doctor" class="w-full h-full object-cover">
+            @endif
             <div class="absolute inset-0 bg-gradient-to-r from-transparent to-brand-forest/80 md:to-brand-forest"></div>
         </div>
         <div class="w-full md:w-2/3 flex flex-col justify-center px-margin-mobile md:px-16 py-12 md:py-16 text-left bg-brand-forest relative">
@@ -574,19 +575,14 @@
             
             <span class="material-symbols-outlined text-[48px] mb-4 text-brand-gold opacity-50 relative z-10" style="font-variation-settings:'FILL' 1;" aria-hidden="true">format_quote</span>
             <h3 class="font-display-lg text-headline-sm md:text-headline-md italic mb-8 leading-relaxed relative z-10 max-w-3xl">
-                "{{ $quote->content ?? 'True healing occurs when we harmonize the elemental wisdom of nature with the diagnostic precision of science.' }}"
+                "{{ setting('home_expert_quote', 'True healing occurs when we harmonize the elemental wisdom of nature with the diagnostic precision of science.') }}"
             </h3>
             
             <div class="border-t border-brand-gold/20 pt-6 mt-2 relative z-10">
-                @if($quote)
-                    <p class="font-headline-sm text-headline-sm text-brand-cream">{{ $quote->name }}</p>
-                    @if($quote->designation)
-                        <p class="font-body-md text-body-md text-brand-gold mt-1">{{ $quote->designation }}</p>
-                    @endif
-                @else
-                    <p class="font-headline-sm text-headline-sm text-brand-cream">Dr. Rajni Dubey</p>
-                    <p class="font-body-md text-body-md text-brand-gold uppercase tracking-widest text-xs mt-1">Expert Ayurvedic Vaidya (B.A.M.S)</p>
-                    <p class="font-label-md text-label-md text-brand-cream/70 mt-2">20+ Years Clinical Practice &amp; Formulation Research</p>
+                <p class="font-headline-sm text-headline-sm text-brand-cream">{{ setting('home_expert_name', 'Dr. Rajni Dubey') }}</p>
+                <p class="font-body-md text-body-md text-brand-gold uppercase tracking-widest text-xs mt-1">{{ setting('home_expert_designation', 'Expert Ayurvedic Vaidya (B.A.M.S)') }}</p>
+                @if(setting('home_expert_description'))
+                    <p class="font-label-md text-label-md text-brand-cream/70 mt-2">{{ setting('home_expert_description') }}</p>
                 @endif
             </div>
         </div>

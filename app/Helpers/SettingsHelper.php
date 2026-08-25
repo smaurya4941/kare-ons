@@ -21,6 +21,10 @@ if (!function_exists('setting')) {
                 'home_cta_link' => '/shop',
                 'home_ingredient_spotlight_title' => 'The Essence of Vedic Wisdom',
                 'home_ingredient_spotlight_ingredients' => 'Neem,Tulsi,Ashwagandha,Amla',
+                'home_expert_name' => 'Dr. Rajni Dubey',
+                'home_expert_designation' => 'Expert Ayurvedic Vaidya (B.A.M.S)',
+                'home_expert_description' => '20+ Years Clinical Practice & Formulation Research',
+                'home_expert_quote' => 'True healing occurs when we harmonize the elemental wisdom of nature with the diagnostic precision of science.',
             ]);
         });
 
