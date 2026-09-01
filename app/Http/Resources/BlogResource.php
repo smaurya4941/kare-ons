@@ -18,8 +18,13 @@ class BlogResource extends JsonResource
             'content' => $this->content,
             'featured_image' => image_url($this->featured_image),
             'author' => $this->whenLoaded('author', fn () => $this->author ? ['name' => $this->author->name] : null),
-            'meta_title' => $this->meta_title,
-            'meta_description' => $this->meta_description,
+            // seo_title/seo_description are the current fields; meta_title/
+            // meta_description are kept as deprecated aliases.
+            'seo_title' => $this->seo_title,
+            'seo_description' => $this->seo_description,
+            'is_indexable' => (bool) $this->is_indexable,
+            'meta_title' => $this->seo_title,
+            'meta_description' => $this->seo_description,
             'published_at' => $this->published_at?->toIso8601String(),
         ];
     }

@@ -94,6 +94,7 @@ class SettingController extends Controller
                 'seo_meta_title' => 'nullable|string|max:255',
                 'seo_meta_description' => 'nullable|string',
                 'seo_meta_keywords' => 'nullable|string',
+                'google_site_verification' => 'nullable|string|max:255',
             ];
         } elseif ($tab === 'email') {
             $rules = [

@@ -1,3 +1,7 @@
+@section('title', 'Add New Address')
+@section('meta_description', 'Add a new shipping or billing address to your Kare Ons Herbal account.')
+@section('no_index', 'true')
+
 <x-customer-layout>
     <x-slot name="title">Add New Address</x-slot>
 

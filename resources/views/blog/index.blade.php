@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Wellness Blog - Kare Ons Herbal')
+@section('title', 'Wellness Blog')
+@section('meta_description', 'Explore Ayurvedic wellness articles, herbal remedies, and holistic health tips from Kare Ons Herbal.')
+@if($blogs->currentPage() > 1)
+    @section('prev_url', $blogs->previousPageUrl())
+@endif
+@if($blogs->hasMorePages())
+    @section('next_url', $blogs->nextPageUrl())
+@endif
 
 @section('content')
 <div class="bg-surface-container-lowest py-10">

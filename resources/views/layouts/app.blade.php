@@ -5,38 +5,26 @@
 
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>@yield('title', setting('site_name', 'Kare ONS Herbals') . ' | Clinical Excellence in Botanical Medicine')</title>
     @if(setting('favicon'))
     <link rel="icon" type="image/png" href="{{ image_url(setting('favicon')) }}">
     @else
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     @endif
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
 
-    {{-- SEO Meta Tags --}}
-    @php
-    $siteName = setting('site_name', 'Kare ONS Herbals');
-    $defaultDesc = strip_tags(setting('seo_meta_description') ?: setting('about_text') ?: 'Premium Ayurvedic and herbal wellness products by ' . $siteName . '.');
-    $metaDescription = \Illuminate\Support\Str::limit(trim(strip_tags($__env->yieldContent('meta_description', $defaultDesc))), 160);
-    $metaKeywords = trim($__env->yieldContent('meta_keywords', setting('seo_meta_keywords', '')));
-    $pageTitle = trim($__env->yieldContent('title', $siteName));
-    $ogImage = trim($__env->yieldContent('og_image', setting('logo') ? image_url(setting('logo')) : asset('images/logo.png')));
-    @endphp
-    <meta name="description" content="{{ $metaDescription }}">
-    @if($metaKeywords)
-    <meta name="keywords" content="{{ $metaKeywords }}">@endif
-    <link rel="canonical" href="{{ url()->current() }}">
-    <meta property="og:site_name" content="{{ $siteName }}">
-    <meta property="og:type" content="{{ $__env->yieldContent('og_type', 'website') }}">
-    <meta property="og:title" content="{{ $pageTitle }}">
-    <meta property="og:description" content="{{ $metaDescription }}">
-    <meta property="og:url" content="{{ url()->current() }}">
-    @if($ogImage)
-    <meta property="og:image" content="{{ $ogImage }}">@endif
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $pageTitle }}">
-    <meta name="twitter:description" content="{{ $metaDescription }}">
-    @if($ogImage)
-    <meta name="twitter:image" content="{{ $ogImage }}">@endif
+    @if(setting('google_site_verification'))
+    <meta name="google-site-verification" content="{{ setting('google_site_verification') }}">
+    @endif
+
+    <x-seo
+        title="{{ trim($__env->yieldContent('title')) }}"
+        description="{{ trim($__env->yieldContent('meta_description')) }}"
+        ogImage="{{ trim($__env->yieldContent('og_image')) }}"
+        ogType="{{ trim($__env->yieldContent('og_type', 'website')) }}"
+        noIndex="{{ trim($__env->yieldContent('no_index', 'false')) === 'true' }}"
+        prevUrl="{{ trim($__env->yieldContent('prev_url')) }}"
+        nextUrl="{{ trim($__env->yieldContent('next_url')) }}"
+    />
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
@@ -63,6 +51,7 @@
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('schema')
 </head>
 
 <body class="bg-background text-on-background font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">

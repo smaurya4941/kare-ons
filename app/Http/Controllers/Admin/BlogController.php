@@ -46,13 +46,15 @@ class BlogController extends Controller
             'content'          => 'required|string',
             'featured_image'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'status'           => 'required|boolean',
-            'meta_title'       => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
+            'seo_title'        => 'nullable|string|max:255',
+            'seo_description'  => 'nullable|string|max:500',
+            'is_indexable'     => 'boolean',
             'published_at'     => 'nullable|date',
         ]);
 
         $validated['author_id']   = Auth::id();
         $validated['slug']        = $this->uniqueSlug($validated['title']);
+        $validated['is_indexable'] = $request->boolean('is_indexable', true);
         $validated['published_at'] = $validated['status']
             ? ($request->published_at ?? now())
             : null;
@@ -92,10 +94,13 @@ class BlogController extends Controller
             'content'          => 'required|string',
             'featured_image'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'status'           => 'required|boolean',
-            'meta_title'       => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
+            'seo_title'        => 'nullable|string|max:255',
+            'seo_description'  => 'nullable|string|max:500',
+            'is_indexable'     => 'boolean',
             'published_at'     => 'nullable|date',
         ]);
+
+        $validated['is_indexable'] = $request->boolean('is_indexable', true);
 
         if ($validated['title'] !== $blog->title) {
             $validated['slug'] = $this->uniqueSlug($validated['title'], $blog->id);

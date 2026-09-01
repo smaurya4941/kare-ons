@@ -41,14 +41,16 @@ class CategoryController extends Controller
             'description'      => 'nullable|string|max:2000',
             'status'           => 'required|boolean',
             'sort_order'       => 'nullable|integer|min:0',
-            'meta_title'       => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:1000',
+            'seo_title'        => 'nullable|string|max:255',
+            'seo_description'  => 'nullable|string|max:1000',
+            'is_indexable'     => 'boolean',
             'image'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'banner_image'     => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $validated['slug'] = $this->uniqueSlug($validated['name']);
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
+        $validated['is_indexable'] = $request->boolean('is_indexable', true);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $this->cloudinary->upload($request->file('image'), 'categories/images');
@@ -87,8 +89,9 @@ class CategoryController extends Controller
             'description'      => 'nullable|string|max:2000',
             'status'           => 'required|boolean',
             'sort_order'       => 'nullable|integer|min:0',
-            'meta_title'       => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:1000',
+            'seo_title'        => 'nullable|string|max:255',
+            'seo_description'  => 'nullable|string|max:1000',
+            'is_indexable'     => 'boolean',
             'image'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'banner_image'     => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
@@ -102,8 +105,9 @@ class CategoryController extends Controller
         if ($validated['name'] !== $category->name) {
             $validated['slug'] = $this->uniqueSlug($validated['name'], $category->id);
         }
-        
+
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
+        $validated['is_indexable'] = $request->boolean('is_indexable', true);
 
         if ($request->hasFile('image')) {
             if ($category->image) {

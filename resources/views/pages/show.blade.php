@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
-@section('title', $page->title . ' - ' . setting('site_name', 'Kare ONS Herbals'))
+@section('title', $page->seo_title ?: $page->title)
+@section('meta_description', $page->seo_description ?: \Illuminate\Support\Str::limit(strip_tags($page->content), 160))
+@if(isset($page->is_indexable) && ! $page->is_indexable)
+    @section('no_index', 'true')
+@endif
 
 @section('content')
 <div class="bg-surface py-12 border-b border-outline-variant/30">

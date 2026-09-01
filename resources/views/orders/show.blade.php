@@ -1,3 +1,7 @@
+@section('title', 'Order #' . $order->order_number)
+@section('meta_description', 'View the details and status of your order.')
+@section('no_index', 'true')
+
 <x-customer-layout>
     <x-slot name="title">Order Details</x-slot>
     <x-slot name="hideTitle">true</x-slot>

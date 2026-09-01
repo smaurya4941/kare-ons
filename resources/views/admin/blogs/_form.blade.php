@@ -46,15 +46,20 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
                 <h3 class="text-sm font-semibold text-gray-800">SEO</h3>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
-                    <input type="text" name="meta_title" value="{{ old('meta_title', $blog->meta_title) }}"
+                    <label class="block text-sm font-medium text-gray-700 mb-1">SEO Title</label>
+                    <input type="text" name="seo_title" value="{{ old('seo_title', $blog->seo_title) }}"
+                           placeholder="Falls back to the post title"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
-                    <textarea name="meta_description" rows="2" maxlength="500"
-                              class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">{{ old('meta_description', $blog->meta_description) }}</textarea>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">SEO Description</label>
+                    <textarea name="seo_description" rows="2" maxlength="500"
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-indigo-500 focus:border-indigo-500">{{ old('seo_description', $blog->seo_description) }}</textarea>
                 </div>
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="is_indexable" value="1" {{ old('is_indexable', $blog->is_indexable ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                    <span class="text-sm text-gray-700">Allow search engines to index this post</span>
+                </label>
             </div>
         </div>
 

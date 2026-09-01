@@ -14,8 +14,10 @@ class PageSeeder extends Seeder
 
         $pages = [
             [
-                'title' => 'Privacy Policy', 
-                'slug' => 'privacy-policy', 
+                'title' => 'Privacy Policy',
+                'slug' => 'privacy-policy',
+                'seo_title' => 'Privacy Policy',
+                'seo_description' => 'Learn how Kare Ons Herbal collects, uses, and protects your personal data when you shop for Ayurvedic products with us.',
                 'content' => '<h2>Privacy Policy</h2>
                 <p>Welcome to Kare Ons Herbal. We respect your privacy and are committed to protecting your personal data.</p>
                 <h3>1. Information We Collect</h3>
@@ -30,8 +32,10 @@ class PageSeeder extends Seeder
                 <p>We do not sell your personal data. We only share it with trusted third-party service providers (like our shipping and payment gateways) strictly for order fulfillment purposes.</p>'
             ],
             [
-                'title' => 'Refund Policy', 
-                'slug' => 'refund-policy', 
+                'title' => 'Refund Policy',
+                'slug' => 'refund-policy',
+                'seo_title' => 'Refund & Return Policy',
+                'seo_description' => 'Read our refund and return policy for Ayurvedic products, including return windows, eligibility, and how refunds are processed.',
                 'content' => '<h2>Refund & Return Policy</h2>
                 <p>At Kare Ons Herbal, we stand behind the quality of our Ayurvedic formulations.</p>
                 <h3>Returns</h3>
@@ -44,8 +48,10 @@ class PageSeeder extends Seeder
                 <p>Once your return is received and inspected, we will notify you of the approval or rejection of your refund. If approved, the refund will be processed to your original method of payment (via Razorpay) within 5-7 business days.</p>'
             ],
             [
-                'title' => 'Shipping Policy', 
-                'slug' => 'shipping-policy', 
+                'title' => 'Shipping Policy',
+                'slug' => 'shipping-policy',
+                'seo_title' => 'Shipping & Delivery Policy',
+                'seo_description' => 'Find out about processing times, shipping rates, and delivery estimates for Kare Ons Herbal orders across India.',
                 'content' => '<h2>Shipping & Delivery</h2>
                 <p>We strive to deliver your wellness products as quickly and safely as possible.</p>
                 <h3>Processing Time</h3>
@@ -56,8 +62,10 @@ class PageSeeder extends Seeder
                 <p>Standard delivery typically takes 3-5 business days across PAN India, depending on your location.</p>'
             ],
             [
-                'title' => 'Terms & Conditions', 
-                'slug' => 'terms-and-conditions', 
+                'title' => 'Terms & Conditions',
+                'slug' => 'terms-and-conditions',
+                'seo_title' => 'Terms & Conditions',
+                'seo_description' => 'Review the terms of service governing your use of the Kare Ons Herbal website and purchase of our Ayurvedic products.',
                 'content' => '<h2>Terms of Service</h2>
                 <p>By accessing or using the Kare Ons Herbal website, you agree to be bound by these Terms of Service.</p>
                 <h3>1. Medical Disclaimer</h3>
@@ -68,8 +76,10 @@ class PageSeeder extends Seeder
                 <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>'
             ],
             [
-                'title' => 'FAQ', 
-                'slug' => 'faq', 
+                'title' => 'FAQ',
+                'slug' => 'faq',
+                'seo_title' => 'Frequently Asked Questions',
+                'seo_description' => 'Answers to common questions about Kare Ons Herbal products, safety, delivery timelines, and Cash on Delivery availability.',
                 'content' => '<h2>Frequently Asked Questions</h2>
                 <h3>Are your products safe?</h3>
                 <p>Yes, all our products are manufactured in GMP-certified facilities and undergo rigorous quality testing to ensure absolute purity and safety.</p>
@@ -84,8 +94,15 @@ class PageSeeder extends Seeder
 
         foreach ($pages as $page) {
             Page::updateOrCreate(
-                ['slug' => $page['slug']], 
-                ['title' => $page['title'], 'content' => $page['content'], 'status' => true]
+                ['slug' => $page['slug']],
+                [
+                    'title' => $page['title'],
+                    'content' => $page['content'],
+                    'seo_title' => $page['seo_title'],
+                    'seo_description' => $page['seo_description'],
+                    'is_indexable' => true,
+                    'status' => true,
+                ]
             );
         }
     }

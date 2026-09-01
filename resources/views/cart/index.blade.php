@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Your Cart - Kare Ons Herbal')
+@section('title', 'Your Cart')
+@section('meta_description', 'Review the items in your shopping cart before checkout.')
+@section('no_index', 'true')
 
 @section('content')
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 min-h-[60vh]">

@@ -29,5 +29,15 @@
         <input type="text" name="seo_meta_keywords" value="{{ old('seo_meta_keywords', $settings->seo_meta_keywords) }}" placeholder="e.g. ecommerce, products, shop" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
         <p class="text-xs text-gray-500 mt-1">Comma-separated list of keywords.</p>
     </div>
+
+    <div class="border-t pt-6">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Google Search Console Verification</label>
+        <input type="text" name="google_site_verification" value="{{ old('google_site_verification', $settings->google_site_verification) }}" placeholder="e.g. Abc123XyzVerificationToken" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+        <p class="text-xs text-gray-500 mt-1">
+            Paste just the <code>content</code> value from Google's HTML tag verification method
+            (Search Console → Settings → Ownership verification → HTML tag). Renders as a
+            <code>&lt;meta name="google-site-verification"&gt;</code> tag on every page.
+        </p>
+    </div>
 </div>
 @endsection

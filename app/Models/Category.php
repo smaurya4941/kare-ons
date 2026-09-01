@@ -15,6 +15,16 @@ class Category extends Model
 
     protected $guarded = ['id'];
 
+    protected array $activityLogIgnore = ['description', 'seo_description'];
+
+    protected function casts(): array
+    {
+        return [
+            'status'       => 'boolean',
+            'is_indexable' => 'boolean',
+        ];
+    }
+
     protected static function booted()
     {
         static::saved(fn () => \App\Services\CacheService::flushCategories());
@@ -34,5 +44,13 @@ class Category extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    /**
+     * Active categories that are allowed to be indexed by search engines.
+     */
+    public function scopeIndexable($query)
+    {
+        return $query->where('status', true)->where('is_indexable', true);
     }
 }

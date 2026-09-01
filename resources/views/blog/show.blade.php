@@ -1,9 +1,12 @@
 @extends('layouts.app')
 
-@section('title', $blog->meta_title ?? $blog->title . ' - Kare Ons Herbal')
-@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($blog->meta_description ?: $blog->excerpt), 160))
+@section('title', $blog->seo_title ?: $blog->title)
+@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($blog->seo_description ?: $blog->excerpt), 160))
 @section('og_type', 'article')
 @section('og_image', $blog->featured_image ? image_url($blog->featured_image) : '')
+@if(isset($blog->is_indexable) && ! $blog->is_indexable)
+    @section('no_index', 'true')
+@endif
 
 @section('content')
 <article class="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop py-8">
@@ -100,4 +103,60 @@
     </div>
 </div>
 @endif
+
+@push('schema')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": @json($blog->title),
+    "description": @json(\Illuminate\Support\Str::limit(strip_tags($blog->seo_description ?: $blog->excerpt), 160)),
+    @if($blog->featured_image)
+    "image": [
+        @json(image_url($blog->featured_image))
+    ],
+    @endif
+    "datePublished": @json(($blog->published_at ?? $blog->created_at)->toIso8601String()),
+    "dateModified": @json($blog->updated_at->toIso8601String()),
+    "author": {
+        "@type": "Person",
+        "name": @json($blog->author->name ?? setting('site_name', 'Kareons Herbal'))
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": @json(setting('site_name', 'Kareons Herbal'))
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": @json(route('blog.show', $blog->slug))
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": @json(route('home'))
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Blog",
+            "item": @json(route('blog.index'))
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": @json($blog->title),
+            "item": @json(route('blog.show', $blog->slug))
+        }
+    ]
+}
+</script>
+@endpush
 @endsection

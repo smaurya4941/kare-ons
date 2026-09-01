@@ -57,9 +57,14 @@ class ProductResource extends JsonResource
             'reviews_count' => $this->when($this->relationLoaded('reviews'), fn () => $this->reviews->count()),
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
 
-            // SEO
-            'meta_title' => $this->meta_title,
-            'meta_description' => $this->meta_description,
+            // SEO — seo_title/seo_description are the current fields; meta_title/
+            // meta_description are kept as deprecated aliases for API consumers
+            // built against the old field names and will be removed later.
+            'seo_title' => $this->seo_title,
+            'seo_description' => $this->seo_description,
+            'is_indexable' => (bool) $this->is_indexable,
+            'meta_title' => $this->seo_title,
+            'meta_description' => $this->seo_description,
 
             'created_at' => $this->created_at?->toIso8601String(),
         ];

@@ -1,9 +1,12 @@
 @extends('layouts.app')
 
-@section('title', ($product->meta_title ?? $product->name) . ' - Kare Ons Herbal')
-@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($product->meta_description ?: ($product->short_description ?: $product->description)), 160))
+@section('title', $product->seo_title ?: $product->name)
+@section('meta_description', $product->seo_description ?: \Illuminate\Support\Str::limit(strip_tags($product->short_description ?: $product->description), 160))
 @section('og_type', 'product')
 @section('og_image', $product->main_image ? image_url($product->main_image) : '')
+@if(isset($product->is_indexable) && !$product->is_indexable)
+    @section('no_index', 'true')
+@endif
 
 @section('content')
 <style>
@@ -19,8 +22,8 @@
     .product-content ul br, .product-content ol br, .product-content table br, .product-content tbody br, .product-content tr br { display: none; }
 </style>
 
-<main class="py-6 md:py-8 px-4 md:px-16 max-w-7xl mx-auto">
-    
+<div class="py-6 md:py-8 px-4 md:px-16 max-w-7xl mx-auto">
+
     <!-- Breadcrumbs -->
     <nav class="flex text-xs text-on-surface-variant mb-6 font-body-md">
         <ol class="flex items-center space-x-2">
@@ -48,7 +51,7 @@
             <!-- Main Image -->
             <div class="bg-white rounded-xl border border-soft-border p-4 flex items-center justify-center relative hover-border-herbal-accent overflow-hidden aspect-square shadow-sm">
                 <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at center, #2d5a27 1px, transparent 1px); background-size: 20px 20px;"></div>
-                <img :src="activeImage" alt="{{ $product->name }}" class="w-full h-full object-contain z-10 relative transition-transform duration-500 hover:scale-105">
+                <img :src="activeImage" alt="{{ $product->name }}" class="w-full h-full object-contain z-10 relative transition-transform duration-500 hover:scale-105" fetchpriority="high" decoding="async">
                 @if($product->sale_price)
                     <div class="absolute top-3 left-3 z-20 bg-error/10 text-error font-label-sm text-[10px] font-bold px-2 py-1 rounded shadow-sm backdrop-blur-sm bg-white/90">
                         SALE
@@ -59,11 +62,11 @@
             <!-- Thumbnails -->
             <div class="grid grid-cols-5 gap-2">
                 <button @click="activeImage = images[0]" class="aspect-square rounded-lg border-2 overflow-hidden bg-white hover:border-herbal-accent transition-colors" :class="activeImage === images[0] ? 'border-herbal-accent' : 'border-soft-border'">
-                    <img src="{{ image_url($product->main_image) }}" alt="Main Image" class="w-full h-full object-cover">
+                    <img src="{{ image_url($product->main_image) }}" alt="Main Image" class="w-full h-full object-cover" loading="lazy" decoding="async">
                 </button>
                 @foreach($product->images as $index => $image)
                     <button @click="activeImage = images[{{ $index + 1 }}]" class="aspect-square rounded-lg border-2 overflow-hidden bg-white hover:border-herbal-accent transition-colors" :class="activeImage === images[{{ $index + 1 }}] ? 'border-herbal-accent' : 'border-soft-border'">
-                        <img src="{{ image_url($image->image_path) }}" alt="Gallery Image {{ $index + 1 }}" class="w-full h-full object-cover">
+                        <img src="{{ image_url($image->image_path) }}" alt="Gallery Image {{ $index + 1 }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                     </button>
                 @endforeach
             </div>
@@ -501,7 +504,7 @@
                 <a href="{{ route('product.show', $related->slug) }}" class="group bg-white border border-soft-border rounded-lg overflow-hidden transition-all duration-300 hover-border-herbal-accent flex flex-col h-full relative shadow-sm">
                     <div class="aspect-square bg-surface-container overflow-hidden relative">
                         @if($related->main_image)
-                            <img src="{{ image_url($related->main_image) }}" alt="{{ $related->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ image_url($related->main_image) }}" alt="{{ $related->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">
                         @else
                             <div class="w-full h-full flex items-center justify-center">
                                 <span class="material-symbols-outlined text-4xl text-outline">image</span>
@@ -538,5 +541,88 @@
     </section>
     @endif
 
-</main>
+</div>
+
+@push('schema')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": @json($product->name),
+    "description": @json(strip_tags($product->short_description ?: $product->description)),
+    @if($product->main_image)
+    "image": [
+        @json(image_url($product->main_image))
+    ],
+    @endif
+    "sku": @json($product->sku),
+    "brand": {
+        "@type": "Brand",
+        "name": @json($product->brand->name ?? setting('site_name', 'Kareons Herbal'))
+    },
+    "offers": {
+        "@type": "Offer",
+        "url": @json(url()->current()),
+        "priceCurrency": "INR",
+        "price": @json($product->sale_price ?: $product->price),
+        "itemCondition": "https://schema.org/NewCondition",
+        "availability": "{{ $product->stock_quantity > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
+        "seller": {
+            "@type": "Organization",
+            "name": @json(setting('site_name', 'Kareons Herbal'))
+        }
+    }
+    @if($product->reviews->count() > 0)
+    ,
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": @json(number_format($product->reviews->avg('rating'), 1)),
+        "reviewCount": @json($product->reviews->count())
+    },
+    "review": [
+        @foreach($product->reviews->take(5) as $review)
+        {
+            "@type": "Review",
+            "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": @json($review->rating)
+            },
+            "author": {
+                "@type": "Person",
+                "name": @json($review->user->name ?? 'Anonymous')
+            }
+        }@if(!$loop->last),@endif
+        @endforeach
+    ]
+    @endif
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": @json(route('home'))
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": @json($product->category->name ?? 'Shop'),
+            "item": @json(route('shop.index', ['category' => $product->category->slug ?? '']))
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": @json($product->name),
+            "item": @json(route('product.show', $product->slug))
+        }
+    ]
+}
+</script>
+@endpush
+
 @endsection

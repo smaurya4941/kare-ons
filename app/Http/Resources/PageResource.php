@@ -14,8 +14,13 @@ class PageResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'content' => $this->content,
-            'meta_title' => $this->meta_title,
-            'meta_description' => $this->meta_description,
+            // seo_title/seo_description are the current fields; meta_title/
+            // meta_description are kept as deprecated aliases.
+            'seo_title' => $this->seo_title,
+            'seo_description' => $this->seo_description,
+            'is_indexable' => (bool) $this->is_indexable,
+            'meta_title' => $this->seo_title,
+            'meta_description' => $this->seo_description,
         ];
     }
 }

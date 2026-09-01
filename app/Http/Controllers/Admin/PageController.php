@@ -25,14 +25,17 @@ class PageController extends Controller
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:pages,slug',
             'content' => 'nullable|string',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
+            'is_indexable' => 'boolean',
             'status' => 'required|boolean',
         ]);
 
         if (empty($validated['slug'])) {
             $validated['slug'] = \Illuminate\Support\Str::slug($validated['title']);
         }
+
+        $validated['is_indexable'] = $request->boolean('is_indexable', true);
 
         Page::create($validated);
         return redirect()->route('admin.pages.index')->with('success', 'Page created successfully.');
@@ -49,14 +52,17 @@ class PageController extends Controller
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:pages,slug,' . $page->id,
             'content' => 'nullable|string',
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string|max:500',
+            'seo_title' => 'nullable|string|max:255',
+            'seo_description' => 'nullable|string|max:500',
+            'is_indexable' => 'boolean',
             'status' => 'required|boolean',
         ]);
 
         if (empty($validated['slug'])) {
             $validated['slug'] = \Illuminate\Support\Str::slug($validated['title']);
         }
+
+        $validated['is_indexable'] = $request->boolean('is_indexable', true);
 
         $page->update($validated);
         return redirect()->route('admin.pages.index')->with('success', 'Page updated successfully.');

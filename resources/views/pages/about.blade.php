@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'About Us')
+@section('meta_description', 'Learn about Kare Ons Herbal\'s heritage, our commitment to authentic Ayurvedic formulations, and the quality standards behind every product we make.')
+
 @section('content')
 <main class="pt-8 md:pt-10 pb-16">
 <!-- Hero Section -->

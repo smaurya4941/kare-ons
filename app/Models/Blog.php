@@ -13,7 +13,7 @@ class Blog extends Model
     use LogsActivity;
 
     /** Long-form fields excluded from the audit diff. */
-    protected array $activityLogIgnore = ['content', 'excerpt'];
+    protected array $activityLogIgnore = ['content', 'excerpt', 'meta_description', 'seo_description'];
 
     protected $fillable = [
         'author_id',
@@ -26,6 +26,9 @@ class Blog extends Model
         'status',
         'meta_title',
         'meta_description',
+        'seo_title',
+        'seo_description',
+        'is_indexable',
         'published_at',
     ];
 
@@ -39,6 +42,7 @@ class Blog extends Model
     {
         return [
             'status'       => 'boolean',
+            'is_indexable' => 'boolean',
             'published_at' => 'datetime',
         ];
     }
@@ -56,5 +60,14 @@ class Blog extends Model
         return $query->where('status', true)
                      ->whereNotNull('published_at')
                      ->where('published_at', '<=', now());
+    }
+
+    /**
+     * Published posts that are also allowed to be indexed by search engines.
+     * Used by the sitemap.
+     */
+    public function scopeIndexable($query)
+    {
+        return $query->published()->where('is_indexable', true);
     }
 }

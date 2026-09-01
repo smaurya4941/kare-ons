@@ -1,3 +1,7 @@
+@section('title', 'My Orders')
+@section('meta_description', 'View your order history and track the status of your Kare Ons Herbal purchases.')
+@section('no_index', 'true')
+
 <x-customer-layout>
     <x-slot name="title">My Orders</x-slot>
 

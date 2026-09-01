@@ -33,6 +33,24 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Before rendering a 404 for a web request, check whether the path
+        // has a manually-configured redirect (e.g. a product/category/page
+        // slug that changed) so old inbound/indexed links 301 to the new
+        // location instead of dying. See App\Models\Redirect.
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, \Illuminate\Http\Request $request) {
+            if ($request->is('api/*')) {
+                return null;
+            }
+
+            $redirect = \App\Models\Redirect::where('from_path', trim($request->path(), '/'))->first();
+
+            if ($redirect) {
+                return redirect($redirect->to_path, $redirect->status_code);
+            }
+
+            return null;
+        });
+
         // Render JSON (never a Blade error page) for every /api/* request,
         // with status codes matching the exception type.
         $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {

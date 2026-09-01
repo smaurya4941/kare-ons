@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Checkout - Kare Ons Herbal')
+@section('title', 'Checkout')
+@section('meta_description', 'Complete your purchase of Ayurvedic herbal products from Kare Ons Herbal.')
+@section('no_index', 'true')
 
 @section('content')
 <div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 bg-surface-container-lowest min-h-screen">

@@ -158,13 +158,19 @@
                 <h3 class="text-xs font-semibold text-gray-800 mb-3 border-b border-gray-100 pb-2 uppercase tracking-wide">Search Engine Optimization</h3>
                 <div class="space-y-3">
                     <div>
-                        <label for="meta_title" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Meta Title</label>
-                        <input type="text" name="meta_title" id="meta_title" value="{{ old('meta_title', $product->meta_title) }}" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+                        <label for="seo_title" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">SEO Title</label>
+                        <input type="text" name="seo_title" id="seo_title" value="{{ old('seo_title', $product->seo_title) }}" placeholder="{{ $product->name }}" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">
+                        <p class="text-[9px] text-gray-400 mt-1">Shown as the page &lt;title&gt; and in Google search results. Falls back to the product name if left blank.</p>
                     </div>
                     <div>
-                        <label for="meta_description" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">Meta Description</label>
-                        <textarea name="meta_description" id="meta_description" rows="2" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">{{ old('meta_description', $product->meta_description) }}</textarea>
+                        <label for="seo_description" class="block text-[10px] font-medium text-gray-700 mb-1 uppercase tracking-wider">SEO Description</label>
+                        <textarea name="seo_description" id="seo_description" rows="2" maxlength="500" class="w-full border border-gray-200 rounded-md px-3 py-1.5 text-[11px] focus:ring-indigo-500 focus:border-indigo-500 shadow-sm">{{ old('seo_description', $product->seo_description) }}</textarea>
+                        <p class="text-[9px] text-gray-400 mt-1">Shown as the snippet in Google search results. Aim for ~150-160 characters.</p>
                     </div>
+                    <label class="flex items-center pt-1">
+                        <input type="checkbox" name="is_indexable" value="1" {{ old('is_indexable', $product->is_indexable ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 w-3.5 h-3.5">
+                        <span class="ml-2 text-[11px] text-gray-700">Allow search engines to index this product</span>
+                    </label>
                 </div>
             </div>
 

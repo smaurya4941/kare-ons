@@ -1,3 +1,7 @@
+@section('title', 'My Wishlist')
+@section('meta_description', 'View and manage the Ayurvedic products you have saved to your wishlist.')
+@section('no_index', 'true')
+
 <x-customer-layout>
     <x-slot name="title">My Wishlist</x-slot>
 

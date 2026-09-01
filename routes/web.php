@@ -53,6 +53,7 @@ Route::get('/robots.txt', function () {
         'Disallow: /orders',
         'Disallow: /profile',
         'Disallow: /wishlist',
+        'Disallow: /addresses',
         '',
         'Sitemap: ' . url('/sitemap.xml'),
     ];

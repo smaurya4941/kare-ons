@@ -1,6 +1,22 @@
 @extends('layouts.app')
 
-@section('title', 'Shop Herbal Products - Kare Ons Herbal')
+@php
+    $activeCategory = request('category') ? $categories->firstWhere('slug', request('category')) : null;
+@endphp
+@section('title', $activeCategory ? ($activeCategory->seo_title ?: $activeCategory->name) : 'Shop Herbal Products')
+@section('meta_description', $activeCategory ? ($activeCategory->seo_description ?: 'Discover pure, potent Ayurvedic remedies crafted for '.strtolower($activeCategory->name)) : 'Shop natural Ayurvedic formulations for complete healthcare support.')
+@if($activeCategory && isset($activeCategory->is_indexable) && !$activeCategory->is_indexable)
+    @section('no_index', 'true')
+@endif
+@if(request('search') || request('min_price') || request('max_price') || request('sort') || request('page') > 1)
+    @section('no_index', 'true')
+@endif
+@if($products->currentPage() > 1)
+    @section('prev_url', $products->previousPageUrl())
+@endif
+@if($products->hasMorePages())
+    @section('next_url', $products->nextPageUrl())
+@endif
 
 @section('content')
 @php
@@ -19,7 +35,22 @@
 @endphp
 
 <!-- Main Content -->
-<main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-6 md:py-8" x-data="{ mobileFiltersOpen: false }">
+<div class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-6 md:py-8" x-data="{ mobileFiltersOpen: false }">
+    <!-- Breadcrumbs -->
+    <nav class="flex text-sm text-on-surface-variant mb-6" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2">
+            <li><a href="{{ route('home') }}" class="hover:text-primary transition">Home</a></li>
+            <li><span class="material-symbols-outlined text-[16px]">chevron_right</span></li>
+            @if($activeCategory)
+                <li><a href="{{ route('shop.index') }}" class="hover:text-primary transition">Shop</a></li>
+                <li><span class="material-symbols-outlined text-[16px]">chevron_right</span></li>
+                <li class="text-on-surface font-medium" aria-current="page">{{ $activeCategory->name }}</li>
+            @else
+                <li class="text-on-surface font-medium" aria-current="page">Shop</li>
+            @endif
+        </ol>
+    </nav>
+
     <!-- Page Header -->
     <div class="mb-6">
         <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg font-bold text-herbal-deep mb-2">
@@ -314,5 +345,65 @@
             @endif
         </div>
     </div>
-</main>
+</div>
+
+@push('schema')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": @json(route('home'))
+        }
+        @if($activeCategory)
+        ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Shop",
+            "item": @json(route('shop.index'))
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": @json($activeCategory->name),
+            "item": @json(route('shop.index', ['category' => $activeCategory->slug]))
+        }
+        @else
+        ,{
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Shop",
+            "item": @json(route('shop.index'))
+        }
+        @endif
+    ]
+}
+</script>
+@if(isset($products) && $products->count() > 0)
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "url": @json(url()->current()),
+    "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+            @foreach($products as $product)
+            {
+                "@type": "ListItem",
+                "position": {{ $loop->iteration }},
+                "url": @json(route('product.show', $product->slug)),
+                "name": @json($product->name)
+            }@if(!$loop->last),@endif
+            @endforeach
+        ]
+    }
+}
+</script>
+@endif
+@endpush
 @endsection

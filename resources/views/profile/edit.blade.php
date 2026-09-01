@@ -1,3 +1,7 @@
+@section('title', 'Account Settings')
+@section('meta_description', 'Manage your Kare Ons Herbal account profile, password, and security settings.')
+@section('no_index', 'true')
+
 <x-customer-layout>
     <x-slot name="title">Account Settings</x-slot>
 

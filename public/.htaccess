@@ -5,6 +5,18 @@
 
     RewriteEngine On
 
+    # Force HTTPS. Checks both %{HTTPS} (direct TLS termination) and the
+    # X-Forwarded-Proto header (in case a proxy/CDN like Cloudflare is ever
+    # placed in front of this hPanel server) so the redirect works either way.
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Canonical host: redirect www.kareonsherbal.com -> kareonsherbal.com so
+    # search engines and inbound links consolidate onto a single domain form.
+    RewriteCond %{HTTP_HOST} ^www\.kareonsherbal\.com$ [NC]
+    RewriteRule ^ https://kareonsherbal.com%{REQUEST_URI} [L,R=301]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

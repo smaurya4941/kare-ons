@@ -80,8 +80,9 @@ class ProductController extends Controller
             'is_featured'          => 'boolean',
             'is_best_seller'       => 'boolean',
             'is_trending'          => 'boolean',
-            'meta_title'           => 'nullable|string|max:255',
-            'meta_description'     => 'nullable|string|max:500',
+            'seo_title'            => 'nullable|string|max:255',
+            'seo_description'      => 'nullable|string|max:500',
+            'is_indexable'         => 'boolean',
 
             // Images
             'main_image'           => 'required|image|mimes:jpeg,png,jpg,webp|max:10240',
@@ -96,6 +97,7 @@ class ProductController extends Controller
             $validated['is_featured'] = $request->boolean('is_featured');
             $validated['is_best_seller'] = $request->boolean('is_best_seller');
             $validated['is_trending'] = $request->boolean('is_trending');
+            $validated['is_indexable'] = $request->boolean('is_indexable', true);
             $validated['main_image'] = $this->cloudinary->upload($request->file('main_image'), 'products');
 
             $product = Product::create(Arr::except($validated, ['gallery']));
@@ -191,8 +193,9 @@ class ProductController extends Controller
             'is_featured'          => 'boolean',
             'is_best_seller'       => 'boolean',
             'is_trending'          => 'boolean',
-            'meta_title'           => 'nullable|string|max:255',
-            'meta_description'     => 'nullable|string|max:500',
+            'seo_title'            => 'nullable|string|max:255',
+            'seo_description'      => 'nullable|string|max:500',
+            'is_indexable'         => 'boolean',
 
             // Images
             'main_image'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
@@ -206,6 +209,7 @@ class ProductController extends Controller
             $validated['is_featured'] = $request->boolean('is_featured');
             $validated['is_best_seller'] = $request->boolean('is_best_seller');
             $validated['is_trending'] = $request->boolean('is_trending');
+            $validated['is_indexable'] = $request->boolean('is_indexable', true);
 
             if ($validated['name'] !== $product->name) {
                 $validated['slug'] = $this->uniqueSlug($validated['name'], $product->id);

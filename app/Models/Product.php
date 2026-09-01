@@ -16,7 +16,7 @@ class Product extends Model
     protected $guarded = ['id'];
 
     /** Noisy/large columns to keep out of the audit diff. */
-    protected array $activityLogIgnore = ['description', 'short_description', 'meta_description'];
+    protected array $activityLogIgnore = ['description', 'short_description', 'meta_description', 'seo_description'];
 
     protected static function booted()
     {
@@ -36,6 +36,7 @@ class Product extends Model
             'is_featured' => 'boolean',
             'is_best_seller' => 'boolean',
             'is_trending' => 'boolean',
+            'is_indexable' => 'boolean',
             'price'    => 'decimal:2',
             'sale_price' => 'decimal:2',
         ];
@@ -75,6 +76,16 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Active products that are allowed to be indexed by search engines.
+     * Used by the sitemap and anywhere else that must not surface
+     * noindexed/draft products publicly.
+     */
+    public function scopeIndexable($query)
+    {
+        return $query->where('status', true)->where('is_indexable', true);
     }
 
     /**

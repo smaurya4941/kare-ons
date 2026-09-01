@@ -44,14 +44,19 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="block text-[11px] font-medium text-gray-700 mb-1">Meta Title</label>
-                    <input type="text" name="meta_title" value="{{ old('meta_title', $page->meta_title) }}" class="w-full border border-gray-200 rounded-md px-3 py-2 text-[12px]">
+                    <label class="block text-[11px] font-medium text-gray-700 mb-1">SEO Title</label>
+                    <input type="text" name="seo_title" value="{{ old('seo_title', $page->seo_title) }}" placeholder="Falls back to the page title" class="w-full border border-gray-200 rounded-md px-3 py-2 text-[12px]">
                 </div>
 
-                <div>
-                    <label class="block text-[11px] font-medium text-gray-700 mb-1">Meta Description</label>
-                    <textarea name="meta_description" rows="3" class="w-full border border-gray-200 rounded-md px-3 py-2 text-[12px]">{{ old('meta_description', $page->meta_description) }}</textarea>
+                <div class="mb-3">
+                    <label class="block text-[11px] font-medium text-gray-700 mb-1">SEO Description</label>
+                    <textarea name="seo_description" rows="3" maxlength="500" class="w-full border border-gray-200 rounded-md px-3 py-2 text-[12px]">{{ old('seo_description', $page->seo_description) }}</textarea>
                 </div>
+
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" name="is_indexable" value="1" {{ old('is_indexable', $page->is_indexable ?? true) ? 'checked' : '' }} class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
+                    <span class="text-[11px] text-gray-700">Allow search engines to index this page</span>
+                </label>
             </div>
 
             <div class="pt-2 flex justify-end">

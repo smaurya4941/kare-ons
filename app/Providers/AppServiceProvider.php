@@ -34,6 +34,18 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // -----------------------------------------------------------------------
+        // Force HTTPS in production
+        // -----------------------------------------------------------------------
+        // kareonsherbal.com is served directly by Apache/LiteSpeed on hPanel
+        // shared hosting (TLS terminates on the server itself — no reverse
+        // proxy/load balancer in front), so url()/route() need to be told to
+        // emit https:// explicitly. This also makes canonical/OG/sitemap URLs
+        // correct even if a request somehow arrives over plain HTTP.
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
+        // -----------------------------------------------------------------------
         // Dynamic Mail Configuration from Database
         // -----------------------------------------------------------------------
         try {

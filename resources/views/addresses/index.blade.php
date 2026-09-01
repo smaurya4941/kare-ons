@@ -1,3 +1,7 @@
+@section('title', 'Manage Addresses')
+@section('meta_description', 'Manage the saved shipping and billing addresses on your Kare Ons Herbal account.')
+@section('no_index', 'true')
+
 <x-customer-layout>
     <x-slot name="title">Manage Addresses</x-slot>
 

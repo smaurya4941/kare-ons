@@ -1,5 +1,33 @@
 @extends('layouts.app')
 
+@push('schema')
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "{{ url('/') }}#organization",
+    "name": "{{ setting('site_name', 'Kareons Herbal') }}",
+    "url": "{{ url('/') }}",
+    "logo": {
+        "@type": "ImageObject",
+        "url": "{{ setting('logo') ? image_url(setting('logo')) : asset('images/logo.png') }}"
+    }
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "{{ url('/') }}#website",
+    "name": "{{ setting('site_name', 'Kareons Herbal') }}",
+    "url": "{{ url('/') }}",
+    "publisher": {
+        "@id": "{{ url('/') }}#organization"
+    }
+}
+</script>
+@endpush
+
 @section('content')
 <style>
     .section-eyebrow {
@@ -65,7 +93,7 @@
                 {{ setting('home_hero_badge', 'Since 1999') }}
             </div>
             <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-brand-cream mb-4 leading-tight">
-                {!! setting('home_hero_title', 'Scientific Ayurveda for <br/><span class="text-brand-gold">Modern Wellness</span>') !!}
+                {!! setting('home_hero_title', 'Kare-ons: Scientific Ayurveda for <br/><span class="text-brand-gold">Modern Wellness</span>') !!}
             </h1>
             <p class="font-body-lg text-body-md md:text-body-lg text-brand-cream/85 mb-6 max-w-xl leading-relaxed">
                 {!! setting('home_hero_subtitle', 'Harmonizing elemental nature with diagnostic precision. We bridge 5,000 years of Vedic wisdom with contemporary clinical validation to restore your inherent vitality.') !!}
@@ -132,7 +160,7 @@
                         : asset($categoryPlaceholders[$i % count($categoryPlaceholders)]);
                 @endphp
                 <a href="{{ route('shop.index', ['category' => $category->slug]) }}" class="group relative block overflow-hidden rounded-xl aspect-[4/5] bg-brand-forest shadow-sm hover:shadow-xl transition-all">
-                    <img class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500" src="{{ $categorySrc }}" alt="{{ $category->name }}" decoding="async"/>
+                    <img class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500" src="{{ $categorySrc }}" alt="{{ $category->name }}" width="400" height="500" decoding="async"/>
                     <div class="absolute inset-0 bg-gradient-to-t from-brand-forest via-brand-forest/40 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-4 md:p-5">
                         <h3 class="font-headline-sm text-lg md:text-headline-sm text-brand-cream mb-1 leading-tight">{{ $category->name }}</h3>
@@ -691,5 +719,49 @@
     </div>
 </section>
 @endif
+
+<!-- Frequently Asked Questions -->
+<section class="py-10 md:py-14 bg-white border-t border-brand-beige">
+    <div class="max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="text-center mb-8 md:mb-10">
+            <span class="text-label-sm font-bold text-brand-gold-dark uppercase section-eyebrow mb-2 block">Common Questions</span>
+            <h2 class="font-headline-md text-display-lg-mobile text-brand-forest">Frequently Asked Questions</h2>
+        </div>
+        <div class="space-y-6">
+            <article class="bg-brand-cream p-5 rounded-xl border border-brand-beige hover:border-brand-gold/40 transition-all">
+                <h3 class="font-headline-sm text-lg text-brand-forest mb-2">What is Kare-ons Herbal?</h3>
+                <p class="font-body-md text-brand-forest/70">Kare-ons Herbal is a premium Ayurvedic and botanical medicine brand dedicated to bridging 5,000 years of Vedic wisdom with modern clinical validation for everyday wellness and personal care.</p>
+            </article>
+            <article class="bg-brand-cream p-5 rounded-xl border border-brand-beige hover:border-brand-gold/40 transition-all">
+                <h3 class="font-headline-sm text-lg text-brand-forest mb-2">What types of products do you offer?</h3>
+                <p class="font-body-md text-brand-forest/70">We offer a carefully curated range of Ayurvedic products, including targeted solutions for women's health (like PCOD care), natural skin and hair care formulated with pure botanicals, and daily wellness supplements.</p>
+            </article>
+            <article class="bg-brand-cream p-5 rounded-xl border border-brand-beige hover:border-brand-gold/40 transition-all">
+                <h3 class="font-headline-sm text-lg text-brand-forest mb-2">Are your products made with natural ingredients?</h3>
+                <p class="font-body-md text-brand-forest/70">Yes, our products are formulated using carefully selected, high-grade raw herbs and botanical ingredients, ensuring strict adherence to AYUSH and pharmaceutical standards for maximum purity and potency.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- SEO Content Block -->
+<section class="py-12 md:py-16 bg-brand-cream border-t border-brand-beige">
+    <div class="max-w-5xl mx-auto px-margin-mobile md:px-margin-desktop">
+        <div class="text-center mb-6">
+            <h2 class="font-headline-md text-2xl md:text-3xl text-brand-forest">Discover Kare-ons Herbal: Premium Ayurvedic & Botanical Medicine</h2>
+        </div>
+        <div class="font-body-md text-brand-forest/80 space-y-4 text-sm md:text-base leading-relaxed text-left md:text-center max-w-4xl mx-auto">
+            <p>
+                At <strong>Kare-ons Herbal</strong>, we believe that true healing begins with nature. For over two decades, we have dedicated ourselves to bridging the 5,000-year-old wisdom of Ayurveda with modern clinical research. Our mission is to provide you with premium, authentic botanical medicine that addresses the root cause of health imbalances, rather than just treating symptoms.
+            </p>
+            <p>
+                Whether you are looking for specialized <strong>women's health solutions like PCOD care</strong>, potent natural skincare formulated with pure saffron and botanicals, or daily wellness supplements to boost your vitality, every Kare-ons product is meticulously crafted. We source only the highest-grade raw herbs, ensuring that each formulation meets rigorous AYUSH and pharmaceutical standards for purity, potency, and safety.
+            </p>
+            <p>
+                Explore our curated range of Ayurvedic remedies and experience the transformative power of nature. When you choose <strong>Kare-ons</strong>, you are choosing a legacy of clinical excellence, transparency, and a commitment to your lifelong wellness journey.
+            </p>
+        </div>
+    </div>
+</section>
 
 @endsection
