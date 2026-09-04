@@ -117,7 +117,7 @@
         <div class="flex flex-wrap justify-center items-center gap-x-10 gap-y-4">
             @php
                 $certs = [
-                    ['icon' => 'verified', 'label' => 'GMP Certified'],
+                    ['icon' => 'verified', 'label' => 'GMP Certifieddd'],
                     ['icon' => 'workspace_premium', 'label' => 'ISO 9001:2015'],
                     ['icon' => 'eco', 'label' => 'AYUSH Premium'],
                     ['icon' => 'public', 'label' => 'PAN INDIA'],
