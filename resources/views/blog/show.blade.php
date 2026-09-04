@@ -107,7 +107,7 @@
 @push('schema')
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
+    "@@context": "https://schema.org",
     "@type": "BlogPosting",
     "headline": @json($blog->title),
     "description": @json(\Illuminate\Support\Str::limit(strip_tags($blog->seo_description ?: $blog->excerpt), 160)),
@@ -134,7 +134,7 @@
 </script>
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
+    "@@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
         {

@@ -350,7 +350,7 @@
 @push('schema')
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
+    "@@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
         {
@@ -386,7 +386,7 @@
 @if(isset($products) && $products->count() > 0)
 <script type="application/ld+json">
 {
-    "@context": "https://schema.org",
+    "@@context": "https://schema.org",
     "@type": "CollectionPage",
     "url": @json(url()->current()),
     "mainEntity": {
