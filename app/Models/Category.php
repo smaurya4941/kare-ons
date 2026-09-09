@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use App\Services\CacheService;
+use App\Support\HasIndexableScope;
 use App\Support\LogsActivity;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
     use HasFactory;
+    use HasIndexableScope;
     use LogsActivity;
 
     protected $guarded = ['id'];
@@ -20,15 +23,15 @@ class Category extends Model
     protected function casts(): array
     {
         return [
-            'status'       => 'boolean',
+            'status' => 'boolean',
             'is_indexable' => 'boolean',
         ];
     }
 
     protected static function booted()
     {
-        static::saved(fn () => \App\Services\CacheService::flushCategories());
-        static::deleted(fn () => \App\Services\CacheService::flushCategories());
+        static::saved(fn () => CacheService::flushCategories());
+        static::deleted(fn () => CacheService::flushCategories());
     }
 
     public function products(): HasMany
@@ -46,11 +49,5 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
-    /**
-     * Active categories that are allowed to be indexed by search engines.
-     */
-    public function scopeIndexable($query)
-    {
-        return $query->where('status', true)->where('is_indexable', true);
-    }
+    // scopeIndexable() is provided by App\Support\HasIndexableScope.
 }

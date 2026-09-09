@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Services\CacheService;
+use App\Support\HasIndexableScope;
 use App\Support\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Page extends Model
 {
+    use HasIndexableScope;
     use LogsActivity;
 
     /** Long-form field excluded from the audit diff. */
@@ -17,22 +20,16 @@ class Page extends Model
     protected function casts(): array
     {
         return [
-            'status'       => 'boolean',
+            'status' => 'boolean',
             'is_indexable' => 'boolean',
         ];
     }
 
     protected static function booted()
     {
-        static::saved(fn () => \App\Services\CacheService::flushPages());
-        static::deleted(fn () => \App\Services\CacheService::flushPages());
+        static::saved(fn () => CacheService::flushPages());
+        static::deleted(fn () => CacheService::flushPages());
     }
 
-    /**
-     * Active pages that are allowed to be indexed by search engines.
-     */
-    public function scopeIndexable($query)
-    {
-        return $query->where('status', true)->where('is_indexable', true);
-    }
+    // scopeIndexable() is provided by App\Support\HasIndexableScope.
 }

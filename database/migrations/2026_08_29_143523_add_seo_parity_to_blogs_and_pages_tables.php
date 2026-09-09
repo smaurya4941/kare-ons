@@ -8,32 +8,39 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
-     *
      * Brings `blogs` and `pages` up to the same seo_title / seo_description /
      * is_indexable convention already added to `products` and `categories`
      * (see 2026_08_29_140000_add_seo_fields_to_products_and_categories_tables.php),
      * then backfills the new columns from the legacy meta_title / meta_description
      * columns so existing content isn't blanked out.
+     *
+     * Every column add is guarded so this is safe to run on an environment
+     * whose migrations table drifted from its actual schema.
      */
     public function up(): void
     {
-        Schema::table('blogs', function (Blueprint $table) {
-            $table->string('seo_title')->nullable()->after('title');
-            $table->text('seo_description')->nullable()->after('seo_title');
-            $table->boolean('is_indexable')->default(true)->after('seo_description');
-        });
-
-        Schema::table('pages', function (Blueprint $table) {
-            $table->string('seo_title')->nullable()->after('title');
-            $table->text('seo_description')->nullable()->after('seo_title');
-            $table->boolean('is_indexable')->default(true)->after('seo_description');
-        });
+        foreach (['blogs', 'pages'] as $table) {
+            Schema::table($table, function (Blueprint $table) {
+                if (! Schema::hasColumn($table->getTable(), 'seo_title')) {
+                    $table->string('seo_title')->nullable()->after('title');
+                }
+                if (! Schema::hasColumn($table->getTable(), 'seo_description')) {
+                    $table->text('seo_description')->nullable();
+                }
+                if (! Schema::hasColumn($table->getTable(), 'is_indexable')) {
+                    $table->boolean('is_indexable')->default(true);
+                }
+            });
+        }
 
         // Backfill: copy legacy meta_* values into the new seo_* columns wherever
         // the new column is empty and the old one has data. Uses the query builder
         // (not Eloquent) so no model events fire during the migration.
         foreach (['products', 'categories', 'blogs', 'pages'] as $table) {
+            if (! Schema::hasColumn($table, 'seo_title') || ! Schema::hasColumn($table, 'meta_title')) {
+                continue;
+            }
+
             DB::table($table)
                 ->whereNull('seo_title')
                 ->whereNotNull('meta_title')
@@ -46,17 +53,16 @@ return new class extends Migration
         }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('blogs', function (Blueprint $table) {
-            $table->dropColumn(['seo_title', 'seo_description', 'is_indexable']);
-        });
-
-        Schema::table('pages', function (Blueprint $table) {
-            $table->dropColumn(['seo_title', 'seo_description', 'is_indexable']);
-        });
+        foreach (['blogs', 'pages'] as $table) {
+            Schema::table($table, function (Blueprint $table) {
+                foreach (['seo_title', 'seo_description', 'is_indexable'] as $column) {
+                    if (Schema::hasColumn($table->getTable(), $column)) {
+                        $table->dropColumn($column);
+                    }
+                }
+            });
+        }
     }
 };

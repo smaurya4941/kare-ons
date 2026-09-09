@@ -42,10 +42,27 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            $redirect = \App\Models\Redirect::where('from_path', trim($request->path(), '/'))->first();
+            // Wrapped so a missing `redirects` table (migrations not yet run)
+            // can never turn a plain 404 into a 500.
+            try {
+                $redirect = \App\Models\Redirect::where('from_path', trim($request->path(), '/'))->first();
 
-            if ($redirect) {
-                return redirect($redirect->to_path, $redirect->status_code);
+                if ($redirect) {
+                    return redirect($redirect->to_path, $redirect->status_code);
+                }
+            } catch (\Throwable $e) {
+                report($e);
+            }
+
+            // In headless mode the Blade storefront is gone, so bounce any
+            // other unknown non-admin URL to the Next.js frontend (which
+            // renders its own branded 404 after its own redirect lookup).
+            // In the default Blade mode this is skipped and Laravel renders
+            // its normal 404 page.
+            if (config('storefront.mode') === 'headless' && ! $request->is('admin', 'admin/*')) {
+                return redirect()->away(
+                    rtrim(config('storefront.url'), '/').'/'.ltrim($request->path(), '/')
+                );
             }
 
             return null;

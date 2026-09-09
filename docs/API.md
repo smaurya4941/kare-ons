@@ -65,11 +65,11 @@ cart client-side until the user authenticates.
 | Method | Path | Notes |
 |---|---|---|
 | GET | `/home` | Banners, homepage categories, featured/best-seller/trending/new-arrival rails, testimonials, latest 3 blog posts, `wishlist_ids` (empty unless a valid Bearer token is sent — see below). Cached server-side for 1 hour. |
-| GET | `/settings` | Public site settings: name, contact, social links, shipping charge / free-shipping threshold, public `razorpay_key`, SEO defaults. Never includes secrets. |
-| GET | `/categories` | Top-level categories with nested `children`. |
+| GET | `/settings` | Public site settings: name, contact, social links, shipping charge / free-shipping threshold, public `razorpay_key`, SEO defaults (`seo.meta_title`, `seo.meta_description`, `seo.meta_keywords`, `seo.google_site_verification`). Never includes secrets. |
+| GET | `/categories` | Top-level categories with nested `children`. Each category includes `seo_title`, `seo_description`, `is_indexable` (and deprecated `meta_title`/`meta_description` aliases). |
 | GET | `/categories/{slug}` | Single category + its children. |
 | GET | `/brands` | Active brands. |
-| GET | `/products` | Shop listing. Query: `search`, `category` (slug), `brand` (slug), `min_price`, `max_price`, `sort` (`latest`\|`price_low`\|`price_high`\|`name_asc`\|`name_desc`), `per_page` (max 48, default 12). Paginated. `meta.categories` included for building a filter sidebar. |
+| GET | `/products` | Shop listing. Query: `search`, `category` (slug), `brand` (slug), `min_price`, `max_price`, `sort` (`latest`\|`price_low`\|`price_high`\|`name_asc`\|`name_desc`), `per_page` (max 48, default 12). Paginated. `meta.categories` included for building a filter sidebar. Each card includes `is_indexable` so a sitemap builder can skip non-indexable products without an extra per-product fetch. |
 | GET | `/products/{slug}` | Full product detail + `related_products` (4, same category). |
 | GET | `/search/suggest?q=` | Live autocomplete, min 2 chars, max 6 results. |
 | GET | `/blog` | Paginated posts + `meta.categories`. |
@@ -77,6 +77,7 @@ cart client-side until the user authenticates.
 | GET | `/pages/{slug}` | CMS page (privacy, terms, faq, about, ...). |
 | POST | `/contact` | Body: `name`, `email`, `subject?`, `message`. Creates a `ContactInquiry` and notifies admins. |
 | POST | `/coupons/validate` | Body: `code`, `subtotal`. Optionally authenticated — send a Bearer token to also enforce the one-time-per-user usage check. Returns `{ data: { code, type, discount } }` or 422 with a human-readable `message`. |
+| GET | `/redirects/lookup?path=` | Looks up a manually-seeded 301/302 for an old/changed URL path (see `App\Models\Redirect`). `path` is matched against `from_path` with leading/trailing slashes trimmed (e.g. `product/old-slug`). Returns `{ data: { to_path, status_code } }` or 404 if none exists. The Blade storefront gets this behavior for free via a 404-render hook in `bootstrap/app.php`; headless frontends must call this explicitly before rendering their own 404 page. |
 
 **Optional auth on `/products*` and `/home`:** these routes have no
 `auth:sanctum` middleware, but if a valid Bearer token is sent, product
@@ -165,6 +166,7 @@ payment automatically restocks and cancels the order (see
 | GET | `/orders` | Paginated, newest first. |
 | GET | `/orders/{order}` | Includes `items`, `address`, `timelines`, `return_requests`, and computed `can_request_return` / `return_window_days`. |
 | POST | `/orders/{order}/return` | Body: `type` (`refund`\|`replacement`), `reason`, `customer_note?`. Only allowed for `delivered` orders, within 7 days of the delivered timeline entry, and only if no pending/approved/completed return already exists for that order. |
+| POST | `/orders/{order}/payment` | Re-open the Razorpay payment for an order that was placed but never paid (customer closed the Razorpay modal). Returns `{ data: { key, order_id, amount, currency } }` — the same shape as `POST /checkout`'s `razorpay` — to hand straight to Checkout.js, then confirm via `POST /checkout/verify-payment`. Reuses the pending `Payment` row created at checkout. 422 if the order is not `razorpay`, is already paid, or has been cancelled (the `payments:expire-stale` scheduled command auto-cancels + restocks these ~30 min after placement, so this only works inside that window). |
 
 ---
 

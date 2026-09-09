@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Web\ReturnRequestController as WebReturnRequestController;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Services\CheckoutService;
 use Illuminate\Http\Request;
 
 /**
@@ -48,5 +49,27 @@ class OrderController extends Controller
         $order->return_window_days = $windowDays;
 
         return new OrderResource($order);
+    }
+
+    /**
+     * Re-open the Razorpay payment for an order the customer placed but never
+     * finished paying (closed the Razorpay modal). Returns the same
+     * key/order_id/amount shape as POST /checkout so the frontend can hand it
+     * straight to Razorpay Checkout.js, then confirm via
+     * POST /checkout/verify-payment.
+     */
+    public function resumePayment(Request $request, Order $order, CheckoutService $checkoutService)
+    {
+        if ($order->user_id !== $request->user()->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        try {
+            $razorpay = $checkoutService->resumeRazorpayPayment($order);
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+
+        return response()->json(['data' => $razorpay]);
     }
 }

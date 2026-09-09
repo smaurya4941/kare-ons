@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PageController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\RedirectController;
 use App\Http\Controllers\Api\V1\ReturnRequestController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\SearchController;
@@ -26,12 +27,12 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | A standalone, versioned REST API for customer-facing features (auth,
-| catalog, cart, checkout, orders, etc.) for any future headless client.
-| Auth is Sanctum Bearer tokens (no cookies/sessions) — see docs/API.md for
-| the full reference. This app is not currently wired to any separate
-| frontend — the Blade storefront in routes/web.php remains the live,
-| fully-functional customer + admin experience. The admin panel is Blade
-| only and intentionally out of scope for this API.
+| catalog, cart, checkout, orders, etc.). Auth is Sanctum Bearer tokens
+| (no cookies/sessions) — see docs/API.md for the full reference.
+|
+| The Next.js storefront (kare-ons-web) is the live customer frontend and
+| consumes this API. The Blade storefront routes in routes/web.php are
+| disabled; the Blade admin panel stays and is out of scope for this API.
 |
 */
 
@@ -58,8 +59,15 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
     Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
+    Route::get('/pages', [PageController::class, 'index'])->name('pages.index');
     Route::get('/pages/{slug}', [PageController::class, 'show'])->name('pages.show');
     Route::post('/contact', [PageController::class, 'submitContact'])->middleware('throttle:contact')->name('contact.store');
+
+    // Manually-seeded 301/302 redirects for old/changed URLs (see App\Models\Redirect).
+    // The Blade storefront gets this for free via bootstrap/app.php's 404
+    // render hook; headless frontends must look it up explicitly before
+    // rendering their own 404 page.
+    Route::get('/redirects/lookup', [RedirectController::class, 'lookup'])->name('redirects.lookup');
 
     Route::post('/coupons/validate', [CouponController::class, 'validateCoupon'])
         ->middleware('throttle:coupon')
@@ -124,5 +132,6 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::post('/orders/{order}/return', [ReturnRequestController::class, 'store'])->name('orders.return');
+        Route::post('/orders/{order}/payment', [OrderController::class, 'resumePayment'])->name('orders.payment');
     });
 });

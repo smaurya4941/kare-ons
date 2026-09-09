@@ -5,13 +5,23 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BlogResource;
 use App\Models\Blog;
+use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $blogs = Blog::where('status', true)->latest('published_at')->paginate(9);
-        $categories = Blog::where('status', true)->select('category')->distinct()->pluck('category');
+        $blogs = Blog::where('status', true)
+            ->when($request->filled('category'), fn ($q) => $q->where('category', $request->string('category')))
+            ->latest('published_at')
+            ->paginate(9)
+            ->withQueryString();
+
+        $categories = Blog::where('status', true)
+            ->whereNotNull('category')
+            ->select('category')
+            ->distinct()
+            ->pluck('category');
 
         return BlogResource::collection($blogs)->additional([
             'meta' => ['categories' => $categories],

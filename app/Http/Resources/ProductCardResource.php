@@ -43,6 +43,11 @@ class ProductCardResource extends JsonResource
                 'slug' => $this->category->slug,
             ]),
             'in_wishlist' => $this->when(isset($this->in_wishlist), fn () => (bool) $this->in_wishlist),
+
+            // Lets a headless frontend's sitemap builder skip non-indexable
+            // products without an extra per-product fetch (see ProductResource
+            // for the full seo_title/seo_description pair used on the detail page).
+            'is_indexable' => (bool) $this->is_indexable,
         ];
     }
 }

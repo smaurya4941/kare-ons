@@ -20,6 +20,10 @@
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <!-- The suite covers both surfaces: the Blade storefront (Feature\*, Feature\Auth\*)
+             and the headless API (Feature\Api\*). Pin the storefront to Blade so the
+             Blade-route tests run regardless of the local .env. -->
+        <env name="STOREFRONT_MODE" value="blade"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>

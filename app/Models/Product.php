@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use App\Services\CacheService;
+use App\Support\HasIndexableScope;
 use App\Support\LogsActivity;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
     use HasFactory;
+    use HasIndexableScope;
     use LogsActivity;
 
     protected $guarded = ['id'];
@@ -20,8 +23,8 @@ class Product extends Model
 
     protected static function booted()
     {
-        static::saved(fn () => \App\Services\CacheService::flushProducts());
-        static::deleted(fn () => \App\Services\CacheService::flushProducts());
+        static::saved(fn () => CacheService::flushProducts());
+        static::deleted(fn () => CacheService::flushProducts());
     }
 
     /**
@@ -31,13 +34,13 @@ class Product extends Model
     protected function casts(): array
     {
         return [
-            'status'   => 'boolean',
+            'status' => 'boolean',
             'featured' => 'boolean', // old
             'is_featured' => 'boolean',
             'is_best_seller' => 'boolean',
             'is_trending' => 'boolean',
             'is_indexable' => 'boolean',
-            'price'    => 'decimal:2',
+            'price' => 'decimal:2',
             'sale_price' => 'decimal:2',
         ];
     }
@@ -56,7 +59,7 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
-    
+
     public function tax(): BelongsTo
     {
         return $this->belongsTo(Tax::class);
@@ -78,15 +81,7 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    /**
-     * Active products that are allowed to be indexed by search engines.
-     * Used by the sitemap and anywhere else that must not surface
-     * noindexed/draft products publicly.
-     */
-    public function scopeIndexable($query)
-    {
-        return $query->where('status', true)->where('is_indexable', true);
-    }
+    // scopeIndexable() is provided by App\Support\HasIndexableScope.
 
     /**
      * Get the effective selling price (sale price if set, otherwise regular price).

@@ -19,6 +19,15 @@ class CategoryResource extends JsonResource
             'parent_id' => $this->parent_id,
             'sort_order' => $this->sort_order,
             'children' => CategoryResource::collection($this->whenLoaded('children')),
+
+            // SEO — seo_title/seo_description are the current fields; meta_title/
+            // meta_description are kept as deprecated aliases for API consumers
+            // built against the old field names and will be removed later.
+            'seo_title' => $this->seo_title,
+            'seo_description' => $this->seo_description,
+            'is_indexable' => (bool) $this->is_indexable,
+            'meta_title' => $this->seo_title,
+            'meta_description' => $this->seo_description,
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ProductIndexRequest;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ProductCardResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Category;
@@ -69,7 +70,7 @@ class ProductController extends Controller
 
         return ProductCardResource::collection($products)->additional([
             'meta' => [
-                'categories' => \App\Http\Resources\CategoryResource::collection($filterCategories),
+                'categories' => CategoryResource::collection($filterCategories),
             ],
         ]);
     }
@@ -85,6 +86,8 @@ class ProductController extends Controller
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->with(['category', 'images'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->inRandomOrder()
             ->take(4)
             ->get();

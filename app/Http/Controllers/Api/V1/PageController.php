@@ -10,6 +10,26 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    /**
+     * Lightweight list of published CMS pages — used to build the storefront
+     * footer's "Company" links (the Blade site did this via a View::composer).
+     * Deliberately omits the `content` longtext column.
+     */
+    public function index()
+    {
+        $pages = Page::where('status', true)
+            ->orderBy('title')
+            ->get(['id', 'title', 'slug']);
+
+        return response()->json([
+            'data' => $pages->map(fn ($page) => [
+                'id' => $page->id,
+                'title' => $page->title,
+                'slug' => $page->slug,
+            ])->all(),
+        ]);
+    }
+
     public function show(string $slug)
     {
         $page = Page::where('slug', $slug)->where('status', true)->firstOrFail();

@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Services\CacheService;
+use App\Support\HasIndexableScope;
 use App\Support\LogsActivity;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Blog extends Model
 {
     use HasFactory;
+    use HasIndexableScope;
     use LogsActivity;
 
     /** Long-form fields excluded from the audit diff. */
@@ -34,14 +38,14 @@ class Blog extends Model
 
     protected static function booted()
     {
-        static::saved(fn () => \App\Services\CacheService::flushBlogs());
-        static::deleted(fn () => \App\Services\CacheService::flushBlogs());
+        static::saved(fn () => CacheService::flushBlogs());
+        static::deleted(fn () => CacheService::flushBlogs());
     }
 
     protected function casts(): array
     {
         return [
-            'status'       => 'boolean',
+            'status' => 'boolean',
             'is_indexable' => 'boolean',
             'published_at' => 'datetime',
         ];
@@ -58,16 +62,16 @@ class Blog extends Model
     public function scopePublished($query)
     {
         return $query->where('status', true)
-                     ->whereNotNull('published_at')
-                     ->where('published_at', '<=', now());
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
     }
 
     /**
-     * Published posts that are also allowed to be indexed by search engines.
-     * Used by the sitemap.
+     * Baseline "publicly visible" constraint for HasIndexableScope — a blog
+     * post is visible when it's published, not merely `status = true`.
      */
-    public function scopeIndexable($query)
+    protected function applyActiveConstraint(Builder $query): void
     {
-        return $query->published()->where('is_indexable', true);
+        $query->published();
     }
 }

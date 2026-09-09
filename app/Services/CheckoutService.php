@@ -5,8 +5,9 @@ namespace App\Services;
 use App\Exceptions\InsufficientStockException;
 use App\Mail\AdminLowStockNotification;
 use App\Mail\AdminNewOrderNotification;
-use App\Models\AdminNotification;
+use App\Mail\OrderPlaced;
 use App\Models\Address;
+use App\Models\AdminNotification;
 use App\Models\CartItem;
 use App\Models\CouponUsage;
 use App\Models\InventoryTransaction;
@@ -18,6 +19,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Razorpay\Api\Api;
 
 /**
  * Shared checkout logic used by both the Blade checkout flow
@@ -27,9 +29,7 @@ use Illuminate\Support\Str;
  */
 class CheckoutService
 {
-    public function __construct(protected CouponService $couponService)
-    {
-    }
+    public function __construct(protected CouponService $couponService) {}
 
     /**
      * Cart items for the given user, eager-loaded with product.
@@ -108,8 +108,8 @@ class CheckoutService
      * @param  array  $data  full_name, phone, address_line_1, address_line_2,
      *                       city, state, postal_code, payment_method, coupon_code
      * @return array{order: Order, razorpay: ?array} razorpay is
-     *         ['key' => ..., 'order_id' => ..., 'amount' => ...] when the
-     *         payment method is razorpay, otherwise null (COD — already emailed).
+     *                                               ['key' => ..., 'order_id' => ..., 'amount' => ...] when the
+     *                                               payment method is razorpay, otherwise null (COD — already emailed).
      *
      * @throws InsufficientStockException
      * @throws \RuntimeException with the coupon error message if the coupon is invalid
@@ -153,15 +153,15 @@ class CheckoutService
                     ->firstOrFail();
             } else {
                 $address = Address::create([
-                    'user_id'        => $user->id,
-                    'full_name'      => $data['full_name'],
-                    'phone'          => $data['phone'],
+                    'user_id' => $user->id,
+                    'full_name' => $data['full_name'],
+                    'phone' => $data['phone'],
                     'address_line_1' => $data['address_line_1'],
                     'address_line_2' => $data['address_line_2'] ?? null,
-                    'city'           => $data['city'],
-                    'state'          => $data['state'],
-                    'country'        => 'India',
-                    'postal_code'    => $data['postal_code'],
+                    'city' => $data['city'],
+                    'state' => $data['state'],
+                    'country' => 'India',
+                    'postal_code' => $data['postal_code'],
                 ]);
             }
 
@@ -235,7 +235,7 @@ class CheckoutService
         }
 
         if ($order->user) {
-            Mail::to($order->user->email)->send(new \App\Mail\OrderPlaced($order));
+            Mail::to($order->user->email)->send(new OrderPlaced($order));
         }
 
         return ['order' => $order, 'razorpay' => null];
@@ -277,7 +277,7 @@ class CheckoutService
      */
     protected function createRazorpayOrder(Order $order): array
     {
-        $api = new \Razorpay\Api\Api(setting('razorpay_key'), setting('razorpay_secret'));
+        $api = new Api(setting('razorpay_key'), setting('razorpay_secret'));
 
         $razorpayOrder = $api->order->create([
             'receipt' => $order->order_number,
@@ -303,6 +303,52 @@ class CheckoutService
     }
 
     /**
+     * Re-issue the Razorpay checkout params for an order whose online payment
+     * was started but never completed (customer closed the Razorpay modal).
+     * The pending `Payment` row created at checkout is reused, so the same
+     * Razorpay order id is handed back and CheckoutService::verifyPayment()
+     * reconciles it exactly as it would a first attempt.
+     *
+     * The scheduled `payments:expire-stale` command cancels + restocks these
+     * orders ~30 min after placement, so this only succeeds inside that window.
+     *
+     * @return array{key: string, order_id: string, amount: int, currency: string}
+     *
+     * @throws \RuntimeException if the order can no longer be paid online
+     */
+    public function resumeRazorpayPayment(Order $order): array
+    {
+        if ($order->payment_method !== 'razorpay') {
+            throw new \RuntimeException('This order is not an online-payment order.');
+        }
+
+        if ($order->payment_status === 'paid') {
+            throw new \RuntimeException('This order has already been paid.');
+        }
+
+        if (in_array($order->order_status, ['cancelled', 'returned', 'shipped', 'delivered'], true)) {
+            throw new \RuntimeException('This order can no longer be paid online. Please place a new order.');
+        }
+
+        $payment = Payment::where('order_id', $order->id)
+            ->where('status', 'pending')
+            ->whereNotNull('razorpay_order_id')
+            ->latest()
+            ->first();
+
+        if (! $payment) {
+            throw new \RuntimeException('This payment session has expired. Please place a new order.');
+        }
+
+        return [
+            'key' => setting('razorpay_key'),
+            'order_id' => $payment->razorpay_order_id,
+            'amount' => (int) round($order->grand_total * 100),
+            'currency' => 'INR',
+        ];
+    }
+
+    /**
      * Verify a Razorpay browser-redirect callback and confirm the order.
      * Mirrors CheckoutController@callback; idempotent via RazorpayPaymentService.
      *
@@ -310,7 +356,7 @@ class CheckoutService
      */
     public function verifyPayment(array $input, RazorpayPaymentService $paymentService): Order
     {
-        $api = new \Razorpay\Api\Api(setting('razorpay_key'), setting('razorpay_secret'));
+        $api = new Api(setting('razorpay_key'), setting('razorpay_secret'));
 
         try {
             $api->utility->verifyPaymentSignature([

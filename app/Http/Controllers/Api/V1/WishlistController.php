@@ -11,7 +11,14 @@ class WishlistController extends Controller
 {
     public function index(Request $request)
     {
-        $wishlists = $request->user()->wishlists()->with('product.category')->latest()->get();
+        $wishlists = $request->user()->wishlists()
+            ->with(['product' => fn ($q) => $q
+                ->with('category:id,name,slug')
+                ->withAvg('reviews', 'rating')
+                ->withCount('reviews'),
+            ])
+            ->latest()
+            ->get();
 
         return WishlistResource::collection($wishlists);
     }

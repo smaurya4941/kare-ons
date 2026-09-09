@@ -36,8 +36,21 @@ class SettingsController extends Controller
                     'hero_title' => setting('home_hero_title'),
                     'hero_subtitle' => setting('home_hero_subtitle'),
                     'hero_bg' => image_url(setting('home_hero_bg')),
+                    'hero_badge' => setting('home_hero_badge'),
                     'cta_text' => setting('home_cta_text'),
                     'cta_link' => setting('home_cta_link'),
+                    'ingredient_spotlight' => [
+                        'bg' => image_url(setting('home_ingredient_spotlight_bg')),
+                        'title' => setting('home_ingredient_spotlight_title'),
+                        'ingredients' => setting('home_ingredient_spotlight_ingredients'),
+                    ],
+                    'expert' => [
+                        'image' => image_url(setting('home_expert_image')),
+                        'quote' => setting('home_expert_quote'),
+                        'name' => setting('home_expert_name'),
+                        'designation' => setting('home_expert_designation'),
+                        'description' => setting('home_expert_description'),
+                    ],
                 ],
 
                 'shipping_charge' => (float) setting('shipping_charge', 0),
@@ -53,6 +66,7 @@ class SettingsController extends Controller
                     'meta_title' => setting('seo_meta_title'),
                     'meta_description' => setting('seo_meta_description'),
                     'meta_keywords' => setting('seo_meta_keywords'),
+                    'google_site_verification' => setting('google_site_verification'),
                 ],
 
                 'whatsapp_number' => setting('whatsapp_number'),
