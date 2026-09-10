@@ -57,7 +57,7 @@
 <body class="bg-background text-on-background font-body-md selection:bg-secondary-fixed selection:text-on-secondary-fixed">
     <!-- Global Page Preloader -->
     <div id="global-preloader">
-        <img src="{{ setting('logo') ? image_url(setting('logo')) : asset('images/logo.png') }}" alt="Loading {{ setting('site_name', 'Kare ONS Herbals') }}..." class="w-64 md:w-80 h-auto object-contain animate-logo-pulse">
+        <img src="{{ asset('images/page-loader.png') }}" alt="Loading Kareons..." class="w-64 md:w-80 h-auto animate-logo-pulse">
     </div>
 
     <!-- Toast notifications -->
