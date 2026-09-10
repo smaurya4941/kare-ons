@@ -67,7 +67,9 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // The Blade storefront gets this for free via bootstrap/app.php's 404
     // render hook; headless frontends must look it up explicitly before
     // rendering their own 404 page.
-    Route::get('/redirects/lookup', [RedirectController::class, 'lookup'])->name('redirects.lookup');
+    Route::get('/redirects/lookup', [RedirectController::class, 'lookup'])
+        ->middleware('throttle:redirects')
+        ->name('redirects.lookup');
 
     Route::post('/coupons/validate', [CouponController::class, 'validateCoupon'])
         ->middleware('throttle:coupon')

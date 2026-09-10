@@ -133,13 +133,33 @@ class AppServiceProvider extends ServiceProvider
         // -----------------------------------------------------------------------
         // Rate Limiting
         // -----------------------------------------------------------------------
+        // The shared API limiter. Every request from the Next.js storefront
+        // arrives from one of a few Vercel egress IPs and one page render fans
+        // out into several API calls, so a per-IP public limit throttles the
+        // whole site at once. Requests carrying the trusted frontend key get a
+        // generous budget (still capped, as a runaway-loop safety net); any
+        // other caller — a direct hit on the public API — keeps the tight
+        // per-user / per-IP limit.
         RateLimiter::for('api', function (Request $request) {
+            $frontendKey = config('services.frontend.key');
+
+            if ($frontendKey && hash_equals($frontendKey, (string) $request->header('X-Frontend-Key'))) {
+                return Limit::perMinute(1200)->by('frontend');
+            }
+
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
         // Coupon apply endpoint: max 10 attempts per minute per IP
         RateLimiter::for('coupon', function (Request $request) {
             return Limit::perMinute(10)->by($request->ip());
+        });
+
+        // Redirect lookups fire from the storefront on every unmatched URL, so
+        // scanner/bot traffic hammers them. Isolate them in their own global
+        // bucket so a burst can't 429 real API calls (cart, checkout, auth).
+        RateLimiter::for('redirects', function (Request $request) {
+            return Limit::perMinute(600)->by('redirects');
         });
 
         // Review submit: max 5 per hour per user

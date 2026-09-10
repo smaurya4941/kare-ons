@@ -34,12 +34,20 @@ class AuthController extends Controller
             'role' => 'customer',
         ]);
 
-        event(new Registered($user));
-        // The Registered-event auto-listener only fires for models that
-        // implement the MustVerifyEmail *interface*, which this app's User
-        // model deliberately does not (see AppServiceProvider notes). Send
-        // explicitly so registration always triggers a verification email.
-        $user->sendEmailVerificationNotification();
+        // Welcome + verification emails are sent synchronously in this request.
+        // A misconfigured or unreachable SMTP server must not fail the signup
+        // itself — the account already exists and the user can re-request
+        // verification later — so swallow (and log) any mail transport error.
+        try {
+            event(new Registered($user));
+            // The Registered-event auto-listener only fires for models that
+            // implement the MustVerifyEmail *interface*, which this app's User
+            // model deliberately does not (see AppServiceProvider notes). Send
+            // explicitly so registration always triggers a verification email.
+            $user->sendEmailVerificationNotification();
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         $token = $user->createToken($validated['device_name'] ?? 'api')->plainTextToken;
 

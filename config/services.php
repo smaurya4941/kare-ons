@@ -35,4 +35,21 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Trusted Frontend
+    |--------------------------------------------------------------------------
+    |
+    | Shared secret the Next.js storefront (kare-ons-web) sends on every API
+    | request as the `X-Frontend-Key` header. All storefront traffic reaches
+    | this API from a handful of Vercel server IPs, so it cannot be rate
+    | limited per-IP like a public client — a request carrying this key is
+    | treated as first-party and gets a much higher throttle budget. Leave
+    | unset to disable the check (every caller then shares the public limit).
+    |
+    */
+    'frontend' => [
+        'key' => env('FRONTEND_API_KEY'),
+    ],
+
 ];
