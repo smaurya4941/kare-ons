@@ -82,3 +82,15 @@ COD works out of the box with no configuration — the store can take orders on 
 
 ## Default admin
 `admin@kareons.com` / `password123` — change on first login.
+
+## 9. Architecture & Hosting Strategy (Headless)
+
+For the headless configuration (Next.js frontend + Laravel backend), the recommended architecture avoids unnecessary VPS costs by utilizing your existing premium shared hosting for the backend:
+
+- **Customer Domain**: `kareonsherbal.com` -> Cloudflare -> Vercel (Next.js frontend)
+- **API/Admin Domain**: `api.kareonsherbal.com` -> Cloudflare -> Hostinger (Laravel API + Admin Blade + MySQL)
+
+### Traffic Flow:
+1. Customers hit `kareonsherbal.com` (served by Vercel for free).
+2. The Next.js app communicates with the backend via `https://api.kareonsherbal.com/api/v1/*`.
+3. The Admin panel remains accessible via `https://api.kareonsherbal.com/admin` (served directly via Blade).
